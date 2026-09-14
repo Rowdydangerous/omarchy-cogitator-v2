@@ -29,7 +29,10 @@ Item {
             exclusionMode: ExclusionMode.Ignore
             mask: Region { item: frame }
             WlrLayershell.namespace: "cogitator-prop"
-            WlrLayershell.layer: WlrLayer.Overlay
+            // Background shell element: below windows, above wallpaper.
+            // Same layer as the burn window; same-layer stacking follows
+            // creation order, so Burn is declared first in Service.qml.
+            WlrLayershell.layer: WlrLayer.Bottom
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
             Item {

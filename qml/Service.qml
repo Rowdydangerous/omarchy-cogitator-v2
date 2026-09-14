@@ -193,6 +193,8 @@ Item {
         root.refreshPower()
     }
 
-    Prop { service: root }
+    // Declaration order is load-bearing: both windows share WlrLayer.Bottom
+    // and same-layer surfaces stack in creation order (first = bottom).
     Burn { service: root }
+    Prop { service: root }
 }

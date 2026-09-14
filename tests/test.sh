@@ -36,6 +36,7 @@ check "no system writes" bash -c '! grep -R "/usr/share/omarchy" "$1/scripts" "$
 check "no escaping imports" bash -c '! grep -R "\.\./\.\." "$1/qml" --include="*.qml"' _ "$ROOT"
 check "marker-guarded removal" bash -c 'grep -q "owned_by_us" "$1/scripts/cogitator"' _ "$ROOT"
 check "native install path" bash -c 'grep -q "omarchy plugin add" "$1/scripts/cogitator" && grep -q "git clone" "$1/scripts/cogitator"' _ "$ROOT"
+check "prop is background layer" bash -c 'grep -q "WlrLayer.Bottom" "$1/qml/prop/Prop.qml" && ! grep -q "WlrLayer.Overlay" "$1/qml/prop/Prop.qml"' _ "$ROOT"
 
 if (( failures > 0 )); then printf '%d test(s) failed.\n' "$failures" >&2; exit 1; fi
 printf 'All tests passed.\n'
