@@ -1,0 +1,32 @@
+mode = "dark"
+
+# GENERATED from palettes/green.json — do not hand-edit, run palettes/render.py.
+accent = "#4fd06a"
+selection = "#1d3a24"
+muted = "#2f5b38"
+
+background = "#030704"
+dark_background = "#020503"
+darker_background = "#010302"
+lighter_background = "#0a140c"
+
+foreground = "#4fd06a"
+dark_foreground = "#2f5b38"
+light_foreground = "#7dff9a"
+bright_foreground = "#d2ffd9"
+
+red = "#ff5345"
+yellow = "#e0ad2f"
+orange = "#e0ad2f"
+green = "#4fd06a"
+cyan = "#7dff9a"
+blue = "#4fd06a"
+magenta = "#7dff9a"
+brown = "#1d3a24"
+
+bright_red = "#ff5345"
+bright_yellow = "#e0ad2f"
+bright_green = "#7dff9a"
+bright_cyan = "#d2ffd9"
+bright_blue = "#7dff9a"
+bright_magenta = "#d2ffd9"

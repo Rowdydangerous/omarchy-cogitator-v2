@@ -1,0 +1,14 @@
+{
+  "name": "green-phosphor",
+  "description": "Monochrome green CRT. All QML + theme files derive from here.",
+  "background": "#030704",
+  "surface": "#0a140c",
+  "inactive": "#1d3a24",
+  "dim": "#2f5b38",
+  "normal": "#4fd06a",
+  "active": "#7dff9a",
+  "highlight": "#d2ffd9",
+  "warning": "#e0ad2f",
+  "critical": "#ff5345",
+  "customPhosphor": null
+}

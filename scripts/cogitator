@@ -1,0 +1,265 @@
+#!/bin/bash
+# cogitator-v2 — lifecycle wrapper around NATIVE Omarchy installs.
+#
+# This repo root is simultaneously:
+#   * a plugin root (manifest.json + qml/) for `omarchy plugin add <url>`
+#   * a theme root (colors.toml + shell.toml + backgrounds/ + icons.theme)
+#     for `omarchy theme install <url>` (theme slug derives from repo name;
+#     this wrapper pins the curated slug `cogitator-green`)
+#
+# The wrapper adds what native commands don't: a snapshot (previous theme +
+# background + shell.json backup) before anything mutates, so disable
+# restores exactly. User-space only:
+#   ~/.config/omarchy/plugins/cogitator-rite/
+#   ~/.config/omarchy/themes/cogitator-green/
+#   ~/.config/cogitator-v2/
+#   ~/.local/state/cogitator-v2/
+#
+# Theme switches relaunch the shell and restart terminals — including the
+# invoking shell — so enable/disable queue a detached transient unit and
+# return immediately. Poll with `cogitator status`.
+set -euo pipefail
+
+readonly VERSION="0.2.0"
+readonly PLUGIN_ID="cogitator-rite"
+readonly THEME_SLUG="cogitator-green"
+readonly MARKER=".cogitator-v2-installed"
+
+SOURCE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+readonly SOURCE_DIR
+readonly REPO_URL="file://$SOURCE_DIR"
+readonly CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+readonly STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+readonly CONFIG_DIR="$CONFIG_HOME/cogitator-v2"
+readonly CONF_FILE="$CONFIG_DIR/cogitator.conf"
+readonly CONFIG_JSON="$CONFIG_DIR/config.json"
+readonly STATE_DIR="$STATE_HOME/cogitator-v2"
+readonly SNAPSHOT="$STATE_DIR/snapshot.json"
+readonly BACKUP_ROOT="$STATE_DIR/backups"
+readonly PLUGIN_DST="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
+readonly THEME_DST="$HOME/.config/omarchy/themes/$THEME_SLUG"
+readonly SHELL_JSON="$HOME/.config/omarchy/shell.json"
+
+fail() { printf 'cogitator: %s\n' "$*" >&2; exit 1; }
+
+current_theme() { omarchy theme current 2>/dev/null || true; }
+
+plugin_known() {
+  omarchy-shell shell listPlugins 2>/dev/null \
+    | jq -e --arg id "$PLUGIN_ID" 'any(.[]; .id == $id)' >/dev/null 2>&1
+}
+
+plugin_enabled() {
+  omarchy-shell shell listPlugins 2>/dev/null \
+    | jq -e --arg id "$PLUGIN_ID" 'any(.[]; .id == $id and .enabled == true)' >/dev/null 2>&1
+}
+
+# Ours if we installed it (marker receipt) or it clones this repo.
+owned_by_us() {
+  local dir="$1"
+  [[ -f $dir/$MARKER ]] && return 0
+  [[ -d $dir/.git ]] || return 1
+  [[ $(git -C "$dir" config --get remote.origin.url 2>/dev/null) == "$REPO_URL" ]]
+}
+
+write_snapshot() {
+  local previous="$1" previous_bg
+  previous_bg=$(omarchy theme bg current 2>/dev/null || true)
+  mkdir -p "$STATE_DIR" "$BACKUP_ROOT"
+  local backup=""
+  if [[ -f $SHELL_JSON ]]; then
+    backup="$BACKUP_ROOT/shell-$(date +%Y%m%d-%H%M%S).json"
+    cp -a -- "$SHELL_JSON" "$backup"
+  fi
+  jq -n --arg v "$VERSION" --arg prev "$previous" --arg prevBg "$previous_bg" --arg backup "$backup" \
+    '{version: $v, previousTheme: $prev, previousBackground: $prevBg, shellBackup: $backup}' > "$SNAPSHOT.tmp"
+  mv "$SNAPSHOT.tmp" "$SNAPSHOT"
+}
+
+# Render ~/.config/cogitator-v2/config.json from cogitator.conf.
+render_config_json() {
+  [[ -f $CONF_FILE ]] || fail "missing $CONF_FILE"
+  python3 - "$CONF_FILE" "$CONFIG_JSON" <<'EOF'
+import json, sys
+
+CONF, OUT = sys.argv[1], sys.argv[2]
+
+def boolean(value, default):
+    value = value.strip().lower()
+    if value in ("true", "yes", "1"):
+        return True
+    if value in ("false", "no", "0"):
+        return False
+    return default
+
+def number(value, default, lo, hi):
+    try:
+        parsed = float(value.strip().strip('"'))
+    except ValueError:
+        return default
+    return min(hi, max(lo, parsed))
+
+raw = {}
+with open(CONF) as handle:
+    for line in handle:
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        raw[key.strip()] = value.strip().strip('"')
+
+config = {
+    "palette": raw.get("PALETTE", "green").lower(),
+    "propEnabled": boolean(raw.get("COGITATOR_PROP", "true"), True),
+    "propPosition": raw.get("COGITATOR_PROP_POSITION", "right").lower(),
+    "propOpacity": number(raw.get("COGITATOR_PROP_OPACITY", "0.92"), 0.92, 0.4, 1.0),
+    "burnEnabled": boolean(raw.get("BACKGROUND_BURN", "true"), True),
+    "burnOpacity": number(raw.get("BACKGROUND_BURN_OPACITY", "0.08"), 0.08, 0.0, 0.3),
+    "animationLevel": raw.get("ANIMATION_LEVEL", "full").lower(),
+    "textStreaming": boolean(raw.get("TEXT_STREAMING", "true"), True),
+    "crtEnabled": boolean(raw.get("CRT_ENABLED", "true"), True),
+    "crtIntensity": number(raw.get("CRT_INTENSITY", "0.25"), 0.25, 0.0, 1.0),
+    "flicker": number(raw.get("FLICKER", "0.05"), 0.05, 0.0, 0.3),
+}
+if config["propPosition"] not in ("left", "right"):
+    config["propPosition"] = "right"
+if config["animationLevel"] not in ("full", "normal", "minimal"):
+    config["animationLevel"] = "full"
+
+with open(OUT, "w") as handle:
+    json.dump(config, handle, indent=2)
+    handle.write("\n")
+EOF
+}
+
+prepare_config() {
+  mkdir -p "$CONFIG_DIR"
+  [[ -f $CONF_FILE ]] || install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"
+  render_config_json
+}
+
+queue_transition() {
+  systemd-run --user --collect --unit=cogitator-v2-transition "$@" >/dev/null
+}
+
+# Runs INSIDE the detached unit: native installs, theme set, enable.
+_unit_enable() {
+  set -euo pipefail
+  if omarchy-shell shell listPlugins 2>/dev/null | jq -e --arg id "$PLUGIN_ID" 'any(.[]; .id == $id)' >/dev/null 2>&1; then
+    omarchy plugin update "$PLUGIN_ID" --yes
+  else
+    omarchy plugin add "$REPO_URL" --yes
+  fi
+  printf '%s\n' "$VERSION" > "$HOME/.config/omarchy/plugins/$PLUGIN_ID/$MARKER"
+  rm -rf "$HOME/.config/omarchy/themes/$THEME_SLUG"
+  git clone -- "$REPO_URL" "$HOME/.config/omarchy/themes/$THEME_SLUG"
+  printf '%s\n' "$VERSION" > "$HOME/.config/omarchy/themes/$THEME_SLUG/$MARKER"
+  omarchy theme set "$THEME_SLUG"
+  omarchy theme bg set "$HOME/.config/omarchy/themes/$THEME_SLUG/backgrounds/cogitator-green-grid.png"
+  omarchy plugin enable "$PLUGIN_ID"
+  omarchy-shell -q shell rescanPlugins
+}
+
+# Runs INSIDE the detached unit: disable plugin, restore theme, clear snapshot.
+_unit_disable() {
+  set -euo pipefail
+  local plugin_dst="$1" theme_dst="$2" previous="$3" previous_bg="$4" snapshot="$5"
+  if [[ -f $plugin_dst/$MARKER ]]; then
+    omarchy plugin disable "$PLUGIN_ID" || true
+  else
+    echo "Plugin install not ours; leaving files, only restoring theme selection." >&2
+  fi
+  omarchy theme set "$previous"
+  if [[ -n $previous_bg ]]; then omarchy theme bg set "$previous_bg" || true; fi
+  omarchy-shell -q shell rescanPlugins
+  rm -f "$snapshot"
+}
+
+cmd_status() {
+  if [[ ${1:-} == --json ]]; then
+    jq -n --arg theme "$(current_theme)" \
+      --argjson plugin "$(plugin_enabled && printf true || printf false)" \
+      --argjson installed "$([[ -f $PLUGIN_DST/manifest.json && -f $THEME_DST/colors.toml ]] && printf true || printf false)" \
+      --argjson snapshot "$([[ -f $SNAPSHOT ]] && printf true || printf false)" \
+      '{theme: $theme, pluginEnabled: $plugin, installed: $installed, snapshot: $snapshot, version: $version}' \
+      --arg version "$VERSION"
+    return
+  fi
+  printf 'COGITATOR-V2 %s\nTHEME: %s\nPLUGIN %s: %s\nSNAPSHOT: %s\n' \
+    "$VERSION" "$(current_theme)" "$PLUGIN_ID" \
+    "$(plugin_enabled && printf ENABLED || printf disabled)" \
+    "$([[ -f $SNAPSHOT ]] && printf armed || printf none)"
+}
+
+cmd_enable() {
+  local current
+  current=$(current_theme)
+  [[ -d $SOURCE_DIR/.git ]] || fail "repo is not a git checkout; native install needs one"
+  if [[ -f $SNAPSHOT ]]; then
+    printf 'Snapshot exists; re-applying without overwriting it.\n'
+  else
+    write_snapshot "$current"
+    printf 'Snapshot armed. Previous theme: %s\n' "${current:-unknown}"
+  fi
+  prepare_config
+  omarchy plugin validate "$SOURCE_DIR" >/dev/null
+  queue_transition bash -c 'source "$0/scripts/cogitator" --unit-enable' "$SOURCE_DIR"
+  printf 'Transition queued. Theme/plugin apply in background; check `cogitator status`.\nDisable any time: cogitator disable\n'
+}
+
+cmd_disable() {
+  local previous previous_bg
+  [[ -f $SNAPSHOT ]] || fail "no snapshot; nothing to restore (theme: $(current_theme))"
+  previous=$(jq -r '.previousTheme // ""' "$SNAPSHOT")
+  previous_bg=$(jq -r '.previousBackground // ""' "$SNAPSHOT")
+  [[ -n $previous ]] || fail "snapshot has no previous theme; refusing to guess"
+  queue_transition bash -c 'source "$0/scripts/cogitator" --unit-disable "$1" "$2" "$3" "$4" "$5"' \
+    "$SOURCE_DIR" "$PLUGIN_DST" "$THEME_DST" "$previous" "$previous_bg" "$SNAPSHOT"
+  printf 'Restore queued. Previous theme (%s) returns in background; snapshot clears on completion.\n' "$previous"
+}
+
+cmd_uninstall() {
+  if [[ -f $SNAPSHOT ]]; then
+    cmd_disable
+    printf 'Re-run `cogitator uninstall%s` after the restore completes.\n' "${1:+ $1}"
+    return
+  fi
+  if owned_by_us "$PLUGIN_DST"; then
+    omarchy plugin remove "$PLUGIN_ID" --yes
+  elif [[ -e $PLUGIN_DST ]]; then
+    fail "plugin dir exists but is not ours; remove it manually"
+  fi
+  if owned_by_us "$THEME_DST"; then
+    omarchy theme remove "$THEME_SLUG"
+  elif [[ -e $THEME_DST ]]; then
+    fail "theme dir exists but is not ours; remove it manually"
+  fi
+  if [[ ${1:-} == --purge ]]; then
+    rm -rf "$CONFIG_DIR" "$STATE_DIR"
+    printf 'Configuration purged.\n'
+  else
+    printf 'Removed package files. Config preserved at %s.\n' "$CONFIG_DIR"
+  fi
+}
+
+case "${1:-}" in
+  --unit-enable) _unit_enable ;;
+  --unit-disable) _unit_disable "$2" "$3" "$4" "$5" "$6" ;;
+  status) cmd_status "${2:-}" ;;
+  enable) cmd_enable ;;
+  disable) cmd_disable ;;
+  toggle)
+    if plugin_enabled || [[ $(current_theme) == *cogitator* ]]; then cmd_disable; else cmd_enable; fi
+    ;;
+  apply) render_config_json && omarchy-shell -q shell rescanPlugins && printf 'Config applied.\n' ;;
+  configure)
+    [[ -f $CONF_FILE ]] || { mkdir -p "$CONFIG_DIR"; install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"; }
+    "${EDITOR:-nano}" "$CONF_FILE"
+    ;;
+  palette) fail "v2 prototype ships green only; amber/red/industrial follow in Phase 3" ;;
+  uninstall) cmd_uninstall "${2:-}" ;;
+  -h|--help|help)
+    printf 'Usage: cogitator <status|enable|disable|toggle|apply|configure|palette|uninstall>\nNative equivalents: omarchy plugin add|update|remove %s, omarchy theme install|set|remove\n' "$PLUGIN_ID"
+    ;;
+  *) printf 'Usage: cogitator <status|enable|disable|toggle|apply|configure|palette|uninstall>\n' >&2; exit 1 ;;
+esac
