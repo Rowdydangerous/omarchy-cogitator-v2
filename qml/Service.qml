@@ -1,6 +1,10 @@
 import QtQuick
 import Quickshell
+import Quickshell.Bluetooth
+import Quickshell.Hyprland
 import Quickshell.Io
+import Quickshell.Networking
+import Quickshell.Services.Pipewire
 import Quickshell.Services.UPower
 import "prop"
 import "burn"
@@ -18,6 +22,7 @@ Item {
     property real burnOpacity: 0.08
     property string animationLevel: "full" // full | normal | minimal
     property bool textStreaming: true
+    property bool workspaceRites: true
     property bool crtEnabled: true
     property real crtIntensity: 0.25
     property real flicker: 0.05
@@ -33,6 +38,92 @@ Item {
     property bool powerCritical: false
     property string timeText: "--:--:--"
     property string dateText: ""
+    property string channelText: "--"
+
+    // Read-only bindings over shared system singletons. Never mutated here;
+    // the stock panels retain full ownership of hardware control.
+    readonly property var networkDevices: Networking.devices ? Networking.devices.values : []
+    readonly property var audioSink: Pipewire.defaultAudioSink
+    readonly property var btAdapter: Bluetooth.defaultAdapter
+    readonly property var btDevices: Bluetooth.devices ? Bluetooth.devices.values : []
+
+    readonly property string netText: {
+        var wired = null
+        var wifi = null
+        for (var i = 0; i < networkDevices.length; i++) {
+            var device = networkDevices[i]
+            if (!device || !device.connected)
+                continue
+            if (device.type === DeviceType.Wired)
+                wired = device
+            else if (device.type === DeviceType.Wifi && !wifi)
+                wifi = device
+        }
+        if (wired)
+            return "HARDLINE"
+        if (wifi) {
+            var ssid = connectedWifiSsid(wifi)
+            return ssid === "" ? "WIRELESS" : ssid.toUpperCase().substring(0, 14)
+        }
+        return "RELAY LOST"
+    }
+    readonly property bool netOk: netText !== "RELAY LOST"
+
+    readonly property string voxText: {
+        if (!audioSink || !audioSink.audio)
+            return "NO OUTPUT"
+        if (audioSink.audio.muted)
+            return "MUTED"
+        return String(Math.round(audioSink.audio.volume * 100)).padStart(3, "0") + "%"
+    }
+
+    readonly property string relayText: {
+        if (!btAdapter)
+            return "NO RELAY"
+        if (!btAdapter.enabled)
+            return "DORMANT"
+        var linked = 0
+        for (var i = 0; i < btDevices.length; i++) {
+            if (btDevices[i] && btDevices[i].connected)
+                linked++
+        }
+        return linked > 0 ? linked + " LINKED" : "IDLE"
+    }
+
+    function connectedWifiSsid(wifiDevice) {
+        if (!wifiDevice || !wifiDevice.networks)
+            return ""
+        var networks = wifiDevice.networks.values
+        for (var i = 0; i < networks.length; i++) {
+            if (networks[i] && networks[i].connected)
+                return String(networks[i].ssid || "")
+        }
+        return ""
+    }
+
+    function refreshChannel() {
+        var focused = Hyprland.focusedWorkspace
+        channelText = focused ? String(focused.id).padStart(2, "0") : "--"
+    }
+
+    function channelRite() {
+        var before = channelText
+        refreshChannel()
+        if (before === channelText || channelText === "--")
+            return
+        currentRite = "CHANNEL " + channelText + " SYNCHRONIZED"
+        if (workspaceRites)
+            osdRite("+++ ACCESSING CHANNEL " + channelText + " +++")
+    }
+
+    function osdRite(message) {
+        if (animationLevel === "minimal")
+            return
+        Quickshell.execDetached(["omarchy-shell", "osd", "show", JSON.stringify({
+            message: message,
+            duration: 1400
+        })])
+    }
 
     // Rotating rite corpus (shuffle bag, no immediate repeats).
     readonly property var liturgy: [
@@ -89,6 +180,8 @@ Item {
             animationLevel = obj.animationLevel
         if (typeof obj.textStreaming === "boolean")
             textStreaming = obj.textStreaming
+        if (typeof obj.workspaceRites === "boolean")
+            workspaceRites = obj.workspaceRites
         if (typeof obj.crtEnabled === "boolean")
             crtEnabled = obj.crtEnabled
         if (typeof obj.crtIntensity === "number")
@@ -188,9 +281,15 @@ Item {
         function onOnBatteryChanged() { root.refreshPower() }
     }
 
+    Connections {
+        target: Hyprland
+        function onFocusedWorkspaceChanged() { root.channelRite() }
+    }
+
     Component.onCompleted: {
         root.nextRite()
         root.refreshPower()
+        root.refreshChannel()
     }
 
     // Declaration order is load-bearing: both windows share WlrLayer.Bottom

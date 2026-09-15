@@ -108,6 +108,10 @@ Item {
                         critical: root.service.powerCritical
                     }
                     TelemetryRow { label: "CHRONO"; value: root.service.timeText }
+                    TelemetryRow { label: "CHANNEL"; value: root.service.channelText }
+                    TelemetryRow { label: "NET LINK"; value: root.service.netText; alert: !root.service.netOk; critical: !root.service.netOk }
+                    TelemetryRow { label: "VOX ARRAY"; value: root.service.voxText; alert: root.service.voxText === "MUTED" }
+                    TelemetryRow { label: "RELAY"; value: root.service.relayText }
 
                     Rectangle { width: parent.width; height: 1; color: root.dim }
 
