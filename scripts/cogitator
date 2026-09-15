@@ -150,11 +150,16 @@ _unit_enable() {
   set -euo pipefail
   local plugindir="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
   if omarchy-shell shell listPlugins 2>/dev/null | jq -e --arg id "$PLUGIN_ID" 'any(.[]; .id == $id)' >/dev/null 2>&1; then
-    if [[ -d $plugindir/.git ]]; then
-      # Dev copies or interrupted runs can dirty the clone and block
-      # fast-forward; tracked state always rebuilds from the repo.
+    if [[ -d $plugindir/.git ]] && owned_by_us "$plugindir"; then
+      # Dev copies or interrupted runs can leave tracked modifications or
+      # untracked files that collide with incoming paths and block
+      # fast-forward; the clone always rebuilds from the repo.
       git -C "$plugindir" checkout -q -- . || true
+      git -C "$plugindir" clean -q -fd || true
+      printf '%s\n' "$VERSION" > "$plugindir/$MARKER"
       omarchy plugin update "$PLUGIN_ID" --yes
+    elif [[ -d $plugindir/.git ]]; then
+      fail "plugin dir is a foreign git checkout; remove it manually"
     else
       # Legacy non-git install: native remove backs it up, then fresh add.
       omarchy plugin remove "$PLUGIN_ID" --yes
