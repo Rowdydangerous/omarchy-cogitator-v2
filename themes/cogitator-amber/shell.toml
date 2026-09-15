@@ -1,0 +1,131 @@
+# Omarchy shell surfaces for cogitator-amber.
+# GENERATED from palettes/amber.json — do not hand-edit, run palettes/render.py.
+# Sizes/spacing mirror stock defaults; only color tokens are phosphor-derived.
+
+[bar]
+background       = "#060402"
+background-alpha = 1.0
+text             = "#e8a33d"
+active           = "#ff3b30"
+scale-with-font  = true
+size-horizontal  = 26
+size-vertical    = 28
+
+[hyprland]
+active-border            = "#7a5a26"
+active-border-foreground = "#e8a33d"
+
+[controls]
+normal-color        = "#e8a33d"
+normal-fill-alpha   = 0.04
+normal-border       = "#e8a33d"
+normal-border-width = 1
+normal-border-alpha = 0.4
+hover-cursor-color        = "#ffd97a"
+hover-cursor-fill-alpha   = 0.08
+hover-cursor-border       = "#ffd97a"
+hover-cursor-border-width = 1
+hover-cursor-border-alpha = 0.35
+focus-color        = "#ffd97a"
+focus-fill-alpha   = 0.08
+focus-border       = "#ffd97a"
+focus-border-width = 1
+focus-border-alpha = 0.35
+selected-color        = "#ffd97a"
+selected-fill-alpha   = 0.18
+selected-border       = "#ffd97a"
+selected-border-width = 0
+selected-border-alpha = 1.0
+pressed-fill-alpha   = 0.22
+selection-fill-alpha = 0.35
+
+[spacing]
+scale = 1.0
+scale-with-font = true
+
+[font]
+base-size = 12
+
+[popups]
+background       = "#060402"
+background-alpha = 0.97
+text             = "#e8a33d"
+border           = "hyprland.active-border"
+border-alpha     = 1.0
+
+[tooltip]
+background       = "#120c05"
+background-alpha = 0.97
+text             = "#ffefd0"
+border           = "hyprland.active-border-foreground"
+border-alpha     = 1.0
+
+[notifications]
+background       = "#060402"
+background-alpha = 0.97
+text             = "#e8a33d"
+border           = "hyprland.active-border"
+border-alpha     = 1.0
+countdown        = "#ffd97a"
+
+[launcher]
+background                = "#060402"
+background-alpha          = 0.94
+text                      = "#e8a33d"
+border                    = "hyprland.active-border-foreground"
+border-alpha              = 1.0
+scrim                     = "#060402"
+scrim-alpha               = 0.55
+selected-background       = "#e8a33d"
+selected-background-alpha = 0.12
+selected-text             = "#ffefd0"
+selected-border           = "hyprland.active-border-foreground"
+selected-border-alpha     = 0.4
+
+[menu]
+background                = "#060402"
+background-alpha          = 0.97
+text                      = "#e8a33d"
+border                    = "hyprland.active-border-foreground"
+border-alpha              = 1.0
+scrim                     = "#060402"
+scrim-alpha               = 0.55
+selected-background       = "#e8a33d"
+selected-background-alpha = 0.12
+selected-text             = "#ffefd0"
+selected-border           = "hyprland.active-border-foreground"
+selected-border-alpha     = 0.4
+
+[polkit]
+background       = "#060402"
+background-alpha = 1.0
+text             = "#e8a33d"
+text-error       = "#ff3b30"
+border           = "hyprland.active-border"
+border-error     = "#ff3b30"
+border-alpha     = 1.0
+scrim            = "#060402"
+scrim-alpha      = 0.6
+accent           = "#ffd97a"
+
+[lock]
+background       = "#060402"
+background-alpha = 0.85
+text             = "#e8a33d"
+placeholder      = "#7a5a26"
+text-error       = "#ff3b30"
+border           = "hyprland.active-border"
+border-active    = "hyprland.active-border"
+border-error     = "#ff3b30"
+border-alpha     = 1.0
+selection        = "#ffd97a"
+selection-alpha  = 0.45
+
+[image-picker]
+scrim                   = "#060402"
+scrim-alpha             = 0.55
+text                    = "#e8a33d"
+selected-border         = "#ffd97a"
+selected-border-alpha   = 1.0
+unselected-border       = "#e8a33d"
+unselected-border-alpha = 0.28

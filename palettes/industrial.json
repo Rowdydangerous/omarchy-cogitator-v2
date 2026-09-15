@@ -1,0 +1,14 @@
+{
+  "name": "industrial",
+  "description": "Physical Imperial machinery: gunmetal, aged cream, brass, muted red.",
+  "background": "#0b0b09",
+  "surface": "#1a1a16",
+  "inactive": "#4a463c",
+  "dim": "#8d8672",
+  "normal": "#e8dcc0",
+  "active": "#d3a62c",
+  "highlight": "#f7efdc",
+  "warning": "#c44c35",
+  "critical": "#ff5345",
+  "customPhosphor": null
+}

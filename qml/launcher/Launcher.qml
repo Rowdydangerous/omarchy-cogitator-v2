@@ -14,10 +14,11 @@ Item {
     required property var service
 
     readonly property bool opened: service ? service.launcherOpened : false
-    readonly property color phosphor: "#4fd06a"
-    readonly property color bright: "#7dff9a"
-    readonly property color pale: "#d2ffd9"
-    readonly property color dim: "#2f5b38"
+    readonly property color phosphor: root.service ? root.service.phosphor : "#4fd06a"
+    readonly property color bright: root.service ? root.service.bright : "#7dff9a"
+    readonly property color pale: root.service ? root.service.pale : "#d2ffd9"
+    readonly property color dim: root.service ? root.service.dim : "#2f5b38"
+    readonly property color abyss: root.service ? root.service.abyss : "#030704"
     readonly property string mono: "Monaspace Xenon Frozen, JetBrainsMono Nerd Font, monospace"
 
     property string query: ""
@@ -79,21 +80,21 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                color: Qt.rgba(1 / 255, 3 / 255, 2 / 255, 0.55)
+                color: Qt.rgba(root.abyss.r, root.abyss.g, root.abyss.b, 0.55)
                 MouseArea {
                     anchors.fill: parent
                     onClicked: root.service.launcherOpened = false
                 }
             }
 
-            Rectangle {
-                id: card
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                anchors.topMargin: Math.max(60, parent.height * 0.16)
-                width: Math.min(560, parent.width - 48)
-                height: cardColumn.implicitHeight + 32
-                color: Qt.rgba(3 / 255, 7 / 255, 4 / 255, 0.97)
+                Rectangle {
+                    id: card
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+                    anchors.topMargin: Math.max(60, parent.height * 0.16)
+                    width: Math.min(560, parent.width - 48)
+                    height: cardColumn.implicitHeight + 32
+                    color: Qt.rgba(root.abyss.r, root.abyss.g, root.abyss.b, 0.97)
                 border.color: root.phosphor
                 border.width: 1
 
@@ -119,7 +120,7 @@ Item {
                     Rectangle {
                         width: parent.width
                         height: 46
-                        color: "#010302"
+                        color: root.abyss
                         border.color: queryInput.activeFocus ? root.bright : root.dim
                         Row {
                             anchors.fill: parent
@@ -237,6 +238,7 @@ Item {
                     flicker: 0
                     noise: root.service ? root.service.noise : 0.03
                     falloff: root.service ? root.service.brightnessFalloff : true
+                    grain: root.bright
                 }
             }
         }

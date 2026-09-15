@@ -1,0 +1,32 @@
+mode = "dark"
+
+# GENERATED from palettes/industrial.json — do not hand-edit, run palettes/render.py.
+accent = "#e8dcc0"
+selection = "#4a463c"
+muted = "#8d8672"
+
+background = "#0b0b09"
+dark_background = "#080806"
+darker_background = "#050504"
+lighter_background = "#1a1a16"
+
+foreground = "#e8dcc0"
+dark_foreground = "#8d8672"
+light_foreground = "#d3a62c"
+bright_foreground = "#f7efdc"
+
+red = "#ff5345"
+yellow = "#c44c35"
+orange = "#c44c35"
+green = "#e8dcc0"
+cyan = "#d3a62c"
+blue = "#e8dcc0"
+magenta = "#d3a62c"
+brown = "#4a463c"
+
+bright_red = "#ff5345"
+bright_yellow = "#c44c35"
+bright_green = "#d3a62c"
+bright_cyan = "#f7efdc"
+bright_blue = "#d3a62c"
+bright_magenta = "#f7efdc"

@@ -1,4 +1,6 @@
 # Single centralized config. Copy to ~/.config/cogitator-v2/cogitator.conf on enable.
+# green | amber | red | industrial | custom. Switch live with
+# `cogitator palette <name>` (custom derives from CUSTOM_PHOSPHOR).
 PALETTE="green"
 CUSTOM_PHOSPHOR=""
 

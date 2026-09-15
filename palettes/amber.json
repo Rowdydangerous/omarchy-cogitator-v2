@@ -1,0 +1,14 @@
+{
+  "name": "amber-phosphor",
+  "description": "Warm amber CRT. All theme files derive from here.",
+  "background": "#060402",
+  "surface": "#120c05",
+  "inactive": "#3d2c14",
+  "dim": "#7a5a26",
+  "normal": "#e8a33d",
+  "active": "#ffd97a",
+  "highlight": "#ffefd0",
+  "warning": "#ff5f2b",
+  "critical": "#ff3b30",
+  "customPhosphor": null
+}

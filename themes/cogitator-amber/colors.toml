@@ -1,0 +1,32 @@
+mode = "dark"
+
+# GENERATED from palettes/amber.json — do not hand-edit, run palettes/render.py.
+accent = "#e8a33d"
+selection = "#3d2c14"
+muted = "#7a5a26"
+
+background = "#060402"
+dark_background = "#040301"
+darker_background = "#030201"
+lighter_background = "#120c05"
+
+foreground = "#e8a33d"
+dark_foreground = "#7a5a26"
+light_foreground = "#ffd97a"
+bright_foreground = "#ffefd0"
+
+red = "#ff3b30"
+yellow = "#ff5f2b"
+orange = "#ff5f2b"
+green = "#e8a33d"
+cyan = "#ffd97a"
+blue = "#e8a33d"
+magenta = "#ffd97a"
+brown = "#3d2c14"
+
+bright_red = "#ff3b30"
+bright_yellow = "#ff5f2b"
+bright_green = "#ffd97a"
+bright_cyan = "#ffefd0"
+bright_blue = "#ffd97a"
+bright_magenta = "#ffefd0"

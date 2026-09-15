@@ -1,0 +1,14 @@
+{
+  "name": "emergency",
+  "description": "Dim red damage-control terminal. Critical runs white-hot, as alarm phosphor should.",
+  "background": "#070202",
+  "surface": "#160808",
+  "inactive": "#4a1512",
+  "dim": "#8a2a22",
+  "normal": "#e03a30",
+  "active": "#ff6a5e",
+  "highlight": "#ffc9c2",
+  "warning": "#ffb02e",
+  "critical": "#ffe9e4",
+  "customPhosphor": null
+}

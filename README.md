@@ -26,8 +26,8 @@ cycle re-proven after every addition. Screenshots in `docs/screenshots/`.
 ## Usage
 
 ```bash
-./tests/test.sh          # 17 read-only checks, must all pass
-./scripts/cogitator status
+./tests/test.sh          # 25 read-only checks, must all pass
+cogitator status         # ~/.local/bin/cogitator shim, installed on enable
 ./scripts/cogitator enable    # snapshots, native-installs plugin+theme, queues detached transition
 ./scripts/cogitator disable   # disables plugin, restores previous theme + background
 ./scripts/cogitator apply     # re-render config.json from cogitator.conf + rescan
@@ -76,6 +76,36 @@ then `cogitator apply`.
 A full Cogitator twin of every Omarchy shell surface with Mechanicus
 treatment — see `docs/stretch-shell-twin.md`. The Application Cogitator
 launcher is the reference implementation for that effort.
+
+## Settings
+
+```bash
+cogitator configure   # opens ~/.config/cogitator-v2/cogitator.conf
+cogitator apply       # re-render + full shell restart (services need it)
+cogitator status      # theme, palette, plugin, snapshot in one glance
+```
+
+Every tunable lives in that one file: palette, CRT intensity, phosphor
+glow, scanlines, flicker, noise, persistence, ghosting, burn-in,
+background burn + opacity, text streaming, workspace rites, prop opacity
+and position, animation tier. QML never hardcodes color — all shell
+surfaces follow the active theme file live.
+
+## Palettes
+
+```bash
+cogitator palette amber       # warm amber CRT
+cogitator palette red         # damage-control emergency terminal
+cogitator palette industrial  # gunmetal, aged cream, brass
+cogitator palette green       # back to phosphor green
+```
+
+Custom phosphor: set `CUSTOM_PHOSPHOR="#7CFF6B"` in the conf, then
+`cogitator palette custom`. Scales derive automatically; bar, menus,
+notifications, lock, launcher, prop, and burn all follow because every
+surface reads the theme file. Definitions live in `palettes/*.json`,
+rendered by `palettes/render.py` (green also ships at the repo root as
+the native-installable flagship).
 
 ## Terminal rite (opt-in)
 

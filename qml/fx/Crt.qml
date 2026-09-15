@@ -15,6 +15,7 @@ Item {
     property real flicker: 0.05
     property real noise: 0.03
     property bool falloff: true
+    property color grain: "#7dff9a"
 
     property int grainTick: 0
 
@@ -72,7 +73,7 @@ Item {
             height: 2
             x: (index * 97 + 13) % Math.max(1, Math.floor(root.width - 2))
             y: (index * 61 + 7) % Math.max(1, Math.floor(root.height - 2))
-            color: "#7dff9a"
+            color: root.grain
             opacity: root.noise * (((index * 53 + root.grainTick * 29) % 17) / 16) * 0.5
         }
     }

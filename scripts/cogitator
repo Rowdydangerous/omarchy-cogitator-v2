@@ -20,7 +20,7 @@
 # return immediately. Poll with `cogitator status`.
 set -euo pipefail
 
-readonly VERSION="0.2.0"
+readonly VERSION="0.3.0"
 readonly PLUGIN_ID="cogitator-rite"
 readonly THEME_SLUG="cogitator-green"
 readonly MARKER=".cogitator-v2-installed"
@@ -142,12 +142,45 @@ readonly BINDINGS_FILE="$HOME/.config/hypr/bindings.lua"
 readonly BIND_BEGIN="-- cogitator-v2-super-space-begin"
 readonly BIND_END="-- cogitator-v2-super-space-end"
 
+conf_value() {
+  local key="$1" fallback="$2" value
+  value=$(awk -F= -v key="$key" '
+    $1 ~ "^[[:space:]]*" key "[[:space:]]*$" {
+      value=$0
+      sub(/^[^=]*=[[:space:]]*/, "", value)
+      sub(/[[:space:]]*#.*$/, "", value)
+      gsub(/^[[:space:]\"]+|[[:space:]\"]+$/, "", value)
+      print value
+      exit
+    }
+  ' "$CONF_FILE" 2>/dev/null || true)
+  printf '%s\n' "${value:-$fallback}"
+}
+
+set_conf() {
+  local key="$1" value="$2"
+  [[ -f $CONF_FILE ]] || fail "missing $CONF_FILE"
+  awk -v key="$key" -v value="$value" '
+    BEGIN { replaced=0 }
+    $0 ~ "^[[:space:]]*" key "[[:space:]]*=" {
+      if (!replaced) print key "=\"" value "\""
+      replaced=1
+      next
+    }
+    { print }
+    END { if (!replaced) print key "=\"" value "\"" }
+  ' "$CONF_FILE" > "$CONF_FILE.tmp"
+  mv "$CONF_FILE.tmp" "$CONF_FILE"
+}
+
 prepare_config() {
-  mkdir -p "$CONFIG_DIR" "$CONFIG_DIR/bash"
+  mkdir -p "$CONFIG_DIR" "$CONFIG_DIR/bash" "$HOME/.local/bin"
   [[ -f $CONF_FILE ]] || install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"
   # File only, never wired into startup. Sourcing stays a manual operator act.
   install -m 0644 "$SOURCE_DIR/shell/cogitator.bash" "$CONFIG_DIR/bash/cogitator.bash"
   install -m 0755 "$SOURCE_DIR/scripts/cogitator-menu" "$CONFIG_DIR/cogitator-menu"
+  # Convenience on PATH; points at this repo, removed on uninstall.
+  ln -sf "$SOURCE_DIR/scripts/cogitator" "$HOME/.local/bin/cogitator"
   render_config_json
 }
 
@@ -241,15 +274,16 @@ _unit_disable() {
 cmd_status() {
   if [[ ${1:-} == --json ]]; then
     jq -n --arg theme "$(current_theme)" \
+      --arg palette "$([[ -f $CONF_FILE ]] && conf_value PALETTE green || printf green)" \
       --argjson plugin "$(plugin_enabled && printf true || printf false)" \
       --argjson installed "$([[ -f $PLUGIN_DST/manifest.json && -f $THEME_DST/colors.toml ]] && printf true || printf false)" \
       --argjson snapshot "$([[ -f $SNAPSHOT ]] && printf true || printf false)" \
-      '{theme: $theme, pluginEnabled: $plugin, installed: $installed, snapshot: $snapshot, version: $version}' \
+      '{theme: $theme, palette: $palette, pluginEnabled: $plugin, installed: $installed, snapshot: $snapshot, version: $version}' \
       --arg version "$VERSION"
     return
   fi
-  printf 'COGITATOR-V2 %s\nTHEME: %s\nPLUGIN %s: %s\nSNAPSHOT: %s\n' \
-    "$VERSION" "$(current_theme)" "$PLUGIN_ID" \
+  printf 'COGITATOR-V2 %s\nTHEME: %s\nPALETTE: %s\nPLUGIN %s: %s\nSNAPSHOT: %s\n' \
+    "$VERSION" "$(current_theme)" "$([[ -f $CONF_FILE ]] && conf_value PALETTE green || printf green)" "$PLUGIN_ID" \
     "$(plugin_enabled && printf ENABLED || printf disabled)" \
     "$([[ -f $SNAPSHOT ]] && printf armed || printf none)"
 }
@@ -282,6 +316,39 @@ cmd_disable() {
   printf 'Restore queued. Previous theme (%s) returns in background; snapshot clears on completion.\n' "$previous"
 }
 
+cmd_palette() {
+  local name="${1:-}"
+  case "$name" in
+    green|amber|red|industrial|custom) ;;
+    *) fail "usage: cogitator palette <green|amber|red|industrial|custom>" ;;
+  esac
+  [[ -f $SNAPSHOT ]] || fail "engage first: cogitator enable"
+  local slug="cogitator-$name" src="$SOURCE_DIR/themes/cogitator-$name"
+  if [[ $name == green ]]; then
+    src="$SOURCE_DIR"
+  elif [[ $name == custom ]]; then
+    local hex
+    hex=$(conf_value CUSTOM_PHOSPHOR "")
+    [[ -n $hex ]] || fail "set CUSTOM_PHOSPHOR (e.g. \"#7CFF6B\") in $CONF_FILE first"
+    python3 "$SOURCE_DIR/palettes/render.py" custom --phosphor "$hex" || fail "custom render failed"
+  else
+    [[ -d $src ]] || fail "palette theme missing from repo; render first"
+  fi
+  set_conf PALETTE "$name"
+  prepare_config
+  queue_transition bash -c '
+    set -euo pipefail
+    slug="$1"; src="$2"; dst="$HOME/.config/omarchy/themes/$slug"
+    rm -rf "$dst"
+    if [[ "$src" == */themes/* ]]; then cp -a "$src/." "$dst/"; else cp -a "$src/colors.toml" "$src/shell.toml" "$src/icons.theme" "$src/backgrounds" "$dst/"; fi
+    printf "%s\n" "0.3.0" > "$dst/.cogitator-v2-installed"
+    omarchy theme set "$slug"
+    omarchy theme bg set "$dst/backgrounds/$slug-grid.png"
+    omarchy-shell -q shell rescanPlugins
+  ' _ "$slug" "$src"
+  printf 'Palette %s queued. Shell surfaces follow the theme file live.\n' "$name"
+}
+
 cmd_uninstall() {
   if [[ -f $SNAPSHOT ]]; then
     cmd_disable
@@ -297,6 +364,16 @@ cmd_uninstall() {
     omarchy theme remove "$THEME_SLUG"
   elif [[ -e $THEME_DST ]]; then
     fail "theme dir exists but is not ours; remove it manually"
+  fi
+  local extra
+  for extra in "$HOME/.config/omarchy/themes"/cogitator-*/; do
+    [[ -d $extra ]] || continue
+    if [[ -f ${extra%/}/$MARKER ]]; then
+      omarchy theme remove "$(basename "${extra%/}")"
+    fi
+  done
+  if [[ -L $HOME/.local/bin/cogitator && $(readlink "$HOME/.local/bin/cogitator") == "$SOURCE_DIR/scripts/cogitator" ]]; then
+    rm -f "$HOME/.local/bin/cogitator"
   fi
   remove_keybinding
   if [[ ${1:-} == --purge ]]; then
@@ -321,7 +398,7 @@ case "${1:-}" in
     [[ -f $CONF_FILE ]] || { mkdir -p "$CONFIG_DIR"; install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"; }
     "${EDITOR:-nano}" "$CONF_FILE"
     ;;
-  palette) fail "v2 prototype ships green only; amber/red/industrial follow in Phase 3" ;;
+  palette) cmd_palette "${2:-}" ;;
   uninstall) cmd_uninstall "${2:-}" ;;
   -h|--help|help)
     printf 'Usage: cogitator <status|enable|disable|toggle|apply|configure|palette|uninstall>\nNative equivalents: omarchy plugin add|update|remove %s, omarchy theme install|set|remove\n' "$PLUGIN_ID"

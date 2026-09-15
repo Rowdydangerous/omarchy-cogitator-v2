@@ -7,12 +7,13 @@ Item {
     id: root
     required property var service
 
-    readonly property color phosphor: "#4fd06a"
-    readonly property color bright: "#7dff9a"
-    readonly property color pale: "#d2ffd9"
-    readonly property color dim: "#2f5b38"
-    readonly property color warn: "#e0ad2f"
-    readonly property color crit: "#ff5345"
+    readonly property color phosphor: root.service ? root.service.phosphor : "#4fd06a"
+    readonly property color bright: root.service ? root.service.bright : "#7dff9a"
+    readonly property color pale: root.service ? root.service.pale : "#d2ffd9"
+    readonly property color dim: root.service ? root.service.dim : "#2f5b38"
+    readonly property color warn: root.service ? root.service.warn : "#e0ad2f"
+    readonly property color crit: root.service ? root.service.crit : "#ff5345"
+    readonly property color abyss: root.service ? root.service.abyss : "#030704"
     readonly property string mono: "Monaspace Xenon Frozen, JetBrainsMono Nerd Font, monospace"
 
     Variants {
@@ -51,7 +52,7 @@ Item {
 
                 Rectangle {
                     anchors.fill: parent
-                    color: Qt.rgba(3 / 255, 7 / 255, 4 / 255, root.service.propOpacity)
+                    color: Qt.rgba(root.abyss.r, root.abyss.g, root.abyss.b, root.service.propOpacity)
                     border.color: root.dim
                     border.width: 1
                 }
@@ -190,6 +191,7 @@ Item {
                     flicker: root.service.flicker
                     noise: root.service.noise
                     falloff: root.service.brightnessFalloff
+                    grain: root.bright
                 }
 
                 Timer {

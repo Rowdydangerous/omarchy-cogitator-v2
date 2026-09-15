@@ -9,8 +9,8 @@ Item {
     id: root
     required property var service
 
-    readonly property color phosphor: "#4fd06a"
-    readonly property color dim: "#2f5b38"
+    readonly property color phosphor: root.service ? root.service.phosphor : "#4fd06a"
+    readonly property color dim: root.service ? root.service.dim : "#2f5b38"
     readonly property string mono: "Monaspace Xenon Frozen, JetBrainsMono Nerd Font, monospace"
 
     Variants {

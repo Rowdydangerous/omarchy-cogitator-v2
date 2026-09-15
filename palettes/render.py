@@ -1,18 +1,78 @@
 #!/usr/bin/env python3
-"""Render Omarchy theme files from a centralized palette definition.
+"""Render Omarchy theme files from centralized palette definitions.
 
-Usage: render.py <palette> [--check]
-  Reads palettes/<palette>.json, writes repo-root colors.toml and shell.toml
-  deterministically. The root doubles as a native Omarchy theme directory
-  (colors.toml + shell.toml + backgrounds/ + icons.theme) and as a native
-  plugin directory (manifest.json + qml/).
-  --check verifies committed files match instead of writing.
+Usage:
+  render.py [name ...] [--check] [--phosphor HEX]
+
+  Reads palettes/<name>.json and writes deterministic theme files. The
+  green flagship renders to the repo root (which doubles as a native
+  plugin root AND native theme root); every other palette renders to
+  themes/cogitator-<name>/ (with icons.theme + backgrounds/).
+
+  render.py with no names renders every palettes/*.json file.
+  render.py custom --phosphor '#7CFF6B' derives a one-off custom palette.
+
+  --check verifies committed TOML files match instead of writing.
+  Background PNGs are build artifacts regenerated on render, not checked.
 """
 import json
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+REQUIRED = ["background", "surface", "inactive", "dim", "normal",
+            "active", "highlight", "warning", "critical"]
+
+
+def clamp_channel(value):
+    return max(0, min(255, int(round(value))))
+
+
+def hex_to_rgb(hexcolor):
+    hexcolor = hexcolor.lstrip("#")
+    return tuple(int(hexcolor[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def fmt(rgb):
+    return "#{:02x}{:02x}{:02x}".format(*(clamp_channel(c) for c in rgb))
+
+
+def shade(hexcolor, factor):
+    return fmt([c * factor for c in hex_to_rgb(hexcolor)])
+
+
+def lighten(hexcolor, amount):
+    return fmt([c + (255 - c) * amount for c in hex_to_rgb(hexcolor)])
+
+
+def darken(hexcolor, factor):
+    return shade(hexcolor, factor)
+
+
+def custom_palette(phosphor):
+    phosphor = phosphor.strip()
+    if len(phosphor) == 4 and phosphor.startswith("#"):
+        phosphor = "#" + "".join(c * 2 for c in phosphor[1:])
+    hex_to_rgb(phosphor)  # validates shape
+    if len(phosphor) != 7 or not phosphor.startswith("#"):
+        raise ValueError("phosphor must be #RGB or #RRGGBB")
+    return {
+        "name": "custom",
+        "description": f"User phosphor {phosphor}, derived scales.",
+        "background": darken(phosphor, 0.06),
+        "surface": darken(phosphor, 0.13),
+        "inactive": darken(phosphor, 0.30),
+        "dim": darken(phosphor, 0.48),
+        "normal": phosphor,
+        "active": lighten(phosphor, 0.28),
+        "highlight": lighten(phosphor, 0.60),
+        "warning": "#e0ad2f",
+        "critical": "#ff5345",
+        "customPhosphor": phosphor,
+    }
+
 
 SHELL_TEMPLATE = """# Omarchy shell surfaces for cogitator-{palette}.
 # GENERATED from palettes/{palette}.json — do not hand-edit, run palettes/render.py.
@@ -182,47 +242,67 @@ bright_magenta = "{highlight}"
 """
 
 
-def darken(hexcolor, factor):
-    hexcolor = hexcolor.lstrip("#")
-    r, g, b = (int(hexcolor[i : i + 2], 16) for i in (0, 2, 4))
-    r = round(r * factor)
-    g = round(g * factor)
-    b = round(b * factor)
-    return "#{:02x}{:02x}{:02x}".format(r, g, b)
+def rgba(hexcolor, alpha):
+    r, g, b = hex_to_rgb(hexcolor)
+    return f"rgba({r},{g},{b},{alpha})"
 
 
-def main():
-    check = "--check" in sys.argv
-    args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    if len(args) != 1:
-        print("Usage: render.py <palette> [--check]", file=sys.stderr)
-        return 2
-    name = args[0]
+def render_background(palette, out_path):
+    magick = shutil.which("magick") or shutil.which("convert")
+    if not magick:
+        print("magick not found; skipping background", file=sys.stderr)
+        return
+    normal = palette["normal"]
+    subprocess.run([
+        magick, "-size", "1920x1080", f"xc:{palette['background']}",
+        "(", "-size", "120x120", "xc:none",
+        "-fill", "none", "-stroke", rgba(normal, 0.10),
+        "-strokewidth", "1", "-draw", "rectangle 0,0 119,119",
+        "-write", "mpr:tile", "+delete", ")",
+        "-tile", "mpr:tile", "-draw", "color 0,0 reset",
+        "(", "-size", "1920x1080",
+        "radial-gradient:rgba(0,0,0,0)-rgba(0,0,0,0.55)",
+        "-fill", palette["surface"], "-opaque", "black",
+        "+transparent", "black", ")",
+        "-compose", "multiply", "-composite",
+        "-fill", rgba(normal, 0.05),
+        "-draw", "circle 960,470 960,220",
+        str(out_path),
+    ], check=True)
+    print(f"wrote {out_path.relative_to(ROOT)}")
+
+
+def load_palette(name, phosphor):
+    if name == "custom":
+        if not phosphor:
+            print("custom needs --phosphor HEX", file=sys.stderr)
+            sys.exit(1)
+        return custom_palette(phosphor)
     pal_path = ROOT / "palettes" / f"{name}.json"
     palette = json.loads(pal_path.read_text())
-    required = ["background", "surface", "inactive", "dim", "normal",
-                "active", "highlight", "warning", "critical"]
-    for key in required:
+    for key in REQUIRED:
         if key not in palette:
             print(f"palette {name} missing key: {key}", file=sys.stderr)
-            return 1
+            sys.exit(1)
+    return palette
+
+
+def render_one(name, palette, check):
     ctx = dict(palette)
-    ctx["palette"] = name
+    ctx["palette"] = "custom phosphor" if name == "custom" else name
     ctx["dark_background"] = darken(palette["background"], 0.7)
     ctx["darker_background"] = darken(palette["background"], 0.45)
-
-    if name != "green":
-        print(f"prototype ships green only (asked: {name})", file=sys.stderr)
-        return 1
+    if name == "green":
+        theme_dir = ROOT
+        png_name = "cogitator-green-grid.png"
+    else:
+        theme_dir = ROOT / "themes" / f"cogitator-{name}"
+        png_name = f"cogitator-{name}-grid.png"
     colors = COLORS_TEMPLATE.format(**ctx)
     shell = SHELL_TEMPLATE.format(**ctx)
-
-    targets = {
-        ROOT / "colors.toml": colors,
-        ROOT / "shell.toml": shell,
-    }
     failed = False
-    for path, content in targets.items():
+    for rel, content in (("colors.toml", colors), ("shell.toml", shell)):
+        path = theme_dir / rel
         if check:
             if not path.is_file() or path.read_text() != content:
                 print(f"STALE: {path.relative_to(ROOT)}", file=sys.stderr)
@@ -231,6 +311,31 @@ def main():
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content)
             print(f"wrote {path.relative_to(ROOT)}")
+    if name != "green" and not check:
+        (theme_dir / "icons.theme").write_text("Yaru-sage\n")
+    if not check:
+        bg_dir = theme_dir / "backgrounds"
+        bg_dir.mkdir(parents=True, exist_ok=True)
+        render_background(palette, bg_dir / png_name)
+    return failed
+
+
+def main():
+    check = "--check" in sys.argv
+    phosphor = None
+    if "--phosphor" in sys.argv:
+        phosphor = sys.argv[sys.argv.index("--phosphor") + 1]
+    skip = {"--check", "--phosphor"}
+    if phosphor is not None:
+        skip.add(phosphor)
+    tokens = [a for a in sys.argv[1:] if a not in skip and not a.startswith("--")]
+    if not tokens:
+        tokens = sorted(p.stem for p in (ROOT / "palettes").glob("*.json"))
+    failed = False
+    for name in tokens:
+        palette = load_palette(name, phosphor)
+        if render_one(name, palette, check):
+            failed = True
     return 1 if failed else 0
 
 

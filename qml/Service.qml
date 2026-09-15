@@ -48,6 +48,36 @@ Item {
     property bool launcherOpened: false
     property int appsRevision: 0
 
+    // Live phosphor: follows the active Omarchy theme so a palette switch
+    // recolors every Cogitator surface without touching QML. Green defaults
+    // hold until the theme file first loads.
+    property color phosphor: "#4fd06a"
+    property color bright: "#7dff9a"
+    property color pale: "#d2ffd9"
+    property color dim: "#2f5b38"
+    property color crit: "#ff5345"
+    property color warn: "#e0ad2f"
+    property color abyss: "#030704"
+    property color surface: "#0a140c"
+
+    readonly property string themeColorsPath: home + "/.local/state/omarchy/current/theme/colors.toml"
+
+    function themeColor(raw, key, fallback) {
+        var match = String(raw || "").match(new RegExp("^\\s*" + key + "\\s*=\\s*\"([^\"]+)\"", "m"))
+        return match ? match[1] : fallback
+    }
+
+    function applyThemeColors(raw) {
+        phosphor = themeColor(raw, "accent", "#4fd06a")
+        bright = themeColor(raw, "light_foreground", "#7dff9a")
+        pale = themeColor(raw, "bright_foreground", "#d2ffd9")
+        dim = themeColor(raw, "muted", "#2f5b38")
+        crit = themeColor(raw, "red", "#ff5345")
+        warn = themeColor(raw, "yellow", "#e0ad2f")
+        abyss = themeColor(raw, "background", "#030704")
+        surface = themeColor(raw, "lighter_background", "#0a140c")
+    }
+
     // Own lightweight index over shared DesktopEntries. The shell only
     // hands its curated AppLibrary to menu-kind plugins; a service-kind
     // prop must not claim that kind (the host would load us as a panel).
@@ -319,6 +349,14 @@ Item {
                 root.applyConfig(JSON.parse(text()))
             } catch (e) {}
         }
+        onFileChanged: reload()
+    }
+
+    FileView {
+        path: root.themeColorsPath
+        watchChanges: true
+        printErrors: false
+        onLoaded: root.applyThemeColors(text())
         onFileChanged: reload()
     }
 
