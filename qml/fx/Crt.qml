@@ -9,6 +9,9 @@ Item {
 
     property real intensity: 0.25
     property bool animated: true
+    // Full motion (flicker + grain) runs only at ANIMATION_LEVEL=full.
+    // Normal keeps sweep + streaming; minimal freezes everything.
+    property bool fullMotion: true
     property real flicker: 0.05
     property real noise: 0.03
     property bool falloff: true
@@ -17,7 +20,7 @@ Item {
 
     Timer {
         interval: 140
-        running: root.animated && root.noise > 0 && root.visible
+        running: root.fullMotion && root.noise > 0 && root.visible
         repeat: true
         onTriggered: root.grainTick++
     }
@@ -74,9 +77,9 @@ Item {
         }
     }
 
-    // Whisper flicker. Paused entirely unless animated.
+    // Whisper flicker. Paused entirely unless full motion.
     SequentialAnimation on opacity {
-        running: root.animated && root.flicker > 0
+        running: root.fullMotion && root.flicker > 0
         loops: Animation.Infinite
         NumberAnimation { to: 1.0 - root.flicker; duration: 140 }
         NumberAnimation { to: 1.0; duration: 220 }

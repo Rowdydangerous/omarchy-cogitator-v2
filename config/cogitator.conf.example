@@ -21,6 +21,8 @@ BACKGROUND_DATA_DENSITY=0.35
 BACKGROUND_ANIMATION_SPEED=0.20
 
 HOLOGRAPHIC_EFFECTS=true
+# full: every effect. normal: sweep + streaming, no flicker/grain.
+# minimal: frozen consoles (telemetry text still updates).
 ANIMATION_LEVEL="full"
 
 TEXT_STREAMING=true

@@ -182,6 +182,7 @@ Item {
                     visible: root.service.crtEnabled
                     intensity: root.service.crtIntensity
                     animated: root.service.animate
+                    fullMotion: root.service.animationLevel === "full"
                     flicker: root.service.flicker
                     noise: root.service.noise
                     falloff: root.service.brightnessFalloff
