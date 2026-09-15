@@ -113,13 +113,14 @@ Item {
             return
         currentRite = "CHANNEL " + channelText + " SYNCHRONIZED"
         if (workspaceRites)
-            osdRite("+++ ACCESSING CHANNEL " + channelText + " +++")
+            osdRite("+++ CHANNEL " + channelText + " +++", "◈")
     }
 
-    function osdRite(message) {
+    function osdRite(message, icon) {
         if (animationLevel === "minimal")
             return
         Quickshell.execDetached(["omarchy-shell", "osd", "show", JSON.stringify({
+            icon: icon || "",
             message: message,
             duration: 1400
         })])
