@@ -148,7 +148,7 @@ prepare_config() {
 
 install_keybinding() {
   [[ -f $BINDINGS_FILE ]] || fail "no Hyprland bindings file at $BINDINGS_FILE"
-  if grep -qF "$BIND_BEGIN" "$BINDINGS_FILE"; then
+  if grep -qF -- "$BIND_BEGIN" "$BINDINGS_FILE"; then
     printf 'Cogitator SUPER+SPACE route already installed.\n'
     return
   fi
@@ -168,7 +168,7 @@ EOF
 
 remove_keybinding() {
   [[ -f $BINDINGS_FILE ]] || return 0
-  grep -qF "$BIND_BEGIN" "$BINDINGS_FILE" || return 0
+  grep -qF -- "$BIND_BEGIN" "$BINDINGS_FILE" || return 0
   cp -a -- "$BINDINGS_FILE" "$BINDINGS_FILE.bak.$(date +%Y%m%d-%H%M%S)"
   awk -v begin="$BIND_BEGIN" -v end="$BIND_END" '
     $0 == begin { skip=1; next }
