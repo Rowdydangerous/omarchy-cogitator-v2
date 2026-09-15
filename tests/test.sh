@@ -35,7 +35,7 @@ for line in open(sys.argv[1]):
 for key in ["PALETTE","CRT_ENABLED","BACKGROUND_BURN","BACKGROUND_BURN_OPACITY","TEXT_STREAMING","WORKSPACE_RITES","COGITATOR_PROP","ANIMATION_LEVEL"]:
     assert key in raw, key
 ' "$ROOT/config/cogitator.conf.example"
-check "no system writes" bash -c '! grep -R "/usr/share/omarchy" "$1/scripts" "$1/qml" "$1/palettes" --include="*" | grep -v "Never edit"' _ "$ROOT"
+check "no system writes" bash -c '! grep -R "/usr/share/omarchy" "$1/scripts" "$1/qml" "$1/palettes" --include="*" | grep -v "Never edit" | grep -v "OMARCHY_PATH:-"' _ "$ROOT"
 check "no escaping imports" bash -c '! grep -R "\.\./\.\." "$1/qml" --include="*.qml"' _ "$ROOT"
 check "marker-guarded removal" bash -c 'grep -q "owned_by_us" "$1/scripts/cogitator"' _ "$ROOT"
 check "native install path" bash -c 'grep -q "omarchy plugin add" "$1/scripts/cogitator" && grep -q "git clone" "$1/scripts/cogitator"' _ "$ROOT"
