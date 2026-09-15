@@ -340,6 +340,7 @@ cmd_palette() {
     set -euo pipefail
     slug="$1"; src="$2"; dst="$HOME/.config/omarchy/themes/$slug"
     rm -rf "$dst"
+    mkdir -p "$dst"
     if [[ "$src" == */themes/* ]]; then cp -a "$src/." "$dst/"; else cp -a "$src/colors.toml" "$src/shell.toml" "$src/icons.theme" "$src/backgrounds" "$dst/"; fi
     printf "%s\n" "0.3.0" > "$dst/.cogitator-v2-installed"
     omarchy theme set "$slug"
