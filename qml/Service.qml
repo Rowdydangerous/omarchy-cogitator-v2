@@ -41,8 +41,71 @@ Item {
     property string dateText: ""
     property string channelText: "--"
     property bool launcherOpened: false
+    property int appsRevision: 0
 
-    readonly property var appLibrary: shell ? shell.appLibrary : null
+    // Own lightweight index over shared DesktopEntries. The shell only
+    // hands its curated AppLibrary to menu-kind plugins; a service-kind
+    // prop must not claim that kind (the host would load us as a panel).
+    // Launch + icons follow the same native resolvers the stock menu uses.
+    readonly property var desktopApps: DesktopEntries.applications ? DesktopEntries.applications.values : []
+
+    function searchApps(query) {
+        var needle = String(query || "").toLowerCase().trim()
+        var scored = []
+        for (var i = 0; i < desktopApps.length; i++) {
+            var entry = desktopApps[i]
+            if (!entry || entry.noDisplay === true)
+                continue
+            var name = String(entry.name || "")
+            if (name === "")
+                continue
+            var score = -1
+            if (needle === "") {
+                score = 1000
+            } else {
+                var lower = name.toLowerCase()
+                if (lower.indexOf(needle) === 0)
+                    score = 0
+                else if (lower.indexOf(needle) !== -1)
+                    score = 1
+                else if (String(entry.comment || "").toLowerCase().indexOf(needle) !== -1)
+                    score = 2
+            }
+            if (score >= 0)
+                scored.push({ entry: entry, score: score, name: name.toLowerCase(), id: String(entry.id || "") })
+        }
+        scored.sort(function(a, b) {
+            if (a.score !== b.score)
+                return a.score - b.score
+            if (a.name < b.name)
+                return -1
+            if (a.name > b.name)
+                return 1
+            return a.id < b.id ? -1 : 1
+        })
+        var out = []
+        for (var j = 0; j < scored.length && j < 6; j++)
+            out.push(scored[j].entry)
+        return out
+    }
+
+    function appIconSource(entry) {
+        var icon = entry ? String(entry.icon || "") : ""
+        if (icon === "")
+            return Quickshell.iconPath("application-x-executable", true)
+        if (icon.indexOf("/") !== -1)
+            return icon.charAt(0) === "/" ? "file://" + icon : icon
+        var themed = Quickshell.iconPath(icon, true)
+        return themed !== "" ? themed : Quickshell.iconPath("application-x-executable", true)
+    }
+
+    function launchApp(entry) {
+        var id = entry ? String(entry.id || "") : ""
+        if (id === "")
+            return
+        launcherOpened = false
+        Quickshell.execDetached(["uwsm-app", "--", "gtk-launch", id + ".desktop"])
+    }
 
     // Read-only bindings over shared system singletons. Never mutated here;
     // the stock panels retain full ownership of hardware control.
@@ -291,6 +354,11 @@ Item {
         function onFocusedWorkspaceChanged() { root.channelRite() }
     }
 
+    Connections {
+        target: DesktopEntries.applications
+        function onValuesChanged() { root.appsRevision++ }
+    }
+
     Component.onCompleted: {
         root.nextRite()
         root.refreshPower()
@@ -315,5 +383,5 @@ Item {
     // and same-layer surfaces stack in creation order (first = bottom).
     Burn { service: root }
     Prop { service: root }
-    Launcher { service: root; appLibrary: root.appLibrary }
+    Launcher { service: root }
 }

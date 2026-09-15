@@ -3,16 +3,15 @@ import Quickshell
 import Quickshell.Wayland
 import "../fx"
 
-// Application Cogitator: keyboard-first command console over the shell's
-// shared application library (hidden-entry filtering, ranked matching,
-// native icons, scoped launch + feedback all inherited). Summoned via
+// Application Cogitator: keyboard-first command console over the shared
+// DesktopEntries index. Summoned via
 // `omarchy-shell cogitator-rite openLauncher`. Modal while open: the full
 // window takes input, scrim click or Esc dismisses. No stock keybindings
-// are touched; users may bind the summon command themselves.
+// are touched; users may bind the summon command themselves, e.g. in
+// ~/.config/hypr/bindings.lua.
 Item {
     id: root
     required property var service
-    required property var appLibrary
 
     readonly property bool opened: service ? service.launcherOpened : false
     readonly property color phosphor: "#4fd06a"
@@ -26,17 +25,13 @@ Item {
     property int selected: 0
 
     function refresh() {
-        if (!appLibrary) {
+        if (!service) {
             results = []
             selected = 0
             return
         }
-        var ranked = appLibrary.sortedEntries(query)
-        var entries = []
-        for (var i = 0; i < ranked.length && i < 6; i++)
-            entries.push(ranked[i].entry)
-        results = entries
-        selected = Math.max(0, Math.min(selected, entries.length - 1))
+        results = service.searchApps(query)
+        selected = Math.max(0, Math.min(selected, results.length - 1))
     }
 
     function moveSelection(delta) {
@@ -44,18 +39,9 @@ Item {
             selected = (selected + delta + results.length) % results.length
     }
 
-    function launchEntry(entry) {
-        if (!entry || !appLibrary)
-            return
-        var id = String(entry.id || "")
-        var name = appLibrary.entryName(entry)
-        service.launcherOpened = false
-        appLibrary.launch(id, name)
-    }
-
     function launchSelected() {
         if (selected >= 0 && selected < results.length)
-            launchEntry(results[selected])
+            service.launchApp(results[selected])
     }
 
     onOpenedChanged: {
@@ -63,15 +49,12 @@ Item {
             query = ""
             selected = 0
             refresh()
-            if (appLibrary)
-                appLibrary.refreshIcons()
-            Qt.callLater(function() { queryInput.forceActiveFocus() })
         }
     }
 
     Connections {
-        target: root.appLibrary
-        function onAppsChanged() { if (root.opened) root.refresh() }
+        target: root.service
+        function onAppsRevisionChanged() { if (root.opened) root.refresh() }
     }
 
     Variants {
@@ -88,6 +71,11 @@ Item {
             WlrLayershell.namespace: "cogitator-launcher"
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+
+            onVisibleChanged: {
+                if (visible)
+                    Qt.callLater(function() { queryInput.forceActiveFocus() })
+            }
 
             Rectangle {
                 anchors.fill: parent
@@ -187,7 +175,7 @@ Item {
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: 28
                                     height: 28
-                                    source: root.appLibrary ? root.appLibrary.iconSource(modelData.icon) : ""
+                                    source: root.service.appIconSource(modelData)
                                     sourceSize.width: 28
                                     sourceSize.height: 28
                                     fillMode: Image.PreserveAspectFit
@@ -198,7 +186,7 @@ Item {
                                     spacing: 1
                                     Text {
                                         width: parent.width
-                                        text: root.appLibrary ? root.appLibrary.entryName(modelData) : ""
+                                        text: String(modelData.name || "")
                                         color: root.pale
                                         font.family: root.mono
                                         font.pixelSize: 11
@@ -207,7 +195,7 @@ Item {
                                     }
                                     Text {
                                         width: parent.width
-                                        text: root.appLibrary ? root.appLibrary.entrySubtext(modelData) : ""
+                                        text: String(modelData.comment || "")
                                         color: root.dim
                                         font.family: root.mono
                                         font.pixelSize: 9
@@ -227,7 +215,7 @@ Item {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 onEntered: root.selected = index
-                                onClicked: root.launchEntry(modelData)
+                                onClicked: root.service.launchApp(modelData)
                             }
                         }
                     }
