@@ -27,5 +27,19 @@ Rite: SANCTIFICATION DATA AVAILABLE / MACHINE SPIRIT REQUIRES RITES OF MAINTENAN
 ## Notifications
 Rite: +++ LOW PRIORITY SYSTEM NOTICE +++ / +++ MACHINE SPIRIT ADVISORY +++ / +++ OPERATOR WARNING +++ / +++ CRITICAL SYSTEM ALERT +++
 
+## Audit outcome (Phase 4)
+
+Stock first-party strings (power panel "Spending joules" et al, clock
+formats, OSD volume/brightness glyphs, weather labels, tray menus) live in
+`$OMARCHY_PATH/shell` QML and cannot be rewritten from a third-party
+service plugin — the shell only shares its curated AppLibrary with
+`menu`-kind plugins, and claiming that kind registers a panel entry.
+Verdict: leave stock strings untouched and themed; carry the liturgical
+voice in our own surfaces (prop communiques, channel OSDs, launcher,
+terminal rite, notifications we send). The single justified exception,
+deferred to the shell-twin stretch goal: cloning `omarchy.power` for a
+power-cell console.
+
 ## Still to audit
-clock, workspaces, launcher/menu, OSD volume/brightness, weather, tray, agents, indicators, keyboard-layout, monitor, dialogs, tooltips, hover/active/disabled states, errors, confirmations, lock strings.
+lock strings (visually unverified — tokens derived from renderer),
+agents/indicators advanced states, dialog confirmations.

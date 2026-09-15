@@ -55,6 +55,28 @@ transaction; re-check `status` before doing anything.
 Prototype scope (locked): prop + bar + burn, green phosphor, Xenon-first
 font stack with clean fallback, no system font change.
 
+## Performance
+
+Measured quickshell CPU, settled, i7-1165G7 integrated graphics:
+
+| Tier | Cost | Motion |
+|------|------|--------|
+| `minimal` | ~4% (near stock) | frozen consoles, telemetry text still updates |
+| `normal` | ~7% | stepped scan sweep + streaming text |
+| `full` | ~10% | + flicker, grain, rite rotation |
+
+Design rules that earned this: no full-screen tweens (a 120s background
+drift cost ~15% alone — cut), stepped carriage motion at ~8fps instead of
+60fps glides, damage-small-region overlays, event-driven bindings over
+polling, 5s telemetry cadence. Set `ANIMATION_LEVEL` in `cogitator.conf`,
+then `cogitator apply`.
+
+## Stretch goal (pinned, not started)
+
+A full Cogitator twin of every Omarchy shell surface with Mechanicus
+treatment — see `docs/stretch-shell-twin.md`. The Application Cogitator
+launcher is the reference implementation for that effort.
+
 ## Terminal rite (opt-in)
 
 `cogitator enable` places `~/.config/cogitator-v2/bash/cogitator.bash` and
