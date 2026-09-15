@@ -8,7 +8,8 @@ so never `cp` repo files over it — that dirties the clone and blocks
 ./tests/test.sh
 git add -A && git commit -m "..."
 omarchy plugin update cogitator-rite --yes
-omarchy restart shell
+omarchy restart shell   # mandatory: rescanPlugins does NOT reload services,
+                        # a stale service keeps serving its old IPC surface
 ```
 
 Theme iteration is still file-based until enable:

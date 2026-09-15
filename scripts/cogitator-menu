@@ -5,6 +5,10 @@
 # (used by tests to exercise both branches without touching live state).
 set -euo pipefail
 
+# Hyprland exec dispatch does not inherit the session environment that
+# terminals enjoy; omarchy-shell refuses to run without OMARCHY_PATH.
+export OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
+
 snapshot="${COGITATOR_SNAPSHOT:-${XDG_STATE_HOME:-$HOME/.local/state}/cogitator-v2/snapshot.json}"
 
 if [[ -f $snapshot ]]; then

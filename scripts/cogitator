@@ -213,7 +213,9 @@ _unit_enable() {
   omarchy theme set "$THEME_SLUG"
   omarchy theme bg set "$HOME/.config/omarchy/themes/$THEME_SLUG/backgrounds/cogitator-green-grid.png"
   omarchy plugin enable "$PLUGIN_ID"
-  omarchy-shell -q shell rescanPlugins
+  # Service-kind plugins only reload on a full shell restart; rescan is not
+  # enough (stale service keeps serving old IPC surface).
+  omarchy restart shell
 }
 
 # Runs INSIDE the detached unit: disable plugin, restore theme, clear snapshot.
@@ -227,7 +229,7 @@ _unit_disable() {
   fi
   omarchy theme set "$previous"
   if [[ -n $previous_bg ]]; then omarchy theme bg set "$previous_bg" || true; fi
-  omarchy-shell -q shell rescanPlugins
+  omarchy restart shell
   rm -f "$snapshot"
 }
 
@@ -309,7 +311,7 @@ case "${1:-}" in
   toggle)
     if plugin_enabled || [[ $(current_theme) == *cogitator* ]]; then cmd_disable; else cmd_enable; fi
     ;;
-  apply) render_config_json && omarchy-shell -q shell rescanPlugins && printf 'Config applied.\n' ;;
+  apply) render_config_json && omarchy restart shell && printf 'Config applied.\n' ;;
   configure)
     [[ -f $CONF_FILE ]] || { mkdir -p "$CONFIG_DIR"; install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"; }
     "${EDITOR:-nano}" "$CONF_FILE"
