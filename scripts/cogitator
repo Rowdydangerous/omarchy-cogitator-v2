@@ -148,8 +148,18 @@ queue_transition() {
 # Runs INSIDE the detached unit: native installs, theme set, enable.
 _unit_enable() {
   set -euo pipefail
+  local plugindir="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
   if omarchy-shell shell listPlugins 2>/dev/null | jq -e --arg id "$PLUGIN_ID" 'any(.[]; .id == $id)' >/dev/null 2>&1; then
-    omarchy plugin update "$PLUGIN_ID" --yes
+    if [[ -d $plugindir/.git ]]; then
+      # Dev copies or interrupted runs can dirty the clone and block
+      # fast-forward; tracked state always rebuilds from the repo.
+      git -C "$plugindir" checkout -q -- . || true
+      omarchy plugin update "$PLUGIN_ID" --yes
+    else
+      # Legacy non-git install: native remove backs it up, then fresh add.
+      omarchy plugin remove "$PLUGIN_ID" --yes
+      omarchy plugin add "$REPO_URL" --yes
+    fi
   else
     omarchy plugin add "$REPO_URL" --yes
   fi
