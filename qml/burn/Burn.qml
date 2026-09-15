@@ -33,19 +33,12 @@ Item {
                 anchors.fill: parent
                 opacity: root.service.burnOpacity
 
+                // Deliberately static: a full-screen drift forces a full
+                // repaint every frame (~15% CPU). Motion lives in the prop
+                // sweep and streaming text, which damage small regions.
                 Item {
                     id: drift
-                anchors.fill: parent
-                anchors.leftMargin: -60
-
-                NumberAnimation on x {
-                    running: root.service.animate
-                    loops: Animation.Infinite
-                    from: 0
-                    to: -60
-                    duration: 120000
-                    easing.type: Easing.Linear
-                }
+                    anchors.fill: parent
 
                 // Faint targeting grid.
                 Repeater {
