@@ -8,6 +8,7 @@ import Quickshell.Services.Pipewire
 import Quickshell.Services.UPower
 import "prop"
 import "burn"
+import "launcher"
 
 Item {
     id: root
@@ -39,6 +40,9 @@ Item {
     property string timeText: "--:--:--"
     property string dateText: ""
     property string channelText: "--"
+    property bool launcherOpened: false
+
+    readonly property var appLibrary: shell ? shell.appLibrary : null
 
     // Read-only bindings over shared system singletons. Never mutated here;
     // the stock panels retain full ownership of hardware control.
@@ -293,8 +297,23 @@ Item {
         root.refreshChannel()
     }
 
+    IpcHandler {
+        target: "cogitator-rite"
+
+        function openLauncher(): string {
+            root.launcherOpened = true
+            return "ok"
+        }
+
+        function closeLauncher(): string {
+            root.launcherOpened = false
+            return "ok"
+        }
+    }
+
     // Declaration order is load-bearing: both windows share WlrLayer.Bottom
     // and same-layer surfaces stack in creation order (first = bottom).
     Burn { service: root }
     Prop { service: root }
+    Launcher { service: root; appLibrary: root.appLibrary }
 }
