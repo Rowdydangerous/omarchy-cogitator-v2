@@ -373,6 +373,11 @@ Item {
             return "ok"
         }
 
+        function toggleLauncher(): string {
+            root.launcherOpened = !root.launcherOpened
+            return "ok"
+        }
+
         function closeLauncher(): string {
             root.launcherOpened = false
             return "ok"

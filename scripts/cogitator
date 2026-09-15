@@ -133,12 +133,50 @@ with open(OUT, "w") as handle:
 EOF
 }
 
+readonly BINDINGS_FILE="$HOME/.config/hypr/bindings.lua"
+readonly BIND_BEGIN="-- cogitator-v2-super-space-begin"
+readonly BIND_END="-- cogitator-v2-super-space-end"
+
 prepare_config() {
   mkdir -p "$CONFIG_DIR" "$CONFIG_DIR/bash"
   [[ -f $CONF_FILE ]] || install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"
   # File only, never wired into startup. Sourcing stays a manual operator act.
   install -m 0644 "$SOURCE_DIR/shell/cogitator.bash" "$CONFIG_DIR/bash/cogitator.bash"
+  install -m 0755 "$SOURCE_DIR/scripts/cogitator-menu" "$CONFIG_DIR/cogitator-menu"
   render_config_json
+}
+
+install_keybinding() {
+  [[ -f $BINDINGS_FILE ]] || fail "no Hyprland bindings file at $BINDINGS_FILE"
+  if grep -qF "$BIND_BEGIN" "$BINDINGS_FILE"; then
+    printf 'Cogitator SUPER+SPACE route already installed.\n'
+    return
+  fi
+  cp -a -- "$BINDINGS_FILE" "$BINDINGS_FILE.bak.$(date +%Y%m%d-%H%M%S)"
+  cat >> "$BINDINGS_FILE" <<EOF
+
+$BIND_BEGIN
+-- While engaged, SUPER+SPACE toggles the Application Cogitator; otherwise
+-- it falls through to the stock Omarchy menu. Managed by cogitator-v2;
+-- delete this block (or run \`cogitator uninstall\`) to restore stock keys.
+hl.unbind("SUPER + SPACE")
+o.bind("SUPER + SPACE", "Cogitator menu", "$CONFIG_DIR/cogitator-menu")
+$BIND_END
+EOF
+  printf 'SUPER+SPACE now routes via cogitator-menu (backup of bindings saved).\n'
+}
+
+remove_keybinding() {
+  [[ -f $BINDINGS_FILE ]] || return 0
+  grep -qF "$BIND_BEGIN" "$BINDINGS_FILE" || return 0
+  cp -a -- "$BINDINGS_FILE" "$BINDINGS_FILE.bak.$(date +%Y%m%d-%H%M%S)"
+  awk -v begin="$BIND_BEGIN" -v end="$BIND_END" '
+    $0 == begin { skip=1; next }
+    $0 == end { skip=0; next }
+    !skip { print }
+  ' "$BINDINGS_FILE" > "$BINDINGS_FILE.tmp"
+  mv "$BINDINGS_FILE.tmp" "$BINDINGS_FILE"
+  printf 'Cogitator SUPER+SPACE route removed; stock binding restored.\n'
 }
 
 queue_transition() {
@@ -221,6 +259,7 @@ cmd_enable() {
   fi
   prepare_config
   omarchy plugin validate "$SOURCE_DIR" >/dev/null
+  install_keybinding
   queue_transition bash -c 'source "$0/scripts/cogitator" --unit-enable' "$SOURCE_DIR"
   printf 'Transition queued. Theme/plugin apply in background; check `cogitator status`.\nDisable any time: cogitator disable\n'
 }
@@ -252,6 +291,7 @@ cmd_uninstall() {
   elif [[ -e $THEME_DST ]]; then
     fail "theme dir exists but is not ours; remove it manually"
   fi
+  remove_keybinding
   if [[ ${1:-} == --purge ]]; then
     rm -rf "$CONFIG_DIR" "$STATE_DIR"
     printf 'Configuration purged.\n'
