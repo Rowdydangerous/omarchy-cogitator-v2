@@ -64,7 +64,9 @@ Item {
                     border.width: 1
                 }
 
-                // Scan sweep with persistence/ghosting echoes trailing behind it.
+                // Scan sweep, stepped like a machine carriage: ~8fps damage-only
+                // repaints instead of a 60fps tween. Persistence/ghosting
+                // echoes trail behind it.
                 Rectangle {
                     id: sweep
                     visible: root.service.crtEnabled && root.service.animate
@@ -75,12 +77,14 @@ Item {
                     y: 8
                     height: 2
                     color: Qt.rgba(root.phosphor.r, root.phosphor.g, root.phosphor.b, 0.18)
-                    SequentialAnimation on y {
+                    Timer {
+                        interval: 120
                         running: sweep.visible
-                        loops: Animation.Infinite
-                        NumberAnimation { to: frame.height - 12; duration: 9000; easing.type: Easing.Linear }
-                        PauseAnimation { duration: 1500 }
-                        NumberAnimation { to: 8; duration: 0 }
+                        repeat: true
+                        onTriggered: {
+                            var next = sweep.y + Math.max(2, (frame.height - 20) / 75)
+                            sweep.y = next > frame.height - 12 ? 8 : next
+                        }
                     }
                 }
                 Rectangle {
