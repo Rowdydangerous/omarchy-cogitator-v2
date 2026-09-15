@@ -27,6 +27,11 @@ Item {
     property bool crtEnabled: true
     property real crtIntensity: 0.25
     property real flicker: 0.05
+    property real noise: 0.03
+    property real persistence: 0.15
+    property real ghosting: 0.10
+    property bool screenBurn: false
+    property bool brightnessFalloff: true
 
     readonly property bool animate: animationLevel !== "minimal"
 
@@ -256,6 +261,16 @@ Item {
             crtIntensity = Math.min(1, Math.max(0, obj.crtIntensity))
         if (typeof obj.flicker === "number")
             flicker = Math.min(0.3, Math.max(0, obj.flicker))
+        if (typeof obj.noise === "number")
+            noise = Math.min(0.3, Math.max(0, obj.noise))
+        if (typeof obj.persistence === "number")
+            persistence = Math.min(1, Math.max(0, obj.persistence))
+        if (typeof obj.ghosting === "number")
+            ghosting = Math.min(1, Math.max(0, obj.ghosting))
+        if (typeof obj.screenBurn === "boolean")
+            screenBurn = obj.screenBurn
+        if (typeof obj.brightnessFalloff === "boolean")
+            brightnessFalloff = obj.brightnessFalloff
     }
 
     function refreshPower() {

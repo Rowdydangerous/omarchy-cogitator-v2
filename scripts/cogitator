@@ -121,6 +121,11 @@ config = {
     "crtEnabled": boolean(raw.get("CRT_ENABLED", "true"), True),
     "crtIntensity": number(raw.get("CRT_INTENSITY", "0.25"), 0.25, 0.0, 1.0),
     "flicker": number(raw.get("FLICKER", "0.05"), 0.05, 0.0, 0.3),
+    "noise": number(raw.get("NOISE", "0.03"), 0.03, 0.0, 0.3),
+    "persistence": number(raw.get("PERSISTENCE", "0.15"), 0.15, 0.0, 1.0),
+    "ghosting": number(raw.get("GHOSTING", "0.10"), 0.10, 0.0, 1.0),
+    "screenBurn": boolean(raw.get("SCREEN_BURN", "false"), False),
+    "brightnessFalloff": boolean(raw.get("BRIGHTNESS_FALLOFF", "true"), True),
 }
 if config["propPosition"] not in ("left", "right"):
     config["propPosition"] = "right"

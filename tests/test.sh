@@ -32,7 +32,7 @@ for line in open(sys.argv[1]):
         continue
     k, _, v = line.partition("=")
     raw[k.strip()] = v.strip().strip("\"")
-for key in ["PALETTE","CRT_ENABLED","BACKGROUND_BURN","BACKGROUND_BURN_OPACITY","TEXT_STREAMING","WORKSPACE_RITES","COGITATOR_PROP","ANIMATION_LEVEL"]:
+for key in ["PALETTE","CRT_ENABLED","CRT_INTENSITY","FLICKER","NOISE","PERSISTENCE","GHOSTING","SCREEN_BURN","BRIGHTNESS_FALLOFF","BACKGROUND_BURN","BACKGROUND_BURN_OPACITY","TEXT_STREAMING","WORKSPACE_RITES","COGITATOR_PROP","ANIMATION_LEVEL"]:
     assert key in raw, key
 ' "$ROOT/config/cogitator.conf.example"
 check "no system writes" bash -c '! grep -R "/usr/share/omarchy" "$1/scripts" "$1/qml" "$1/palettes" --include="*" | grep -v "Never edit" | grep -v "OMARCHY_PATH:-"' _ "$ROOT"

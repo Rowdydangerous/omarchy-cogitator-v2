@@ -64,7 +64,7 @@ Item {
                     border.width: 1
                 }
 
-                // Scan sweep.
+                // Scan sweep with persistence/ghosting echoes trailing behind it.
                 Rectangle {
                     id: sweep
                     visible: root.service.crtEnabled && root.service.animate
@@ -82,6 +82,35 @@ Item {
                         PauseAnimation { duration: 1500 }
                         NumberAnimation { to: 8; duration: 0 }
                     }
+                }
+                Rectangle {
+                    visible: sweep.visible && root.service.ghosting > 0
+                    anchors.left: sweep.left
+                    anchors.right: sweep.right
+                    y: sweep.y - 16
+                    height: 2
+                    color: Qt.rgba(root.phosphor.r, root.phosphor.g, root.phosphor.b, 0.05 + root.service.ghosting * 0.08)
+                }
+                Rectangle {
+                    visible: sweep.visible && root.service.persistence > 0
+                    anchors.left: sweep.left
+                    anchors.right: sweep.right
+                    y: sweep.y - 34
+                    height: 6
+                    color: Qt.rgba(root.phosphor.r, root.phosphor.g, root.phosphor.b, 0.02 + root.service.persistence * 0.04)
+                }
+                // Static burn-in watermark. Zero animation cost.
+                Text {
+                    visible: root.service.screenBurn
+                    anchors.left: parent.left
+                    anchors.bottom: parent.bottom
+                    anchors.margins: 14
+                    text: "SIGMA-IX // BLESSED PATTERN"
+                    color: root.dim
+                    opacity: 0.16
+                    font.family: root.mono
+                    font.pixelSize: 8
+                    font.letterSpacing: 2
                 }
 
                 Column {
@@ -154,6 +183,8 @@ Item {
                     intensity: root.service.crtIntensity
                     animated: root.service.animate
                     flicker: root.service.flicker
+                    noise: root.service.noise
+                    falloff: root.service.brightnessFalloff
                 }
 
                 Timer {

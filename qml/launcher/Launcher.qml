@@ -234,6 +234,8 @@ Item {
                     intensity: root.service ? root.service.crtIntensity : 0.25
                     animated: root.service ? root.service.animate : true
                     flicker: 0
+                    noise: root.service ? root.service.noise : 0.03
+                    falloff: root.service ? root.service.brightnessFalloff : true
                 }
             }
         }
