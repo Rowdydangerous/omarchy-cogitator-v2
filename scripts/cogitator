@@ -25,7 +25,7 @@ readonly PLUGIN_ID="cogitator-rite"
 readonly THEME_SLUG="cogitator-green"
 readonly MARKER=".cogitator-v2-installed"
 
-SOURCE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+SOURCE_DIR=$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
 readonly SOURCE_DIR
 readonly REPO_URL="file://$SOURCE_DIR"
 readonly CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
