@@ -350,6 +350,24 @@ cmd_palette() {
   printf 'Palette %s queued. Shell surfaces follow the theme file live.\n' "$name"
 }
 
+cmd_apply() {
+  render_config_json && omarchy restart shell && printf 'Config applied.\n'
+}
+
+cmd_configure() {
+  [[ -f $CONF_FILE ]] || { mkdir -p "$CONFIG_DIR"; install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"; }
+  local before="" after=""
+  before=$(sha256sum < "$CONF_FILE")
+  "${EDITOR:-nano}" "$CONF_FILE"
+  after=$(sha256sum < "$CONF_FILE")
+  if [[ $before != "$after" ]]; then
+    printf 'Configuration changed; applying.\n'
+    cmd_apply
+  else
+    printf 'No changes; shell untouched.\n'
+  fi
+}
+
 cmd_uninstall() {
   if [[ -f $SNAPSHOT ]]; then
     cmd_disable
@@ -394,11 +412,8 @@ case "${1:-}" in
   toggle)
     if plugin_enabled || [[ $(current_theme) == *cogitator* ]]; then cmd_disable; else cmd_enable; fi
     ;;
-  apply) render_config_json && omarchy restart shell && printf 'Config applied.\n' ;;
-  configure)
-    [[ -f $CONF_FILE ]] || { mkdir -p "$CONFIG_DIR"; install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"; }
-    "${EDITOR:-nano}" "$CONF_FILE"
-    ;;
+  apply) cmd_apply ;;
+  configure) cmd_configure ;;
   palette) cmd_palette "${2:-}" ;;
   uninstall) cmd_uninstall "${2:-}" ;;
   -h|--help|help)
