@@ -134,8 +134,10 @@ EOF
 }
 
 prepare_config() {
-  mkdir -p "$CONFIG_DIR"
+  mkdir -p "$CONFIG_DIR" "$CONFIG_DIR/bash"
   [[ -f $CONF_FILE ]] || install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"
+  # File only, never wired into startup. Sourcing stays a manual operator act.
+  install -m 0644 "$SOURCE_DIR/shell/cogitator.bash" "$CONFIG_DIR/bash/cogitator.bash"
   render_config_json
 }
 

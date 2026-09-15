@@ -10,6 +10,8 @@ check() {
 }
 
 check "manager syntax" bash -n "$ROOT/scripts/cogitator"
+check "bash rite syntax" bash -n "$ROOT/shell/cogitator.bash"
+check "bash integration" "$ROOT/tests/bash-integration.sh"
 check "palette JSON" python3 -c 'import json,sys; p=json.load(open(sys.argv[1])); assert all(k in p for k in ["background","surface","inactive","dim","normal","active","highlight","warning","critical"])' "$ROOT/palettes/green.json"
 check "render reproducible" python3 "$ROOT/palettes/render.py" green --check
 check "colors TOML" python3 -c 'import tomllib,sys; tomllib.load(open(sys.argv[1],"rb"))' "$ROOT/colors.toml"

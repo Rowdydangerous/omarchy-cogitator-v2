@@ -17,10 +17,11 @@ Goal: **a 40K Cogitator that happens to run Linux** — cinematic green-phosphor
 
 ## Current phase
 
-Phase 2 prototype complete and live-verified (2026-09-14): full
-enable → engaged → disable → exact-restore cycle. See
-`docs/screenshots/prop-engaged-green.png` and
-`docs/screenshots/restored-osaka.png`.
+Phase 3 shell expansion, live-verified (2026-09-14): workspace channel
+rites with OSD, read-only net/vox/relay telemetry, Application Cogitator
+launcher (`omarchy-shell cogitator-rite openLauncher`), themed critical
+notifications, opt-in Bash rite. Full enable → disable → exact-restore
+cycle re-proven after every addition. Screenshots in `docs/screenshots/`.
 
 ## Usage
 
@@ -53,6 +54,31 @@ transaction; re-check `status` before doing anything.
 
 Prototype scope (locked): prop + bar + burn, green phosphor, Xenon-first
 font stack with clean fallback, no system font change.
+
+## Terminal rite (opt-in)
+
+`cogitator enable` places `~/.config/cogitator-v2/bash/cogitator.bash` and
+nothing else — it never edits startup files. To take the rite, add this line
+yourself to the interactive Bash startup file of your choice:
+
+```bash
+[ -r ~/.config/cogitator-v2/bash/cogitator.bash ] && source ~/.config/cogitator-v2/bash/cogitator.bash
+```
+
+While engaged the prompt becomes a green `[NOOSPHERE::host]` authorization
+line with a restrained machine-spirit utterance every 30 prompts; on disable
+the original prompt returns by itself. `cogitator_rite_disable` removes the
+hook entirely.
+
+## Launcher summon
+
+The stock menu and its keybindings are untouched. To open the Application
+Cogitator from a keybinding, bind this command yourself, e.g. in
+`~/.config/hypr/bindings.lua`:
+
+```bash
+omarchy-shell cogitator-rite openLauncher
+```
 
 ## Layout
 
