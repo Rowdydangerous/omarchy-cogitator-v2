@@ -119,6 +119,7 @@ config = {
     "textStreaming": boolean(raw.get("TEXT_STREAMING", "true"), True),
     "workspaceRites": boolean(raw.get("WORKSPACE_RITES", "true"), True),
     "crtEnabled": boolean(raw.get("CRT_ENABLED", "true"), True),
+    "crtGlobal": boolean(raw.get("CRT_GLOBAL", "true"), True),
     "crtIntensity": number(raw.get("CRT_INTENSITY", "0.25"), 0.25, 0.0, 1.0),
     "flicker": number(raw.get("FLICKER", "0.05"), 0.05, 0.0, 0.3),
     "noise": number(raw.get("NOISE", "0.03"), 0.03, 0.0, 0.3),
@@ -141,6 +142,11 @@ EOF
 readonly BINDINGS_FILE="$HOME/.config/hypr/bindings.lua"
 readonly BIND_BEGIN="-- cogitator-v2-super-space-begin"
 readonly BIND_END="-- cogitator-v2-super-space-end"
+readonly HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
+readonly CRT_BEGIN="## cogitator-v2-crt-begin"
+readonly CRT_END="## cogitator-v2-crt-end"
+readonly CRT_FRAG="$CONFIG_DIR/crt.frag"
+readonly CRT_SNIPPET="$CONFIG_DIR/crt-hypr.conf"
 
 conf_value() {
   local key="$1" fallback="$2" value
@@ -173,6 +179,72 @@ set_conf() {
   mv "$CONF_FILE.tmp" "$CONF_FILE"
 }
 
+render_crt_frag() {
+  local intensity scan vig
+  intensity=$(conf_value CRT_INTENSITY 0.25)
+  [[ $intensity =~ ^[0-9]+([.][0-9]+)?$ ]] || intensity=0.25
+  scan=$(awk -v v="$intensity" 'BEGIN { printf "%.3f", v * 0.4 }')
+  vig=$(awk -v v="$intensity" 'BEGIN { printf "%.3f", v * 1.1 }')
+  sed -e "s/{{SCAN}}/$scan/" -e "s/{{VIGNETTE}}/$vig/" \
+    "$SOURCE_DIR/hypr/crt.frag.tpl" > "$CRT_FRAG.tmp"
+  if grep -q "{{" "$CRT_FRAG.tmp"; then
+    rm -f "$CRT_FRAG.tmp"
+    fail "shader template tokens left unrendered"
+  fi
+  mv "$CRT_FRAG.tmp" "$CRT_FRAG"
+}
+
+render_crt_snippet() {
+  cat > "$CRT_SNIPPET" <<EOF
+# Managed by cogitator-v2; removed on disable/uninstall.
+decoration {
+    screen_shader = $CRT_FRAG
+}
+EOF
+}
+
+# Idempotent: installs the source line when CRT_GLOBAL is true and no
+# foreign screen_shader exists, removes it otherwise. Reloads Hyprland
+# (safe: reload never restarts shells or terminals).
+ensure_crt_snippet() {
+  local want="false"
+  [[ $(conf_value CRT_GLOBAL true) == true ]] && want="true"
+  [[ -f $HYPR_CONF ]] || { printf 'No hyprland.conf; global CRT skipped.\n' >&2; return; }
+  if grep -qF -- "$CRT_BEGIN" "$HYPR_CONF"; then
+    [[ $want == true ]] || remove_crt_snippet
+    return
+  fi
+  [[ $want == true ]] || return
+  if grep -rq "screen_shader" "$HOME/.config/hypr/" 2>/dev/null; then
+    printf 'Foreign screen_shader found; leaving Hyprland config alone.\n' >&2
+    return
+  fi
+  cp -a -- "$HYPR_CONF" "$HYPR_CONF.bak.$(date +%Y%m%d-%H%M%S)"
+  cat >> "$HYPR_CONF" <<EOF
+
+$CRT_BEGIN
+# While engaged, every window passes through the Cogitator phosphor
+# treatment. Managed by cogitator-v2; delete this block to opt out.
+source = $CRT_SNIPPET
+$CRT_END
+EOF
+  hyprctl reload >/dev/null
+}
+
+remove_crt_snippet() {
+  [[ -f $HYPR_CONF ]] || return 0
+  grep -qF -- "$CRT_BEGIN" "$HYPR_CONF" || return 0
+  cp -a -- "$HYPR_CONF" "$HYPR_CONF.bak.$(date +%Y%m%d-%H%M%S)"
+  awk -v begin="$CRT_BEGIN" -v end="$CRT_END" '
+    $0 == begin { skip=1; next }
+    $0 == end { skip=0; next }
+    !skip { print }
+  ' "$HYPR_CONF" > "$HYPR_CONF.tmp"
+  mv "$HYPR_CONF.tmp" "$HYPR_CONF"
+  hyprctl reload >/dev/null
+  printf 'Global CRT treatment removed; stock compositor config restored.\n'
+}
+
 prepare_config() {
   mkdir -p "$CONFIG_DIR" "$CONFIG_DIR/bash" "$HOME/.local/bin"
   [[ -f $CONF_FILE ]] || install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"
@@ -182,6 +254,8 @@ prepare_config() {
   # Convenience on PATH; points at this repo, removed on uninstall.
   ln -sf "$SOURCE_DIR/scripts/cogitator" "$HOME/.local/bin/cogitator"
   render_config_json
+  render_crt_frag
+  render_crt_snippet
 }
 
 install_keybinding() {
@@ -265,6 +339,7 @@ _unit_disable() {
   else
     echo "Plugin install not ours; leaving files, only restoring theme selection." >&2
   fi
+  remove_crt_snippet || true
   omarchy theme set "$previous"
   if [[ -n $previous_bg ]]; then omarchy theme bg set "$previous_bg" || true; fi
   omarchy restart shell
@@ -301,6 +376,7 @@ cmd_enable() {
   prepare_config
   omarchy plugin validate "$SOURCE_DIR" >/dev/null
   install_keybinding
+  ensure_crt_snippet
   queue_transition bash -c 'source "$0/scripts/cogitator" --unit-enable' "$SOURCE_DIR"
   printf 'Transition queued. Theme/plugin apply in background; check `cogitator status`.\nDisable any time: cogitator disable\n'
 }
@@ -394,6 +470,7 @@ cmd_uninstall() {
   if [[ -L $HOME/.local/bin/cogitator && $(readlink "$HOME/.local/bin/cogitator") == "$SOURCE_DIR/scripts/cogitator" ]]; then
     rm -f "$HOME/.local/bin/cogitator"
   fi
+  remove_crt_snippet || true
   remove_keybinding
   if [[ ${1:-} == --purge ]]; then
     rm -rf "$CONFIG_DIR" "$STATE_DIR"
@@ -412,7 +489,7 @@ case "${1:-}" in
   toggle)
     if plugin_enabled || [[ $(current_theme) == *cogitator* ]]; then cmd_disable; else cmd_enable; fi
     ;;
-  apply) cmd_apply ;;
+  apply) prepare_config && ensure_crt_snippet; cmd_apply ;;
   configure) cmd_configure ;;
   palette) cmd_palette "${2:-}" ;;
   uninstall) cmd_uninstall "${2:-}" ;;

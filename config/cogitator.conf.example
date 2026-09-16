@@ -5,6 +5,9 @@ PALETTE="green"
 CUSTOM_PHOSPHOR=""
 
 CRT_ENABLED=true
+# Global phosphor treatment: every window passes through the compositor
+# screen shader (static scanlines + vignette, zero continuous GPU cost).
+CRT_GLOBAL=true
 SCANLINES=true
 PHOSPHOR_GLOW=0.35
 BLOOM=0.20

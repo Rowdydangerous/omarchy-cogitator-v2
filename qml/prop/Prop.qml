@@ -192,6 +192,7 @@ Item {
                     noise: root.service.noise
                     falloff: root.service.brightnessFalloff
                     grain: root.bright
+                    soft: root.service.crtGlobal ? 0.35 : 1.0
                 }
 
                 Timer {

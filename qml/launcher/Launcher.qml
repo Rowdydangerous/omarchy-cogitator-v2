@@ -239,6 +239,7 @@ Item {
                     noise: root.service ? root.service.noise : 0.03
                     falloff: root.service ? root.service.brightnessFalloff : true
                     grain: root.bright
+                    soft: root.service && root.service.crtGlobal ? 0.35 : 1.0
                 }
             }
         }

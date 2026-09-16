@@ -16,6 +16,9 @@ Item {
     property real noise: 0.03
     property bool falloff: true
     property color grain: "#7dff9a"
+    // Softens local scanlines when the global compositor shader already
+    // draws them (avoids moire doubling).
+    property real soft: 1.0
 
     property int grainTick: 0
 
@@ -35,7 +38,7 @@ Item {
             Rectangle {
                 width: parent.width
                 height: 1
-                color: Qt.rgba(0, 0, 0, 0.22 * root.intensity * 4 * 0.25 + 0.05)
+                color: Qt.rgba(0, 0, 0, (0.22 * root.intensity * 4 * 0.25 + 0.05) * root.soft)
             }
         }
     }

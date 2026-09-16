@@ -80,7 +80,9 @@ launcher is the reference implementation for that effort.
 ## Settings
 
 ```bash
-cogitator configure   # opens ~/.config/cogitator-v2/cogitator.conf
+cogitator configure   # opens ~/.config/cogitator-v2/cogitator.conf in $EDITOR;
+                      # if you save changes it applies them automatically,
+                      # otherwise the shell is left untouched
 cogitator apply       # re-render + full shell restart (services need it)
 cogitator status      # theme, palette, plugin, snapshot in one glance
 ```

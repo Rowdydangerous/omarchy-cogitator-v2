@@ -25,6 +25,7 @@ Item {
     property bool textStreaming: true
     property bool workspaceRites: true
     property bool crtEnabled: true
+    property bool crtGlobal: true
     property real crtIntensity: 0.25
     property real flicker: 0.05
     property real noise: 0.03
@@ -287,6 +288,8 @@ Item {
             workspaceRites = obj.workspaceRites
         if (typeof obj.crtEnabled === "boolean")
             crtEnabled = obj.crtEnabled
+        if (typeof obj.crtGlobal === "boolean")
+            crtGlobal = obj.crtGlobal
         if (typeof obj.crtIntensity === "number")
             crtIntensity = Math.min(1, Math.max(0, obj.crtIntensity))
         if (typeof obj.flicker === "number")
