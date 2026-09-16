@@ -142,11 +142,10 @@ EOF
 readonly BINDINGS_FILE="$HOME/.config/hypr/bindings.lua"
 readonly BIND_BEGIN="-- cogitator-v2-super-space-begin"
 readonly BIND_END="-- cogitator-v2-super-space-end"
-readonly HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
-readonly CRT_BEGIN="## cogitator-v2-crt-begin"
-readonly CRT_END="## cogitator-v2-crt-end"
+readonly HYPR_LUA="$HOME/.config/hypr/looknfeel.lua"
+readonly CRT_BEGIN="-- cogitator-v2-crt-begin"
+readonly CRT_END="-- cogitator-v2-crt-end"
 readonly CRT_FRAG="$CONFIG_DIR/crt.frag"
-readonly CRT_SNIPPET="$CONFIG_DIR/crt-hypr.conf"
 
 conf_value() {
   local key="$1" fallback="$2" value
@@ -194,53 +193,50 @@ render_crt_frag() {
   mv "$CRT_FRAG.tmp" "$CRT_FRAG"
 }
 
-render_crt_snippet() {
-  cat > "$CRT_SNIPPET" <<EOF
-# Managed by cogitator-v2; removed on disable/uninstall.
-decoration {
-    screen_shader = $CRT_FRAG
-}
-EOF
-}
-
-# Idempotent: installs the source line when CRT_GLOBAL is true and no
+# Idempotent: installs the hl.config block when CRT_GLOBAL is true and no
 # foreign screen_shader exists, removes it otherwise. Reloads Hyprland
-# (safe: reload never restarts shells or terminals).
+# (safe: reload never restarts shells or terminals). Note: the legacy
+# hyprland.conf is NOT read by the lua-driven compositor, so the live path
+# is looknfeel.lua via hl.config (merged, nothing else is clobbered).
 ensure_crt_snippet() {
   local want="false"
   [[ $(conf_value CRT_GLOBAL true) == true ]] && want="true"
-  [[ -f $HYPR_CONF ]] || { printf 'No hyprland.conf; global CRT skipped.\n' >&2; return; }
-  if grep -qF -- "$CRT_BEGIN" "$HYPR_CONF"; then
+  [[ -f $HYPR_LUA ]] || { printf 'No looknfeel.lua; global CRT skipped.\n' >&2; return; }
+  if grep -qF -- "$CRT_BEGIN" "$HYPR_LUA"; then
     [[ $want == true ]] || remove_crt_snippet
     return
   fi
   [[ $want == true ]] || return
-  if grep -rq "screen_shader" "$HOME/.config/hypr/" 2>/dev/null; then
+  if grep -rh "screen_shader" "$HOME/.config/hypr/" 2>/dev/null | grep -v "cogitator-v2-crt" | grep -q "screen_shader"; then
     printf 'Foreign screen_shader found; leaving Hyprland config alone.\n' >&2
     return
   fi
-  cp -a -- "$HYPR_CONF" "$HYPR_CONF.bak.$(date +%Y%m%d-%H%M%S)"
-  cat >> "$HYPR_CONF" <<EOF
+  cp -a -- "$HYPR_LUA" "$HYPR_LUA.bak.$(date +%Y%m%d-%H%M%S)"
+  cat >> "$HYPR_LUA" <<EOF
 
 $CRT_BEGIN
-# While engaged, every window passes through the Cogitator phosphor
-# treatment. Managed by cogitator-v2; delete this block to opt out.
-source = $CRT_SNIPPET
+-- While engaged, every window passes through the Cogitator phosphor
+-- treatment. Managed by cogitator-v2; delete this block to opt out.
+hl.config({
+  decoration = {
+    screen_shader = "$CRT_FRAG",
+  },
+})
 $CRT_END
 EOF
   hyprctl reload >/dev/null
 }
 
 remove_crt_snippet() {
-  [[ -f $HYPR_CONF ]] || return 0
-  grep -qF -- "$CRT_BEGIN" "$HYPR_CONF" || return 0
-  cp -a -- "$HYPR_CONF" "$HYPR_CONF.bak.$(date +%Y%m%d-%H%M%S)"
+  [[ -f $HYPR_LUA ]] || return 0
+  grep -qF -- "$CRT_BEGIN" "$HYPR_LUA" || return 0
+  cp -a -- "$HYPR_LUA" "$HYPR_LUA.bak.$(date +%Y%m%d-%H%M%S)"
   awk -v begin="$CRT_BEGIN" -v end="$CRT_END" '
     $0 == begin { skip=1; next }
     $0 == end { skip=0; next }
     !skip { print }
-  ' "$HYPR_CONF" > "$HYPR_CONF.tmp"
-  mv "$HYPR_CONF.tmp" "$HYPR_CONF"
+  ' "$HYPR_LUA" > "$HYPR_LUA.tmp"
+  mv "$HYPR_LUA.tmp" "$HYPR_LUA"
   hyprctl reload >/dev/null
   printf 'Global CRT treatment removed; stock compositor config restored.\n'
 }
@@ -255,7 +251,6 @@ prepare_config() {
   ln -sf "$SOURCE_DIR/scripts/cogitator" "$HOME/.local/bin/cogitator"
   render_config_json
   render_crt_frag
-  render_crt_snippet
 }
 
 install_keybinding() {
