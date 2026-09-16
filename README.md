@@ -55,6 +55,22 @@ transaction; re-check `status` before doing anything.
 Prototype scope (locked): prop + bar + burn, green phosphor, Xenon-first
 font stack with clean fallback, no system font change.
 
+## Global CRT (all windows)
+
+`CRT_GLOBAL=true` (default) routes every window through a compositor
+screen shader: static scanlines + vignette, rendered from
+`hypr/crt.frag.tpl` with your `CRT_INTENSITY`. It darkens only, never
+recolors, and costs ~1% compositor CPU idle because it is static —
+Hyprland refuses `time` uniforms without disabling damage tracking
+(entire frames re-rendered constantly), so flicker and grain stay in the
+small-region QML overlays instead. While the global treatment is on, the
+QML scanlines soften automatically to avoid doubling.
+
+Managed as a marker-guarded `hl.config` block in
+`~/.config/hypr/looknfeel.lua` (backed up before first edit, removed on
+disable/uninstall). A foreign `screen_shader` is never clobbered — the
+installer stands down with a message instead.
+
 ## Performance
 
 Measured quickshell CPU, settled, i7-1165G7 integrated graphics:
