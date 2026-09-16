@@ -38,7 +38,7 @@ cogitator status         # ~/.local/bin/cogitator shim, installed on enable
 Native equivalents (the script is a snapshot/restore wrapper around these):
 
 ```bash
-omarchy plugin add <repo-url> --yes   # installs plugin id cogitator-rite
+omarchy plugin add https://github.com/Rowdydangerous/omarchy-cogitator-v2 --yes
 omarchy plugin enable cogitator-rite
 omarchy theme set cogitator-green
 omarchy plugin disable cogitator-rite
