@@ -203,7 +203,10 @@ ensure_crt_snippet() {
   [[ $(conf_value CRT_GLOBAL true) == true ]] && want="true"
   [[ -f $HYPR_LUA ]] || { printf 'No looknfeel.lua; global CRT skipped.\n' >&2; return; }
   if grep -qF -- "$CRT_BEGIN" "$HYPR_LUA"; then
-    [[ $want == true ]] || remove_crt_snippet
+    [[ $want == true ]] || { remove_crt_snippet; return; }
+    # The frag file may have been re-rendered (e.g. intensity changed via
+    # hand-edit + apply); reload so Hyprland picks up the new values.
+    hyprctl reload >/dev/null
     return
   fi
   [[ $want == true ]] || return
