@@ -1,39 +1,116 @@
-# Single centralized config. Copy to ~/.config/cogitator-v2/cogitator.conf on enable.
-# green | amber | red | industrial | custom. Switch live with
-# `cogitator palette <name>` (custom derives from CUSTOM_PHOSPHOR).
+# ============================================================================
+# COGITATOR-V2 — single centralized config.
+# Installed to ~/.config/cogitator-v2/cogitator.conf on enable (your edits
+# there are never overwritten). Edit with `cogitator configure` — saving
+# applies automatically. Every value below is read live; most take effect
+# on `cogitator apply` (full shell restart), palette switches apply at
+# once via `cogitator palette <name>`.
+# Conventions: true/false for switches, 0.0-1.0 for strengths unless noted.
+# Keys marked RESERVED are accepted but not wired to anything yet.
+# ============================================================================
+
+# --- Palette ---------------------------------------------------------------
+# green: phosphor-terminal green. amber: warm CRT. red: damage-control
+# emergency terminal (critical runs white-hot). industrial: gunmetal, aged
+# cream, brass. custom: derives every scale from CUSTOM_PHOSPHOR below.
+# Bar, menus, notifications, lock, launcher, prop, and burn all follow the
+# active theme file, so switching recolors the whole machine at once.
 PALETTE="green"
+
+# Custom phosphor in #RGB or #RRGGBB form, e.g. "#7CFF6B". Only read by
+# `cogitator palette custom`; every other scale derives from it.
 CUSTOM_PHOSPHOR=""
 
+# --- Cathode-ray treatment ---------------------------------------------------
+# CRT_ENABLED: the local phosphor overlays (scanlines, edge falloff,
+# flicker, grain) drawn inside the prop console and launcher card.
 CRT_ENABLED=true
-# Global phosphor treatment: every window passes through the compositor
-# screen shader (static scanlines + vignette, zero continuous GPU cost).
+
+# CRT_GLOBAL: route EVERY window through the compositor screen shader
+# (static scanlines + vignette, ~1% idle cost). While on, the local
+# scanlines soften automatically so the two never double up.
 CRT_GLOBAL=true
+
+# SCANLINES: RESERVED (local scanlines currently follow CRT_ENABLED).
 SCANLINES=true
+
+# PHOSPHOR_GLOW: RESERVED (glow strength of bright text).
 PHOSPHOR_GLOW=0.35
+
+# BLOOM: RESERVED (halo around bright elements).
 BLOOM=0.20
+
+# VIGNETTE: RESERVED (use BRIGHTNESS_FALLOFF, which is wired).
 VIGNETTE=true
+
+# FLICKER: whole-frame breathing flicker strength, 0.0-0.3. 0.05 is a
+# whisper; 0.0 disables. Full animation tier only.
 FLICKER=0.05
+
+# NOISE: sparse phosphor grain dots, 0.0-0.3. Full animation tier only.
 NOISE=0.03
+
+# PERSISTENCE: faint afterimage trailing the scan sweep, 0.0-1.0.
 PERSISTENCE=0.15
+
+# GHOSTING: sharper echo line trailing the scan sweep, 0.0-1.0.
 GHOSTING=0.10
+
+# BRIGHTNESS_FALLOFF: darken the top/bottom edges of console cards.
 BRIGHTNESS_FALLOFF=true
+
+# SCREEN_BURN: faint permanent "SIGMA-IX" watermark ghosted into the prop.
 SCREEN_BURN=false
+
+# CRT_INTENSITY: master strength, 0.0-1.0. Drives BOTH the compositor
+# shader (scanline depth + vignette) and the local overlays. 0.25 is the
+# daily-driver setting; 1.0 is full ritual (and genuinely hard to read).
 CRT_INTENSITY=0.25
 
+# --- Background burn ---------------------------------------------------------
+# BACKGROUND_BURN: the phosphor-afterimage layer behind windows — faint
+# targeting grid, ghost telemetry, faded warning glyph. Fully click-through.
 BACKGROUND_BURN=true
+
+# BACKGROUND_BURN_OPACITY: 0.0-0.3. 0.08 reads as burn-in; above ~0.15 it
+# starts competing with wallpaper.
 BACKGROUND_BURN_OPACITY=0.08
+
+# BACKGROUND_DATA_DENSITY: RESERVED (ghost-text density).
 BACKGROUND_DATA_DENSITY=0.35
+
+# BACKGROUND_ANIMATION_SPEED: RESERVED (the burn layer is currently static
+# on purpose — a drifting full-screen layer cost ~15% CPU; motion lives in
+# the prop sweep instead).
 BACKGROUND_ANIMATION_SPEED=0.20
 
+# --- Motion ------------------------------------------------------------------
+# HOLOGRAPHIC_EFFECTS: RESERVED (master switch for projected-light styling).
 HOLOGRAPHIC_EFFECTS=true
-# full: every effect. normal: sweep + streaming, no flicker/grain.
-# minimal: frozen consoles (telemetry text still updates).
+
+# ANIMATION_LEVEL: full (everything), normal (sweep + streaming text, no
+# flicker/grain), minimal (frozen consoles; telemetry numbers still update).
+# Measured quickshell CPU, i7-1165G7: full ~10%, normal ~7%, minimal ~4%.
 ANIMATION_LEVEL="full"
 
+# --- Machine voice -------------------------------------------------------------
+# TEXT_STREAMING: communiques type themselves out character by character.
 TEXT_STREAMING=true
+
+# TEXT_SPEED: RESERVED (single character rate for now).
 TEXT_SPEED="normal"
+
+# WORKSPACE_RITES: switching workspace fires a "+++ CHANNEL 0N +++" OSD
+# and a "CHANNEL 0N SYNCHRONIZED" communique in the prop.
 WORKSPACE_RITES=true
 
+# --- Prop console --------------------------------------------------------------
+# COGITATOR_PROP: the persistent side console (telemetry, communique,
+# channel, net/vox/relay states). Lives on the bottom layer, behind windows.
 COGITATOR_PROP=true
+
+# COGITATOR_PROP_POSITION: right or left screen edge.
 COGITATOR_PROP_POSITION="right"
+
+# COGITATOR_PROP_OPACITY: panel fill opacity, 0.4-1.0.
 COGITATOR_PROP_OPACITY=0.92
