@@ -26,6 +26,8 @@ readonly THEME_SLUG="cogitator-green"
 readonly MARKER=".cogitator-v2-installed"
 readonly HERALD_MARKER=".cogitator-v2-herald"
 readonly HERALD_SOURCE="omarchy.notifications"
+readonly MENU_MARKER=".cogitator-v2-menu"
+readonly MENU_SOURCE="omarchy.menu"
 
 SOURCE_DIR=$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
 readonly SOURCE_DIR
@@ -64,11 +66,14 @@ owned_by_us() {
   [[ $(git -C "$dir" config --get remote.origin.url 2>/dev/null) == "$REPO_URL" ]]
 }
 
-# ID of the installed notifications clone (clonedFrom routing), if any.
-find_herald_clone() {
+# ID of the installed clone for a built-in source (clonedFrom routing), if any.
+find_clone() {
   omarchy-shell shell listPlugins 2>/dev/null \
-    | jq -r --arg src "$HERALD_SOURCE" '[.[] | select(.clonedFrom == $src) | .id][0] // ""'
+    | jq -r --arg src "$1" '[.[] | select(.clonedFrom == $src) | .id][0] // ""'
 }
+
+find_herald_clone() { find_clone "$HERALD_SOURCE"; }
+find_menu_clone() { find_clone "$MENU_SOURCE"; }
 
 write_snapshot() {
   local previous="$1" previous_bg
@@ -79,7 +84,7 @@ write_snapshot() {
     backup="$BACKUP_ROOT/shell-$(date +%Y%m%d-%H%M%S).json"
     cp -a -- "$SHELL_JSON" "$backup"
   fi
-  local herald_clone herald_backup=""
+  local herald_clone herald_backup="" menu_clone menu_backup=""
   herald_clone=$(find_herald_clone)
   if [[ -n $herald_clone && -d $HOME/.config/omarchy/plugins/$herald_clone ]]; then
     herald_backup="$BACKUP_ROOT/notifications-$(date +%Y%m%d-%H%M%S)"
@@ -88,9 +93,17 @@ write_snapshot() {
       "$HOME/.config/omarchy/plugins/$herald_clone/components/NotificationCard.qml" \
       "$herald_backup/"
   fi
+  menu_clone=$(find_menu_clone)
+  if [[ -n $menu_clone && -d $HOME/.config/omarchy/plugins/$menu_clone ]]; then
+    menu_backup="$BACKUP_ROOT/menu-$(date +%Y%m%d-%H%M%S)"
+    mkdir -p "$menu_backup"
+    cp -a -- "$HOME/.config/omarchy/plugins/$menu_clone/Menu.qml" \
+      "$menu_backup/"
+  fi
   jq -n --arg v "$VERSION" --arg prev "$previous" --arg prevBg "$previous_bg" \
     --arg backup "$backup" --arg heraldClone "$herald_clone" --arg heraldBackup "$herald_backup" \
-    '{version: $v, previousTheme: $prev, previousBackground: $prevBg, shellBackup: $backup, heraldClone: $heraldClone, heraldBackup: $heraldBackup}' \
+    --arg menuClone "$menu_clone" --arg menuBackup "$menu_backup" \
+    '{version: $v, previousTheme: $prev, previousBackground: $prevBg, shellBackup: $backup, heraldClone: $heraldClone, heraldBackup: $heraldBackup, menuClone: $menuClone, menuBackup: $menuBackup}' \
     > "$SNAPSHOT.tmp"
   mv "$SNAPSHOT.tmp" "$SNAPSHOT"
 }
@@ -378,6 +391,41 @@ ensure_herald() {
   printf '%s\n' "$VERSION" > "$clone_dir/$HERALD_MARKER"
 }
 
+# Menu overlay: while engaged, the menu clone wears the Cogitator chrome.
+# Runs INSIDE the unit.
+ensure_menu_overlay() {
+  local clone_id
+  clone_id=$(find_menu_clone)
+  if [[ -z $clone_id ]]; then
+    omarchy plugin clone "$MENU_SOURCE"
+    clone_id=$(find_menu_clone)
+    [[ -n $clone_id ]] || fail "menu clone did not appear"
+  fi
+  local clone_dir="$HOME/.config/omarchy/plugins/$clone_id"
+  cp -a -- "$SOURCE_DIR/overlays/rowdy.menu/Menu.qml" "$clone_dir/Menu.qml"
+  printf '%s\n' "$VERSION" > "$clone_dir/$MENU_MARKER"
+}
+
+# Restore whatever the snapshot captured. Runs INSIDE the detached unit.
+restore_menu_overlay() {
+  local clone_id="$1" backup="$2"
+  if [[ -z $clone_id ]]; then
+    return 0
+  fi
+  local clone_dir="$HOME/.config/omarchy/plugins/$clone_id"
+  if [[ -n $backup && -d $backup ]]; then
+    [[ -d $clone_dir ]] || fail "expected clone $clone_id is gone; refusing to guess"
+    cp -a -- "$backup/Menu.qml" "$clone_dir/Menu.qml"
+    rm -f "$clone_dir/$MENU_MARKER"
+  else
+    if [[ -f $clone_dir/$MENU_MARKER ]]; then
+      omarchy plugin remove "$clone_id" --yes
+    else
+      printf 'Clone %s changed out from under us; leaving it alone.\n' "$clone_id" >&2
+    fi
+  fi
+}
+
 # Restore whatever the snapshot captured. Runs INSIDE the detached unit.
 restore_herald() {
   local clone_id="$1" backup="$2"
@@ -432,6 +480,7 @@ _unit_enable() {
   omarchy theme bg set "$HOME/.config/omarchy/themes/$THEME_SLUG/backgrounds/cogitator-green-grid.png"
   omarchy plugin enable "$PLUGIN_ID"
   ensure_herald
+  ensure_menu_overlay
   # Service-kind plugins only reload on a full shell restart; rescan is not
   # enough (stale service keeps serving old IPC surface).
   omarchy restart shell
@@ -440,8 +489,9 @@ _unit_enable() {
 # Runs INSIDE the detached unit: disable plugin, restore theme, clear snapshot.
 _unit_disable() {
   set -euo pipefail
-  local plugin_dst="$1" theme_dst="$2" previous="$3" previous_bg="$4" snapshot="$5" herald_clone="${6:-}" herald_backup="${7:-}"
+  local plugin_dst="$1" theme_dst="$2" previous="$3" previous_bg="$4" snapshot="$5" herald_clone="${6:-}" herald_backup="${7:-}" menu_clone="${8:-}" menu_backup="${9:-}"
   restore_herald "$herald_clone" "$herald_backup"
+  restore_menu_overlay "$menu_clone" "$menu_backup"
   if [[ -f $plugin_dst/$MARKER ]]; then
     omarchy plugin disable "$PLUGIN_ID" || true
   else
@@ -499,8 +549,10 @@ cmd_disable() {
   [[ -n $previous ]] || fail "snapshot has no previous theme; refusing to guess"
   herald_clone=$(jq -r '.heraldClone // ""' "$SNAPSHOT")
   herald_backup=$(jq -r '.heraldBackup // ""' "$SNAPSHOT")
-  queue_transition bash -c 'source "$0/scripts/cogitator" --unit-disable "$1" "$2" "$3" "$4" "$5" "$6" "$7"' \
-    "$SOURCE_DIR" "$PLUGIN_DST" "$THEME_DST" "$previous" "$previous_bg" "$SNAPSHOT" "$herald_clone" "$herald_backup"
+  menu_clone=$(jq -r '.menuClone // ""' "$SNAPSHOT")
+  menu_backup=$(jq -r '.menuBackup // ""' "$SNAPSHOT")
+  queue_transition bash -c 'source "$0/scripts/cogitator" --unit-disable "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"' \
+    "$SOURCE_DIR" "$PLUGIN_DST" "$THEME_DST" "$previous" "$previous_bg" "$SNAPSHOT" "$herald_clone" "$herald_backup" "$menu_clone" "$menu_backup"
   printf 'Restore queued. Previous theme (%s) returns in background; snapshot clears on completion.\n' "$previous"
 }
 
@@ -595,7 +647,7 @@ cmd_uninstall() {
 
 case "${1:-}" in
   --unit-enable) _unit_enable ;;
-  --unit-disable) _unit_disable "$2" "$3" "$4" "$5" "$6" "${7:-}" "${8:-}" ;;
+  --unit-disable) _unit_disable "$2" "$3" "$4" "$5" "$6" "${7:-}" "${8:-}" "${9:-}" "${10:-}" ;;
   status) cmd_status "${2:-}" ;;
   enable) cmd_enable ;;
   disable) cmd_disable ;;
