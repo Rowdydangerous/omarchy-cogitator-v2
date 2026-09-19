@@ -15,6 +15,7 @@ check "bash integration" "$ROOT/tests/bash-integration.sh"
 check "menu router" "$ROOT/tests/router.sh"
 check "notifications overlay" "$ROOT/tests/notifications-overlay.sh"
 check "global CRT lifecycle" "$ROOT/tests/crt.sh"
+check "window chamfer" "$ROOT/tests/window-chamfer.sh"
 check "configure no-change" bash -c 'EDITOR=true "$1/scripts/cogitator" configure | grep -q "No changes"' _ "$ROOT"
 check "palette JSON" python3 -c 'import json,sys; p=json.load(open(sys.argv[1])); assert all(k in p for k in ["background","surface","inactive","dim","normal","active","highlight","warning","critical"])' "$ROOT/palettes/green.json"
 check "render reproducible" bash -c '"$1/palettes/render.py" green amber red industrial --check' _ "$ROOT"
@@ -38,7 +39,7 @@ for line in open(sys.argv[1]):
         continue
     k, _, v = line.partition("=")
     raw[k.strip()] = v.strip().strip("\"")
-for key in ["PALETTE","CRT_ENABLED","CRT_INTENSITY","FLICKER","NOISE","PERSISTENCE","GHOSTING","SCREEN_BURN","BRIGHTNESS_FALLOFF","BACKGROUND_BURN","BACKGROUND_BURN_OPACITY","TEXT_STREAMING","WORKSPACE_RITES","COGITATOR_PROP","ANIMATION_LEVEL"]:
+for key in ["PALETTE","CRT_ENABLED","CRT_GLOBAL","CRT_INTENSITY","WINDOW_CHAMFER","WINDOW_CORNER","FLICKER","NOISE","PERSISTENCE","GHOSTING","SCREEN_BURN","BRIGHTNESS_FALLOFF","BACKGROUND_BURN","BACKGROUND_BURN_OPACITY","TEXT_STREAMING","WORKSPACE_RITES","COGITATOR_PROP","ANIMATION_LEVEL"]:
     assert key in raw, key
 ' "$ROOT/config/cogitator.conf.example"
 check "no system writes" bash -c '! grep -R "/usr/share/omarchy" "$1/scripts" "$1/qml" "$1/palettes" --include="*" | grep -v "Never edit" | grep -v "OMARCHY_PATH:-"' _ "$ROOT"

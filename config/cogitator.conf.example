@@ -67,6 +67,16 @@ SCREEN_BURN=false
 # daily-driver setting; 1.0 is full ritual (and genuinely hard to read).
 CRT_INTENSITY=0.25
 
+# --- Window geometry -----------------------------------------------------------
+# WINDOW_CHAMFER: cut all four window corners triangular (Hyprland exposes
+# no per-corner setting, so bottom-right-only is impossible natively —
+# this is the honest native look: rounding + power 1.0 = chamfered cuts).
+WINDOW_CHAMFER=true
+
+# WINDOW_CORNER: cut depth in layout px, 0-40. 12-16 reads industrial
+# without breaking fullscreen video legibility too badly.
+WINDOW_CORNER=14
+
 # --- Background burn ---------------------------------------------------------
 # BACKGROUND_BURN: the phosphor-afterimage layer behind windows — faint
 # targeting grid, ghost telemetry, faded warning glyph. Fully click-through.

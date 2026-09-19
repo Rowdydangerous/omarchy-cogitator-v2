@@ -139,6 +139,8 @@ config = {
     "workspaceRites": boolean(raw.get("WORKSPACE_RITES", "true"), True),
     "crtEnabled": boolean(raw.get("CRT_ENABLED", "true"), True),
     "crtGlobal": boolean(raw.get("CRT_GLOBAL", "true"), True),
+    "windowChamfer": boolean(raw.get("WINDOW_CHAMFER", "true"), True),
+    "windowCorner": int(number(raw.get("WINDOW_CORNER", "14"), 14, 0, 40)),
     "crtIntensity": number(raw.get("CRT_INTENSITY", "0.25"), 0.25, 0.0, 1.0),
     "flicker": number(raw.get("FLICKER", "0.05"), 0.05, 0.0, 0.3),
     "noise": number(raw.get("NOISE", "0.03"), 0.03, 0.0, 0.3),
@@ -164,6 +166,8 @@ readonly BIND_END="-- cogitator-v2-super-space-end"
 readonly HYPR_LUA="$HOME/.config/hypr/looknfeel.lua"
 readonly CRT_BEGIN="-- cogitator-v2-crt-begin"
 readonly CRT_END="-- cogitator-v2-crt-end"
+readonly CHAMFER_BEGIN="-- cogitator-v2-chamfer-begin"
+readonly CHAMFER_END="-- cogitator-v2-chamfer-end"
 readonly CRT_FRAG="$CONFIG_DIR/crt.frag"
 
 conf_value() {
@@ -261,6 +265,52 @@ remove_crt_snippet() {
   mv "$HYPR_LUA.tmp" "$HYPR_LUA"
   hyprctl reload >/dev/null
   printf 'Global CRT treatment removed; stock compositor config restored.\n'
+}
+
+# Idempotent: triangular window chamfers (rounding + power 1.0) while
+# engaged, removed otherwise. Same marker/backup/reload discipline as CRT.
+ensure_window_chamfer() {
+  local want="false" corner=14
+  [[ $(conf_value WINDOW_CHAMFER true) == true ]] && want="true"
+  corner=$(conf_value WINDOW_CORNER 14)
+  [[ $corner =~ ^[0-9]+$ ]] || corner=14
+  (( corner >= 0 && corner <= 40 )) || corner=14
+  [[ -f $HYPR_LUA ]] || { printf 'No looknfeel.lua; window chamfer skipped.\n' >&2; return; }
+  if grep -qF -- "$CHAMFER_BEGIN" "$HYPR_LUA"; then
+    [[ $want == true ]] || remove_window_chamfer
+    return
+  fi
+  [[ $want == true ]] || return
+  cp -a -- "$HYPR_LUA" "$HYPR_LUA.bak.$(date +%Y%m%d-%H%M%S)"
+  cat >> "$HYPR_LUA" <<EOF
+
+$CHAMFER_BEGIN
+-- Triangular window cuts while engaged (rounding + power 1.0 = chamfered
+-- corners; Hyprland exposes no per-corner setting). Managed by
+-- cogitator-v2; delete this block to opt out.
+hl.config({
+  decoration = {
+    rounding = $corner,
+    rounding_power = 1.0,
+  },
+})
+$CHAMFER_END
+EOF
+  hyprctl reload >/dev/null
+}
+
+remove_window_chamfer() {
+  [[ -f $HYPR_LUA ]] || return 0
+  grep -qF -- "$CHAMFER_BEGIN" "$HYPR_LUA" || return 0
+  cp -a -- "$HYPR_LUA" "$HYPR_LUA.bak.$(date +%Y%m%d-%H%M%S)"
+  awk -v begin="$CHAMFER_BEGIN" -v end="$CHAMFER_END" '
+    $0 == begin { skip=1; next }
+    $0 == end { skip=0; next }
+    !skip { print }
+  ' "$HYPR_LUA" > "$HYPR_LUA.tmp"
+  mv "$HYPR_LUA.tmp" "$HYPR_LUA"
+  hyprctl reload >/dev/null
+  printf 'Window chamfer removed; stock corners restored.\n'
 }
 
 prepare_config() {
@@ -398,6 +448,7 @@ _unit_disable() {
     echo "Plugin install not ours; leaving files, only restoring theme selection." >&2
   fi
   remove_crt_snippet || true
+  remove_window_chamfer || true
   omarchy theme set "$previous"
   if [[ -n $previous_bg ]]; then omarchy theme bg set "$previous_bg" || true; fi
   omarchy restart shell
@@ -435,6 +486,7 @@ cmd_enable() {
   omarchy plugin validate "$SOURCE_DIR" >/dev/null
   install_keybinding
   ensure_crt_snippet
+  ensure_window_chamfer
   queue_transition bash -c 'source "$0/scripts/cogitator" --unit-enable' "$SOURCE_DIR"
   printf 'Transition queued. Theme/plugin apply in background; check `cogitator status`.\nDisable any time: cogitator disable\n'
 }
@@ -531,6 +583,7 @@ cmd_uninstall() {
     rm -f "$HOME/.local/bin/cogitator"
   fi
   remove_crt_snippet || true
+  remove_window_chamfer || true
   remove_keybinding
   if [[ ${1:-} == --purge ]]; then
     rm -rf "$CONFIG_DIR" "$STATE_DIR"
@@ -549,7 +602,7 @@ case "${1:-}" in
   toggle)
     if plugin_enabled || [[ $(current_theme) == *cogitator* ]]; then cmd_disable; else cmd_enable; fi
     ;;
-  apply) prepare_config && ensure_crt_snippet; cmd_apply ;;
+  apply) prepare_config && ensure_crt_snippet && ensure_window_chamfer; cmd_apply ;;
   configure) cmd_configure ;;
   palette) cmd_palette "${2:-}" ;;
   uninstall) cmd_uninstall "${2:-}" ;;
