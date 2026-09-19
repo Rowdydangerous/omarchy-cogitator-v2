@@ -49,8 +49,24 @@ def main():
     service_path = Path(sys.argv[1])
     card_src = Path(sys.argv[2])
     text = service_path.read_text()
-    if MARKER in text or COLUMN_HERALD in text:
+    lines = text.splitlines()
+    if MARKER in (line.strip() for line in lines):
         print("herald overlay already applied")
+        return 0
+    herald_shaped = (
+        "anchors.horizontalCenter: parent.horizontalCenter" in text
+        and "Layout.alignment: Qt.AlignHCenter" in text
+    )
+    stock_shaped = (
+        COLUMN_STOCK in text
+        and ALIGN_STOCK in text
+        and CARD_STOCK in text
+    )
+    if herald_shaped and not stock_shaped:
+        # Styled by hand before management began: adopt by stamping the
+        # receipt marker instead of failing.
+        service_path.write_text(MARKER + "\n" + text)
+        print("herald overlay adopted from existing styling")
         return 0
     for stock, herald, label in (
         (COLUMN_STOCK, COLUMN_HERALD, "popup column"),
@@ -61,6 +77,7 @@ def main():
             print(f"DRIFT: stock {label} block not found in {service_path}", file=sys.stderr)
             return 1
         text = text.replace(stock, herald, 1)
+    text = MARKER + "\n" + text
     card_dst = service_path.parent / "components" / "NotificationCard.qml"
     shutil.copyfile(card_src, card_dst)
     service_path.write_text(text)

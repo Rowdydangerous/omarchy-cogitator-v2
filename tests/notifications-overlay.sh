@@ -8,7 +8,8 @@ APPLY="$ROOT/scripts/apply-notification-overlay.py"
 CARD="$ROOT/overlays/notifications/NotificationCard.qml"
 
 fixture=$(mktemp -d)
-trap 'rm -rf "$fixture"' EXIT
+drift="" adopt=""
+trap 'rm -rf "$fixture" ${drift:+"$drift"} ${adopt:+"$adopt"}' EXIT
 mkdir -p "$fixture/components"
 cp /usr/share/omarchy/shell/plugins/notifications/Service.qml "$fixture/Service.qml"
 
@@ -18,9 +19,17 @@ grep -q "anchors.horizontalCenter: parent.horizontalCenter" "$fixture/Service.qm
 grep -q "Layout.alignment: Qt.AlignHCenter" "$fixture/Service.qml"
 cmp "$CARD" "$fixture/components/NotificationCard.qml"
 
+# Adopt: herald-shaped but unmarked (hand-styled before management) is
+# stamped, not failed.
+adopt=$(mktemp -d)
+mkdir -p "$adopt/components"
+cp "$CARD" "$adopt/components/NotificationCard.qml"
+tail -n +2 "$fixture/Service.qml" > "$adopt/Service.qml"
+"$APPLY" "$adopt/Service.qml" "$CARD" | grep -q "adopted"
+"$APPLY" "$adopt/Service.qml" "$CARD" | grep -q "already applied"
+
 # Drift: stock blocks absent and no marker -> loud failure, nothing written.
 drift=$(mktemp -d)
-trap 'rm -rf "$fixture" "$drift"' EXIT
 mkdir -p "$drift/components"
 printf '// unrelated file\n' > "$drift/Service.qml"
 if "$APPLY" "$drift/Service.qml" "$CARD" >/dev/null 2>&1; then
