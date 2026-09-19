@@ -7,7 +7,7 @@ and only those, the project manages user-owned clones:
 | Clone | Source | Overlay (this repo) | Change |
 |---|---|---|---|
 | `*.notifications` | `omarchy.notifications` | `overlays/notifications/NotificationCard.qml` + `scripts/apply-notification-overlay.py` (3-line centering patch) | centered herald cards, bracket frame, chamfer, severity tab |
-| `*.menu` | `omarchy.menu` | `overlays/rowdy.menu/Menu.qml` (full file) | bracket frame, chamfer, mono caps chrome, apps → Application Cogitator |
+| `*.menu` | `omarchy.menu` | `overlays/rowdy.menu/Menu.qml` (full file) | bracket frame, chamfer, mono caps chrome, apps → Application Cogitator, Left-at-root escapes to the Command Nexus, unified 560px card |
 
 ## Lifecycle (transactional, like everything else)
 

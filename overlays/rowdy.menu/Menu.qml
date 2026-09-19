@@ -109,7 +109,10 @@ Item {
   property int dividerHeight: Style.space(17)
   property bool searchDivider: false
   property int layoutSerial: 0
-  property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : ((root.activeMenu === "trigger.capture.screenrecord" || root.activeMenu === "style.font") ? Style.space(520) : Style.space(300)), panel.width - Style.gapsOut * 2)
+  // Cogitator: unified 560px card across all menus (matches Nexus and
+  // launcher). Literal pixels: Style.space() scales with the font and would
+  // not land on 560.
+  property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : ((root.activeMenu === "trigger.capture.screenrecord" || root.activeMenu === "style.font") ? Style.space(520) : 560), panel.width - Style.gapsOut * 2)
   property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText, searchDivider)
   property int cardHeight: root.dmenuActive
     ? Math.min(contentMargin * 2 + headerHeight + (mode === "input" ? 0 : contentSpacing + visibleRowsHeight), panel.height - Style.gapsOut * 2)
@@ -711,18 +714,39 @@ Item {
     root.loadProviderForMenu(id)
   }
 
+  // Cogitator: the stock root menu duplicates the Command Nexus front
+  // door. Any back-navigation landing on root escapes to the Nexus
+  // instead, so there is exactly one entry point. Dmenu flows (which have
+  // no submenus) are left alone.
+  function escapeToNexus() {
+    root.cancel()
+    Quickshell.execDetached(["omarchy-shell", "cogitator-rite", "openMenu"])
+  }
+
   function goBack() {
-    if (root.activeMenu === "root") return false
+    if (root.activeMenu === "root") {
+      if (!root.dmenuActive) root.escapeToNexus()
+      return true
+    }
 
     if (root.navStack.length > 0) {
       var previous = root.navStack[root.navStack.length - 1]
       root.navStack = root.navStack.slice(0, root.navStack.length - 1)
+      if (previous === "root" && !root.dmenuActive) {
+        root.escapeToNexus()
+        return true
+      }
       root.setActiveMenu(previous, false)
       return true
     }
 
     var active = root.item(root.activeMenu)
-    root.setActiveMenu((active && active.parent) ? active.parent : "root", false)
+    var destination = (active && active.parent) ? active.parent : "root"
+    if (destination === "root" && !root.dmenuActive) {
+      root.escapeToNexus()
+      return true
+    }
+    root.setActiveMenu(destination, false)
     return true
   }
 
