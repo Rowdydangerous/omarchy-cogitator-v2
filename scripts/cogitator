@@ -233,7 +233,7 @@ ensure_crt_snippet() {
     return
   fi
   [[ $want == true ]] || return
-  if grep -rh "screen_shader" "$HOME/.config/hypr/" 2>/dev/null | grep -v "cogitator-v2-crt" | grep -q "screen_shader"; then
+  if grep -rh --exclude="*.bak.*" "screen_shader" "$HOME/.config/hypr/" 2>/dev/null | grep -v "cogitator-v2-crt" | grep -q "screen_shader"; then
     printf 'Foreign screen_shader found; leaving Hyprland config alone.\n' >&2
     return
   fi
