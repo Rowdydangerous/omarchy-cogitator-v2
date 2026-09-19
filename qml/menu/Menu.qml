@@ -131,9 +131,11 @@ Item {
                     else root.service.menuOpened = false
                     event.accepted = true
                 }
-                Keys.onBackspacePressed: function(event) { root.backspaceFilter(); event.accepted = true }
                 Keys.onPressed: function(event) {
-                    if (event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32
+                    if (event.key === Qt.Key_Backspace && event.modifiers === Qt.NoModifier) {
+                        root.backspaceFilter()
+                        event.accepted = true
+                    } else if (event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32
                         && (event.modifiers === Qt.NoModifier || event.modifiers === Qt.ShiftModifier)) {
                         root.appendFilter(event.text)
                         event.accepted = true
