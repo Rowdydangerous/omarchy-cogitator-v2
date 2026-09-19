@@ -25,14 +25,22 @@ omarchy plugin clone omarchy.notifications
   horizontally-centered column at ~22% screen height; card delegates
   center instead of right-aligning. Mask stays on the column (non-modal).
 
-## Ownership notes
+## Managed overlay: herald applies while engaged, prior state on disable
 
-* The clone is USER config, not package files: `cogitator disable` /
-  `uninstall` never touch it. It works engaged or not.
-* Drift caveat: a future Omarchy update may refactor the stock service.
-  If toasts break after `omarchy update`, diff
-  `/usr/share/omarchy/shell/plugins/notifications/` against the clone and
-  re-apply the two changes above, or `omarchy plugin remove
-  rowdy.notifications` to fall back to stock instantly.
+The herald lives in this repo under `overlays/notifications/` (the card)
+plus `scripts/apply-notification-overlay.py` (the three-line centering
+patch, applied to the clone's Service.qml with drift detection).
+
+* `cogitator enable` snapshots notification state first: if a clone
+  already exists, its Service.qml + card are backed up; if none exists,
+  one is created with `omarchy plugin clone`. Either way the overlay is
+  stamped (receipt `.cogitator-v2-herald`) and the shell restarts.
+* `cogitator disable` restores exactly what was captured: pre-existing
+  clone files are put back byte-for-byte; a clone we created is removed
+  via native `plugin remove` (receipt-guarded) so stock resumes.
+* Drift caveat: if upstream refactors the stock service, the applier
+  fails loudly instead of half-applying. Re-record the overlay against
+  the new stock, or `omarchy plugin remove rowdy.notifications` to fall
+  back to stock instantly.
 * Proof: `docs/screenshots/notification-herald.png` (critical toast,
   centered, glow fill, tab, brackets, chamfer).
