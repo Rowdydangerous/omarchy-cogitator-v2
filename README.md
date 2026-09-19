@@ -140,14 +140,18 @@ line with a restrained machine-spirit utterance every 30 prompts; on disable
 the original prompt returns by itself. `cogitator_rite_disable` removes the
 hook entirely.
 
-## Launcher summon
+## Command menu (SUPER+SPACE while engaged)
 
-The stock menu and its keybindings are untouched. To open the Application
-Cogitator from a keybinding, bind this command yourself, e.g. in
-`~/.config/hypr/bindings.lua`:
+`cogitator enable` routes SUPER+SPACE through `scripts/cogitator-menu`:
+engaged it toggles the grimdark Command Nexus (stock root routes with
+original icons, generated from stock data), disengaged it falls through to
+the stock menu. Selecting APPLICATIONS opens the Application Cogitator;
+every other rite delegates to the stock `omarchy.menu` at its route, so
+system panels stay stock. Direct IPC also works:
 
 ```bash
-omarchy-shell cogitator-rite openLauncher
+omarchy-shell cogitator-rite toggleMenu    # root rites
+omarchy-shell cogitator-rite openLauncher  # straight to applications
 ```
 
 ## Layout
