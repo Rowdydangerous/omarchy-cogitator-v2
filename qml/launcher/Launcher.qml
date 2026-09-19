@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import QtQuick.Shapes
 import "../fx"
 
 // Application Cogitator: keyboard-first command console over the shared
@@ -95,10 +96,57 @@ Item {
                     width: Math.min(560, parent.width - 48)
                     height: cardColumn.implicitHeight + 32
                     color: Qt.rgba(root.abyss.r, root.abyss.g, root.abyss.b, 0.97)
-                border.color: root.phosphor
-                border.width: 1
+                border.width: 0
 
                 MouseArea { anchors.fill: parent; onClicked: function(mouse) { mouse.accepted = true } }
+
+                // Chamfered frame: bottom-right corner cut at 45 degrees,
+                // flare brackets on the three square corners.
+                Shape {
+                    anchors.fill: parent
+                    preferredRendererType: Shape.CurveRenderer
+                    ShapePath {
+                        strokeColor: root.phosphor
+                        strokeWidth: 2
+                        fillColor: "transparent"
+                        PathMove { x: 0; y: 0 }
+                        PathLine { x: card.width; y: 0 }
+                        PathLine { x: card.width; y: card.height - 30 }
+                        PathLine { x: card.width - 30; y: card.height }
+                        PathLine { x: 0; y: card.height }
+                        PathLine { x: 0; y: 0 }
+                    }
+                }
+                Row {
+                    anchors.top: parent.top; anchors.left: parent.left
+                    anchors.topMargin: -5; anchors.leftMargin: -5
+                    Rectangle { width: 18; height: 3; color: root.phosphor }
+                }
+                Rectangle {
+                    anchors.top: parent.top; anchors.left: parent.left
+                    anchors.topMargin: -5; anchors.leftMargin: -5
+                    width: 3; height: 18; color: root.phosphor
+                }
+                Row {
+                    anchors.top: parent.top; anchors.right: parent.right
+                    anchors.topMargin: -5; anchors.rightMargin: -5
+                    Rectangle { width: 18; height: 3; color: root.phosphor }
+                }
+                Rectangle {
+                    anchors.top: parent.top; anchors.right: parent.right
+                    anchors.topMargin: -5; anchors.rightMargin: -5
+                    width: 3; height: 18; color: root.phosphor
+                }
+                Row {
+                    anchors.bottom: parent.bottom; anchors.left: parent.left
+                    anchors.bottomMargin: -5; anchors.leftMargin: -5
+                    Rectangle { width: 18; height: 3; color: root.phosphor }
+                }
+                Rectangle {
+                    anchors.bottom: parent.bottom; anchors.left: parent.left
+                    anchors.bottomMargin: -5; anchors.leftMargin: -5
+                    width: 3; height: 18; color: root.phosphor
+                }
 
                 Column {
                     id: cardColumn

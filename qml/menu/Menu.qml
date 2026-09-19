@@ -1,10 +1,12 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import QtQuick.Shapes
 import "../fx"
 import "Routes.js" as Routes
 
 // Cogitator command menu: grimdark front door over the stock menu routes.
+// Type to filter like the stock menu; Right arrow commits like Enter.
 // APPLICATIONS opens the internal Application Cogitator; every other rite
 // delegates to the stock omarchy.menu at its route (panels stay stock).
 // Summoned via `omarchy-shell cogitator-rite toggleMenu`. Stock keybindings
@@ -20,19 +22,40 @@ Item {
     readonly property color dim: root.service ? root.service.dim : "#2f5b38"
     readonly property color abyss: root.service ? root.service.abyss : "#030704"
     readonly property string mono: "Monaspace Xenon Frozen, JetBrainsMono Nerd Font, monospace"
+    readonly property real chamfer: 30
 
     property int selected: 0
+    property string filter: ""
     readonly property var entries: Routes.routes
 
+    function filteredEntries() {
+        var needle = filter.toLowerCase()
+        if (needle === "")
+            return entries
+        var out = []
+        for (var i = 0; i < entries.length; i++) {
+            var entry = entries[i]
+            if (entry.label.toLowerCase().indexOf(needle) !== -1
+                || entry.id.toLowerCase().indexOf(needle) !== -1)
+                out.push(entry)
+        }
+        return out
+    }
+
+    function visibleEntries() {
+        return filteredEntries()
+    }
+
     function moveSelection(delta) {
-        if (entries.length > 0)
-            selected = (selected + delta + entries.length) % entries.length
+        var list = visibleEntries()
+        if (list.length > 0)
+            selected = (selected + delta + list.length) % list.length
     }
 
     function activateSelected() {
-        if (selected < 0 || selected >= entries.length)
-            return
-        activateEntry(entries[selected])
+        var list = visibleEntries()
+        if (selected >= 0 && selected < list.length)
+            activateEntry(list[selected])
     }
 
     function activateEntry(entry) {
@@ -44,9 +67,24 @@ Item {
             service.summonStockMenu(entry.id)
     }
 
+    function appendFilter(text) {
+        if (filter.length < 24) {
+            filter += text
+            selected = 0
+        }
+    }
+
+    function backspaceFilter() {
+        if (filter.length > 0) {
+            filter = filter.substring(0, filter.length - 1)
+            selected = 0
+        }
+    }
+
     onOpenedChanged: {
         if (opened) {
             selected = 0
+            filter = ""
             Qt.callLater(function() { keyCatcher.forceActiveFocus() })
         }
     }
@@ -87,7 +125,20 @@ Item {
                 Keys.onUpPressed: function(event) { root.moveSelection(-1); event.accepted = true }
                 Keys.onDownPressed: function(event) { root.moveSelection(1); event.accepted = true }
                 Keys.onReturnPressed: function(event) { root.activateSelected(); event.accepted = true }
-                Keys.onEscapePressed: function(event) { root.service.menuOpened = false; event.accepted = true }
+                Keys.onRightPressed: function(event) { root.activateSelected(); event.accepted = true }
+                Keys.onEscapePressed: function(event) {
+                    if (root.filter !== "") root.filter = ""
+                    else root.service.menuOpened = false
+                    event.accepted = true
+                }
+                Keys.onBackspacePressed: function(event) { root.backspaceFilter(); event.accepted = true }
+                Keys.onPressed: function(event) {
+                    if (event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32
+                        && (event.modifiers === Qt.NoModifier || event.modifiers === Qt.ShiftModifier)) {
+                        root.appendFilter(event.text)
+                        event.accepted = true
+                    }
+                }
             }
 
             Rectangle {
@@ -95,13 +146,61 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: Math.max(60, parent.height * 0.16)
-                width: Math.min(480, parent.width - 48)
+                width: Math.min(560, parent.width - 48)
                 height: cardColumn.implicitHeight + 32
                 color: Qt.rgba(root.abyss.r, root.abyss.g, root.abyss.b, 0.97)
-                border.color: root.phosphor
-                border.width: 1
+                border.width: 0
 
                 MouseArea { anchors.fill: parent; onClicked: function(mouse) { mouse.accepted = true } }
+
+                // Chamfered frame: bottom-right corner cut at 45 degrees.
+                Shape {
+                    anchors.fill: parent
+                    preferredRendererType: Shape.CurveRenderer
+                    ShapePath {
+                        strokeColor: root.phosphor
+                        strokeWidth: 2
+                        fillColor: "transparent"
+                        PathMove { x: 0; y: 0 }
+                        PathLine { x: card.width; y: 0 }
+                        PathLine { x: card.width; y: card.height - root.chamfer }
+                        PathLine { x: card.width - root.chamfer; y: card.height }
+                        PathLine { x: 0; y: card.height }
+                        PathLine { x: 0; y: 0 }
+                    }
+                }
+
+                // Flare brackets on the three square corners.
+                Row {
+                    anchors.top: parent.top; anchors.left: parent.left
+                    anchors.topMargin: -5; anchors.leftMargin: -5
+                    Rectangle { width: 18; height: 3; color: root.phosphor }
+                }
+                Rectangle {
+                    anchors.top: parent.top; anchors.left: parent.left
+                    anchors.topMargin: -5; anchors.leftMargin: -5
+                    width: 3; height: 18; color: root.phosphor
+                }
+                Row {
+                    anchors.top: parent.top; anchors.right: parent.right
+                    anchors.topMargin: -5; anchors.rightMargin: -5
+                    Rectangle { width: 18; height: 3; color: root.phosphor }
+                }
+                Rectangle {
+                    anchors.top: parent.top; anchors.right: parent.right
+                    anchors.topMargin: -5; anchors.rightMargin: -5
+                    width: 3; height: 18; color: root.phosphor
+                }
+                Row {
+                    anchors.bottom: parent.bottom; anchors.left: parent.left
+                    anchors.bottomMargin: -5; anchors.leftMargin: -5
+                    Rectangle { width: 18; height: 3; color: root.phosphor }
+                }
+                Rectangle {
+                    anchors.bottom: parent.bottom; anchors.left: parent.left
+                    anchors.bottomMargin: -5; anchors.leftMargin: -5
+                    width: 3; height: 18; color: root.phosphor
+                }
 
                 Column {
                     id: cardColumn
@@ -120,8 +219,18 @@ Item {
                         font.letterSpacing: 2
                     }
 
+                    Text {
+                        visible: root.filter !== ""
+                        text: "> " + root.filter.toUpperCase() + "  //  " + root.visibleEntries().length + " RITES"
+                        color: root.bright
+                        font.family: root.mono
+                        font.pixelSize: 10
+                        font.bold: true
+                        font.letterSpacing: 1
+                    }
+
                     Repeater {
-                        model: root.entries
+                        model: root.visibleEntries()
                         Rectangle {
                             required property var modelData
                             required property int index
@@ -177,7 +286,7 @@ Item {
 
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        text: "UP-DOWN TO SELECT // ENTER TO COMMIT RITE // ESC TO WITHDRAW"
+                        text: "TYPE TO FILTER // RIGHT TO COMMIT // UP-DOWN TO SELECT // ESC TO WITHDRAW"
                         color: root.dim
                         font.family: root.mono
                         font.pixelSize: 8
