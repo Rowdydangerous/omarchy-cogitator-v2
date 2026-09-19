@@ -9,6 +9,7 @@ import Quickshell.Services.UPower
 import "prop"
 import "burn"
 import "launcher"
+import "menu"
 
 Item {
     id: root
@@ -47,7 +48,23 @@ Item {
     property string dateText: ""
     property string channelText: "--"
     property bool launcherOpened: false
+    property bool menuOpened: false
     property int appsRevision: 0
+
+    function openLauncherFromMenu() {
+        launcherOpened = true
+        menuOpened = false
+    }
+
+    // Delegates a stock menu route (style, setup, system, ...) to the
+    // first-party menu, closing our overlay first so only one console
+    // owns the screen.
+    function summonStockMenu(route) {
+        launcherOpened = false
+        menuOpened = false
+        Quickshell.execDetached(["omarchy-shell", "shell", "summon", "omarchy.menu",
+            JSON.stringify({ menu: String(route || "root") })])
+    }
 
     // Live phosphor: follows the active Omarchy theme so a palette switch
     // recolors every Cogitator surface without touching QML. Green defaults
@@ -438,6 +455,21 @@ Item {
             root.launcherOpened = false
             return "ok"
         }
+
+        function openMenu(): string {
+            root.menuOpened = true
+            return "ok"
+        }
+
+        function closeMenu(): string {
+            root.menuOpened = false
+            return "ok"
+        }
+
+        function toggleMenu(): string {
+            root.menuOpened = !root.menuOpened
+            return "ok"
+        }
     }
 
     // Declaration order is load-bearing: both windows share WlrLayer.Bottom
@@ -445,4 +477,5 @@ Item {
     Burn { service: root }
     Prop { service: root }
     Launcher { service: root }
+    Menu { service: root }
 }

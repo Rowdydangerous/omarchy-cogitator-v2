@@ -18,7 +18,7 @@ router="$ROOT/scripts/cogitator-menu"
 # Engaged branch: snapshot present -> console toggle.
 printf '{"version":"0.2.0"}\n' > "$fake/state/cogitator-v2/snapshot.json"
 "$router"
-grep -q "shell:cogitator-rite toggleLauncher" "$fake/calls"
+grep -q "shell:cogitator-rite toggleMenu" "$fake/calls"
 
 # Disengaged branch: no snapshot -> stock menu.
 rm "$fake/state/cogitator-v2/snapshot.json" "$fake/calls"
