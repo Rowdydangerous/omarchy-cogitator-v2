@@ -431,11 +431,18 @@ clone_is_managed() {
 restore_menu_overlay() {
   local clone_id="$1" backup="$2"
   if [[ -z $clone_id ]]; then
-    return 0
+    # Snapshot predates the clone (created mid-engagement, old format, or
+    # interrupted run): discover live and remove only if provably ours.
+    clone_id=$(find_menu_clone)
+    [[ -n $clone_id ]] || return 0
+    backup=""
   fi
   local clone_dir="$HOME/.config/omarchy/plugins/$clone_id"
   if [[ -n $backup && -d $backup ]]; then
-    [[ -d $clone_dir ]] || fail "expected clone $clone_id is gone; refusing to guess"
+    if [[ ! -d $clone_dir ]]; then
+      printf 'Clone %s already gone; backup at %s kept, continuing.\n' "$clone_id" "$backup" >&2
+      return 0
+    fi
     cp -a -- "$backup/Menu.qml" "$clone_dir/Menu.qml"
     rm -f "$clone_dir/$MENU_MARKER"
   else
@@ -451,12 +458,19 @@ restore_menu_overlay() {
 restore_herald() {
   local clone_id="$1" backup="$2"
   if [[ -z $clone_id ]]; then
-    return 0
+    # Snapshot predates the clone (created mid-engagement, old format, or
+    # interrupted run): discover live and remove only if provably ours.
+    clone_id=$(find_herald_clone)
+    [[ -n $clone_id ]] || return 0
+    backup=""
   fi
   local clone_dir="$HOME/.config/omarchy/plugins/$clone_id"
   if [[ -n $backup && -d $backup ]]; then
     # A clone predated us: put the user's own files back.
-    [[ -d $clone_dir ]] || fail "expected clone $clone_id is gone; refusing to guess"
+    if [[ ! -d $clone_dir ]]; then
+      printf 'Clone %s already gone; backup at %s kept, continuing.\n' "$clone_id" "$backup" >&2
+      return 0
+    fi
     cp -a -- "$backup/Service.qml" "$clone_dir/Service.qml"
     cp -a -- "$backup/NotificationCard.qml" "$clone_dir/components/NotificationCard.qml"
     rm -f "$clone_dir/$HERALD_MARKER"
