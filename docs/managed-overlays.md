@@ -37,3 +37,22 @@ from theme tokens, so palettes flow through automatically.
 * `docs/screenshots/notification-herald.png` — critical toast, centered.
 * `docs/screenshots/command-menu*.png` — root rites, apps chamber,
   stock delegation.
+
+## Stock drift baseline
+
+Recorded 2026-09-20 against Omarchy 4.0.4-1 (system moved 4.0.3-1 →
+4.0.4-1 with no overlay breakage):
+
+* notifications `Service.qml`: `11665542e70df80ccd3c785a6143dee2daefd2082e4f75c740adc2c9947cf7c2`
+* notifications `components/NotificationCard.qml`: `3f023446cfe26b9f70570d7088baab31e56ca374c4a206a7c098b09d36cdff3d`
+* menu `Menu.qml`: `0154d0ec3855fbb48aa06eaa724a19f3c07c377494d4a3de65daed2d7d9100e3`
+* Applier re-verified clean against this stock (exit 0, idempotent
+  re-run prints "already applied"); vendored `Menu.qml` still
+  qmllint-clean against current shell imports.
+
+After any future `omarchy update`: re-run `./tests/test.sh` (the
+notifications overlay test applies to fixture copies of live stock and
+fails loudly on drift) and compare fresh `sha256sum`s against the above.
+If the anchor blocks moved, re-record `overlays/rowdy.menu/Menu.qml` from
+a fresh clone plus chrome edits; if only the card changed, no action needed
+(the card is fully vendored).

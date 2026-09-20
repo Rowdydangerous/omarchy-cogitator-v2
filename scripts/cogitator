@@ -406,6 +406,27 @@ ensure_menu_overlay() {
   printf '%s\n' "$VERSION" > "$clone_dir/$MENU_MARKER"
 }
 
+# True when a clone is provably ours: receipt present, or live files
+# byte-identical to the repo overlay (receipts can be lost; content can't lie).
+# kind: notifications | menu. Pure file logic: safe in tests with fixtures.
+clone_is_managed() {
+  local kind="$1" dir="$2"
+  [[ -d $dir ]] || return 1
+  case "$kind" in
+    notifications)
+      [[ -f $dir/$HERALD_MARKER ]] && return 0
+      cmp -s "$SOURCE_DIR/overlays/notifications/NotificationCard.qml" \
+        "$dir/components/NotificationCard.qml" || return 1
+      grep -qF -- "// cogitator-v2-herald" "$dir/Service.qml"
+      ;;
+    menu)
+      [[ -f $dir/$MENU_MARKER ]] && return 0
+      cmp -s "$SOURCE_DIR/overlays/rowdy.menu/Menu.qml" "$dir/Menu.qml"
+      ;;
+    *) return 1 ;;
+  esac
+}
+
 # Restore whatever the snapshot captured. Runs INSIDE the detached unit.
 restore_menu_overlay() {
   local clone_id="$1" backup="$2"
@@ -418,7 +439,7 @@ restore_menu_overlay() {
     cp -a -- "$backup/Menu.qml" "$clone_dir/Menu.qml"
     rm -f "$clone_dir/$MENU_MARKER"
   else
-    if [[ -f $clone_dir/$MENU_MARKER ]]; then
+    if clone_is_managed menu "$clone_dir"; then
       omarchy plugin remove "$clone_id" --yes
     else
       printf 'Clone %s changed out from under us; leaving it alone.\n' "$clone_id" >&2
@@ -440,8 +461,9 @@ restore_herald() {
     cp -a -- "$backup/NotificationCard.qml" "$clone_dir/components/NotificationCard.qml"
     rm -f "$clone_dir/$HERALD_MARKER"
   else
-    # We created the clone: remove it only with our receipt present.
-    if [[ -f $clone_dir/$HERALD_MARKER ]]; then
+    # We created the clone: remove it when provably ours (receipt or
+    # byte-identical content); a hand-modified clone is left alone.
+    if clone_is_managed notifications "$clone_dir"; then
       omarchy plugin remove "$clone_id" --yes
     else
       printf 'Clone %s changed out from under us; leaving it alone.\n' "$clone_id" >&2
@@ -541,9 +563,35 @@ cmd_enable() {
   printf 'Transition queued. Theme/plugin apply in background; check `cogitator status`.\nDisable any time: cogitator disable\n'
 }
 
+# Repair mode: no snapshot means disengaged, but styled clones may linger
+# from history. Remove only provably-ours clones so menus return to stock;
+# hand-modified clones are reported and left alone.
+repair_menus_to_stock() {
+  local kind src clone_id clone_dir removed=0
+  for kind in notifications menu; do
+    if [[ $kind == notifications ]]; then src="$HERALD_SOURCE"; else src="$MENU_SOURCE"; fi
+    clone_id=$(find_clone "$src")
+    [[ -n $clone_id ]] || continue
+    clone_dir="$HOME/.config/omarchy/plugins/$clone_id"
+    if clone_is_managed "$kind" "$clone_dir"; then
+      printf 'Removing managed %s clone; stock %s resumes.\n' "$clone_id" "$src"
+      omarchy plugin remove "$clone_id" --yes
+      removed=1
+    else
+      printf 'Clone %s differs from the overlay; leaving it alone.\n' "$clone_id" >&2
+    fi
+  done
+  if (( removed )); then
+    omarchy restart shell
+    printf 'Menus restored to stock.\n'
+  else
+    printf 'Already disengaged; menus already stock.\n'
+  fi
+}
+
 cmd_disable() {
   local previous previous_bg
-  [[ -f $SNAPSHOT ]] || fail "no snapshot; nothing to restore (theme: $(current_theme))"
+  [[ -f $SNAPSHOT ]] || { repair_menus_to_stock; return; }
   previous=$(jq -r '.previousTheme // ""' "$SNAPSHOT")
   previous_bg=$(jq -r '.previousBackground // ""' "$SNAPSHOT")
   [[ -n $previous ]] || fail "snapshot has no previous theme; refusing to guess"
