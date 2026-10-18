@@ -1,0 +1,23 @@
+[
+  {"key":"PALETTE","group":"Appearance","label":"Phosphor doctrine — palette","type":"choice","default":"green","choices":["green","amber","red","industrial","custom"]},
+  {"key":"CUSTOM_PHOSPHOR","group":"Appearance","label":"Custom phosphor color","type":"color","default":""},
+  {"key":"CRT_GLOBAL","group":"Appearance","label":"Global CRT — all windows","type":"boolean","default":true},
+  {"key":"CRT_ENABLED","group":"Appearance","label":"Local CRT — console and launcher","type":"boolean","default":true},
+  {"key":"CRT_INTENSITY","group":"Appearance","label":"CRT intensity","type":"number","default":0.25,"min":0,"max":1,"step":0.01},
+  {"key":"WINDOW_CHAMFER","group":"Appearance","label":"Application window chamfers","type":"boolean","default":true},
+  {"key":"WINDOW_CORNER","group":"Appearance","label":"Application corner cut — pixels","type":"number","default":14,"min":0,"max":40,"step":1},
+  {"key":"COGITATOR_PROP","group":"Surfaces","label":"Auspex console","type":"boolean","default":true},
+  {"key":"COGITATOR_PROP_POSITION","group":"Surfaces","label":"Console position","type":"choice","default":"right","choices":["left","right"]},
+  {"key":"COGITATOR_PROP_OPACITY","group":"Surfaces","label":"Console opacity","type":"number","default":0.92,"min":0.4,"max":1,"step":0.01},
+  {"key":"BACKGROUND_BURN","group":"Surfaces","label":"Background phosphor burn","type":"boolean","default":true},
+  {"key":"BACKGROUND_BURN_OPACITY","group":"Surfaces","label":"Background burn opacity","type":"number","default":0.08,"min":0,"max":0.3,"step":0.01},
+  {"key":"WORKSPACE_RITES","group":"Surfaces","label":"Workspace channel rites","type":"boolean","default":true},
+  {"key":"TEXT_STREAMING","group":"Surfaces","label":"Communique text streaming","type":"boolean","default":true},
+  {"key":"ANIMATION_LEVEL","group":"Motion","label":"Motion doctrine","type":"choice","default":"full","choices":["minimal","normal","full"]},
+  {"key":"FLICKER","group":"Motion","label":"Flicker — full motion only","type":"number","default":0.05,"min":0,"max":0.3,"step":0.01},
+  {"key":"NOISE","group":"Motion","label":"Phosphor grain — full motion only","type":"number","default":0.03,"min":0,"max":0.3,"step":0.01},
+  {"key":"PERSISTENCE","group":"Motion","label":"Sweep persistence","type":"number","default":0.15,"min":0,"max":1,"step":0.01},
+  {"key":"GHOSTING","group":"Motion","label":"Sweep ghosting","type":"number","default":0.10,"min":0,"max":1,"step":0.01},
+  {"key":"BRIGHTNESS_FALLOFF","group":"Motion","label":"Console edge falloff","type":"boolean","default":true},
+  {"key":"SCREEN_BURN","group":"Motion","label":"SIGMA-IX burn watermark","type":"boolean","default":false}
+]

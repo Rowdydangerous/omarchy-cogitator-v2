@@ -85,7 +85,7 @@ Item {
         if (opened) {
             selected = 0
             filter = ""
-            Qt.callLater(function() { keyCatcher.forceActiveFocus() })
+            // Each visible PanelWindow focuses its own key catcher below.
         }
     }
 

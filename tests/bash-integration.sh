@@ -1,5 +1,5 @@
 #!/bin/bash
-# Sources shell/cogitator.bash in a fake HOME: engaged prompt appears iff the
+# Sources extras/bash/cogitator.bash in a fake HOME: engaged prompt appears iff the
 # snapshot exists, and the original prompt always comes back afterwards.
 set -euo pipefail
 ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
@@ -20,6 +20,6 @@ HOME="$test_home" XDG_STATE_HOME="$test_home/.local/state" \
     [[ $PS1 == "ORIGINAL> " ]]
     cogitator_rite_disable
     [[ $PS1 == "ORIGINAL> " ]]
-  ' _ "$ROOT/shell/cogitator.bash"
+  ' _ "$ROOT/extras/bash/cogitator.bash"
 
 printf 'Bash integration test passed.\n'

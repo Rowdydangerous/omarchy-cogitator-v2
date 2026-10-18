@@ -2,11 +2,11 @@
 # COGITATOR-V2 — single centralized config.
 # Installed to ~/.config/cogitator-v2/cogitator.conf on enable (your edits
 # there are never overwritten). Edit with `cogitator configure` — saving
-# applies automatically. Every value below is read live; most take effect
-# on `cogitator apply` (full shell restart), palette switches apply at
-# once via `cogitator palette <name>`.
+# applies settings live. The control panel batches edits with Apply/Revert.
+# `cogitator apply` deploys source changes and restarts the shell; palette
+# switches apply via `cogitator palette <name>`.
 # Conventions: true/false for switches, 0.0-1.0 for strengths unless noted.
-# Keys marked RESERVED are accepted but not wired to anything yet.
+# Only implemented settings appear here. Future ideas live in docs/architecture.md.
 # ============================================================================
 
 # --- Palette ---------------------------------------------------------------
@@ -30,18 +30,6 @@ CRT_ENABLED=true
 # (static scanlines + vignette, ~1% idle cost). While on, the local
 # scanlines soften automatically so the two never double up.
 CRT_GLOBAL=true
-
-# SCANLINES: RESERVED (local scanlines currently follow CRT_ENABLED).
-SCANLINES=true
-
-# PHOSPHOR_GLOW: RESERVED (glow strength of bright text).
-PHOSPHOR_GLOW=0.35
-
-# BLOOM: RESERVED (halo around bright elements).
-BLOOM=0.20
-
-# VIGNETTE: RESERVED (use BRIGHTNESS_FALLOFF, which is wired).
-VIGNETTE=true
 
 # FLICKER: whole-frame breathing flicker strength, 0.0-0.3. 0.05 is a
 # whisper; 0.0 disables. Full animation tier only.
@@ -86,18 +74,7 @@ BACKGROUND_BURN=true
 # starts competing with wallpaper.
 BACKGROUND_BURN_OPACITY=0.08
 
-# BACKGROUND_DATA_DENSITY: RESERVED (ghost-text density).
-BACKGROUND_DATA_DENSITY=0.35
-
-# BACKGROUND_ANIMATION_SPEED: RESERVED (the burn layer is currently static
-# on purpose — a drifting full-screen layer cost ~15% CPU; motion lives in
-# the prop sweep instead).
-BACKGROUND_ANIMATION_SPEED=0.20
-
 # --- Motion ------------------------------------------------------------------
-# HOLOGRAPHIC_EFFECTS: RESERVED (master switch for projected-light styling).
-HOLOGRAPHIC_EFFECTS=true
-
 # ANIMATION_LEVEL: full (everything), normal (sweep + streaming text, no
 # flicker/grain), minimal (frozen consoles; telemetry numbers still update).
 # Measured quickshell CPU, i7-1165G7: full ~10%, normal ~7%, minimal ~4%.
@@ -106,9 +83,6 @@ ANIMATION_LEVEL="full"
 # --- Machine voice -------------------------------------------------------------
 # TEXT_STREAMING: communiques type themselves out character by character.
 TEXT_STREAMING=true
-
-# TEXT_SPEED: RESERVED (single character rate for now).
-TEXT_SPEED="normal"
 
 # WORKSPACE_RITES: switching workspace fires a "+++ CHANNEL 0N +++" OSD
 # and a "CHANNEL 0N SYNCHRONIZED" communique in the prop.

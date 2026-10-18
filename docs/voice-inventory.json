@@ -1,0 +1,6146 @@
+{
+  "object": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 229,
+      "role": "review",
+      "context": "if (!raw || typeof raw !== \"object\") return null"
+    },
+    {
+      "file": "plugins/bar/BarModel.js",
+      "line": 2,
+      "role": "review",
+      "context": "return !!value && typeof value === \"object\" && !Array.isArray(value)"
+    },
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 5,
+      "role": "review",
+      "context": "if (!value || typeof value !== \"object\") return null"
+    },
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 22,
+      "role": "review",
+      "context": "if (!parsed || typeof parsed !== \"object\") return defaultStatus()"
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 51,
+      "role": "review",
+      "context": "if (typeof parsed !== \"object\" || parsed === null) return []"
+    },
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 8,
+      "role": "review",
+      "context": "if (!data || typeof data !== \"object\") return unset"
+    }
+  ],
+  "Usage sync mkdir failed": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 320,
+      "role": "review",
+      "context": "if (root.syncConfigured()) root.syncStatusText = \"Usage sync mkdir failed\""
+    }
+  ],
+  "Usage sync scan failed": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 333,
+      "role": "review",
+      "context": "if (exitCode !== 0 && root.syncConfigured()) root.syncStatusText = \"Usage sync scan failed\""
+    }
+  ],
+  "enabled": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 367,
+      "role": "review",
+      "context": "return text === \"on\" || text === \"enabled\" || text === \"true\" || text === \"yes\" || text === \"1\""
+    },
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 238,
+      "role": "review",
+      "context": "if (!changed) return enabled ? \"disabled\" : \"enabled\""
+    },
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 244,
+      "role": "review",
+      "context": "return enabled ? \"disabled\" : \"enabled\""
+    },
+    {
+      "file": "plugins/nightlight/Service.qml",
+      "line": 101,
+      "role": "review",
+      "context": "return \"enabled\""
+    },
+    {
+      "file": "plugins/nightlight/Service.qml",
+      "line": 112,
+      "role": "review",
+      "context": "return enabling ? \"enabled\" : \"disabled\""
+    }
+  ],
+  "true": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 367,
+      "role": "review",
+      "context": "return text === \"on\" || text === \"enabled\" || text === \"true\" || text === \"yes\" || text === \"1\""
+    },
+    {
+      "file": "plugins/lock/Service.qml",
+      "line": 520,
+      "role": "review",
+      "context": "return root.locked ? \"true\" : \"false\""
+    }
+  ],
+  "yes": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 367,
+      "role": "review",
+      "context": "return text === \"on\" || text === \"enabled\" || text === \"true\" || text === \"yes\" || text === \"1\""
+    }
+  ],
+  ".json": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 458,
+      "role": "review",
+      "context": "return value.length > 100 ? value.substring(0, 95) + \".json\" : value"
+    },
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 298,
+      "role": "review",
+      "context": "return imageStem(entry) + \".json\""
+    }
+  ],
+  "gpt": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 718,
+      "role": "review",
+      "context": "if (word === \"gpt\") return \"GPT\""
+    }
+  ],
+  "GPT": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 718,
+      "role": "review",
+      "context": "if (word === \"gpt\") return \"GPT\""
+    }
+  ],
+  "deepseek": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 719,
+      "role": "review",
+      "context": "if (word === \"deepseek\") return \"DeepSeek\""
+    }
+  ],
+  "DeepSeek": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 719,
+      "role": "review",
+      "context": "if (word === \"deepseek\") return \"DeepSeek\""
+    }
+  ],
+  "Unknown": [
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 727,
+      "role": "review",
+      "context": "if (!id) return \"Unknown\""
+    },
+    {
+      "file": "plugins/agents/Main.qml",
+      "line": 746,
+      "role": "review",
+      "context": "return words.length > 0 ? words.join(\" \") : \"Unknown\""
+    },
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 65,
+      "role": "review",
+      "context": "if (!node) return \"Unknown\""
+    },
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 69,
+      "role": "review",
+      "context": "return friendlyDeviceLabel(node.description || p[\"node.description\"] || node.name || \"Unknown\")"
+    },
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 455,
+      "role": "review",
+      "context": "return slash !== -1 ? id.substring(slash + 1) : (id || \"Unknown\")"
+    },
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 35,
+      "role": "review",
+      "context": "return shortDnsName(dnsName) || host || \"Unknown\""
+    },
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 135,
+      "role": "review",
+      "context": "if (!peer) return \"Unknown\""
+    },
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 138,
+      "role": "review",
+      "context": "if (city === \"\" || city === \"Any\") return country || String(peer.DisplayName || \"Unknown\")"
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 455,
+      "role": "review",
+      "context": "return slash !== -1 ? id.substring(slash + 1) : (id || \"Unknown\")"
+    }
+  ],
+  "week": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 76,
+      "role": "review",
+      "context": "return text.indexOf(\"week\") >= 0 || text.indexOf(\"7-day\") >= 0 || text.indexOf(\"seven\") >= 0"
+    }
+  ],
+  "7-day": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 76,
+      "role": "review",
+      "context": "return text.indexOf(\"week\") >= 0 || text.indexOf(\"7-day\") >= 0 || text.indexOf(\"seven\") >= 0"
+    }
+  ],
+  "seven": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 76,
+      "role": "review",
+      "context": "return text.indexOf(\"week\") >= 0 || text.indexOf(\"7-day\") >= 0 || text.indexOf(\"seven\") >= 0"
+    }
+  ],
+  "month": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 82,
+      "role": "review",
+      "context": "if (text.indexOf(\"month\") >= 0 || text.indexOf(\"30-day\") >= 0) return 30 * 24 * 3600 * 1000"
+    },
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 93,
+      "role": "review",
+      "context": "if (text.indexOf(\"month\") >= 0) return \"Monthly\""
+    }
+  ],
+  "30-day": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 82,
+      "role": "review",
+      "context": "if (text.indexOf(\"month\") >= 0 || text.indexOf(\"30-day\") >= 0) return 30 * 24 * 3600 * 1000"
+    }
+  ],
+  "Monthly": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 93,
+      "role": "review",
+      "context": "if (text.indexOf(\"month\") >= 0) return \"Monthly\""
+    }
+  ],
+  "Weekly": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 94,
+      "role": "review",
+      "context": "if (windowIsLong(text)) return \"Weekly\""
+    }
+  ],
+  "session": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 95,
+      "role": "review",
+      "context": "if (text.indexOf(\"session\") >= 0 || windowSpanMs(label) > 0) return \"Session\""
+    }
+  ],
+  "Session": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 95,
+      "role": "review",
+      "context": "if (text.indexOf(\"session\") >= 0 || windowSpanMs(label) > 0) return \"Session\""
+    }
+  ],
+  "Limit": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 97,
+      "role": "review",
+      "context": "return plain === \"\" ? \"Limit\" : plain"
+    }
+  ],
+  "now": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 142,
+      "role": "review",
+      "context": "if (!(ms > 0)) return \"now\""
+    }
+  ],
+  "USD": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 158,
+      "role": "review",
+      "context": "if (code === \"USD\") return \"$\""
+    }
+  ],
+  "EUR": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 159,
+      "role": "review",
+      "context": "if (code === \"EUR\") return \"\u20ac\""
+    }
+  ],
+  "GBP": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 160,
+      "role": "review",
+      "context": "if (code === \"GBP\") return \"\u00a3\""
+    }
+  ],
+  "Subscription": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 185,
+      "role": "review",
+      "context": "if (tier === \"\") return \"Subscription\""
+    }
+  ],
+  "Sun": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 201,
+      "role": "review",
+      "context": "return [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"][parsed.getDay()]"
+    }
+  ],
+  "Mon": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 201,
+      "role": "review",
+      "context": "return [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"][parsed.getDay()]"
+    }
+  ],
+  "Tue": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 201,
+      "role": "review",
+      "context": "return [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"][parsed.getDay()]"
+    }
+  ],
+  "Wed": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 201,
+      "role": "review",
+      "context": "return [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"][parsed.getDay()]"
+    }
+  ],
+  "Thu": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 201,
+      "role": "review",
+      "context": "return [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"][parsed.getDay()]"
+    }
+  ],
+  "Fri": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 201,
+      "role": "review",
+      "context": "return [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"][parsed.getDay()]"
+    }
+  ],
+  "Sat": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 201,
+      "role": "review",
+      "context": "return [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"][parsed.getDay()]"
+    }
+  ],
+  "Today": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 205,
+      "role": "review",
+      "context": "if (today) return \"Today\""
+    }
+  ],
+  " prompts \u00b7 ": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 220,
+      "role": "review",
+      "context": "text += \" \u00b7 \" + Number(provider.todayPrompts || 0) + \" prompts \u00b7 \""
+    }
+  ],
+  "Merged from ": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 266,
+      "role": "review",
+      "context": "return \"Merged from \" + provider.syncDeviceCount + \" device\" + (provider.syncDeviceCount === 1 ? \"\" : \"s\")"
+    }
+  ],
+  " device": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 266,
+      "role": "review",
+      "context": "return \"Merged from \" + provider.syncDeviceCount + \" device\" + (provider.syncDeviceCount === 1 ? \"\" : \"s\")"
+    }
+  ],
+  "BALANCE": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 542,
+      "role": "display",
+      "context": "text: \"BALANCE\""
+    }
+  ],
+  "Prepaid credits": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 553,
+      "role": "display",
+      "context": "text: \"Prepaid credits\""
+    }
+  ],
+  "LIMITS": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 598,
+      "role": "display",
+      "context": "text: \"LIMITS\""
+    }
+  ],
+  "TOKENS BY DAY": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 631,
+      "role": "display",
+      "context": "text: \"TOKENS BY DAY\""
+    }
+  ],
+  "TOKENS BY MODEL": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 667,
+      "role": "display",
+      "context": "text: \"TOKENS BY MODEL\""
+    }
+  ],
+  "Resets in ": [
+    {
+      "file": "plugins/agents/Panel.qml",
+      "line": 758,
+      "role": "review",
+      "context": "return remainingMs > 0 ? \"Resets in \" + root.formatDuration(remainingMs) : \"\""
+    }
+  ],
+  "Muted": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 26,
+      "role": "review",
+      "context": "if (muted) return \"Muted\""
+    }
+  ],
+  "Silenced": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 28,
+      "role": "review",
+      "context": "if (p === 0) return \"Silenced\""
+    }
+  ],
+  "Concert hall": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 29,
+      "role": "review",
+      "context": "if (p >= 100) return \"Concert hall\""
+    }
+  ],
+  "Party mode": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 30,
+      "role": "review",
+      "context": "if (p >= 85) return \"Party mode\""
+    }
+  ],
+  "Cranked up": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 31,
+      "role": "review",
+      "context": "if (p >= 70) return \"Cranked up\""
+    }
+  ],
+  "Steady groove": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 32,
+      "role": "review",
+      "context": "if (p >= 50) return \"Steady groove\""
+    }
+  ],
+  "Easy listening": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 33,
+      "role": "review",
+      "context": "if (p >= 30) return \"Easy listening\""
+    }
+  ],
+  "Murmur": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 34,
+      "role": "review",
+      "context": "if (p >= 15) return \"Murmur\""
+    }
+  ],
+  "Whisper": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 35,
+      "role": "review",
+      "context": "return \"Whisper\""
+    }
+  ],
+  "node.description": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 69,
+      "role": "review",
+      "context": "return friendlyDeviceLabel(node.description || p[\"node.description\"] || node.name || \"Unknown\")"
+    }
+  ],
+  "headphone": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 82,
+      "role": "review",
+      "context": "return blob.indexOf(\"headphone\") !== -1"
+    }
+  ],
+  "bluetooth": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 98,
+      "role": "review",
+      "context": "if (blob.indexOf(\"bluetooth\") !== -1) return \"\udb80\udcaf\""
+    },
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 111,
+      "role": "review",
+      "context": "if (blob.indexOf(\"bluetooth\") !== -1) return \"\udb80\udcaf\""
+    }
+  ],
+  "hdmi": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 99,
+      "role": "review",
+      "context": "if (blob.indexOf(\"hdmi\") !== -1 || blob.indexOf(\"display\") !== -1) return \"\udb80\udf79\""
+    }
+  ],
+  "display": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 99,
+      "role": "review",
+      "context": "if (blob.indexOf(\"hdmi\") !== -1 || blob.indexOf(\"display\") !== -1) return \"\udb80\udf79\""
+    },
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 18,
+      "role": "review",
+      "context": "if (n === \"brightness\" || n === \"display\") return \"\udb80\udf79\""
+    }
+  ],
+  "headset": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 110,
+      "role": "review",
+      "context": "if (blob.indexOf(\"headset\") !== -1) return \"\udb80\udecb\""
+    }
+  ],
+  "webcam": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 112,
+      "role": "review",
+      "context": "if (blob.indexOf(\"webcam\") !== -1 || blob.indexOf(\"camera\") !== -1) return \"\udb80\udd00\""
+    }
+  ],
+  "camera": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 112,
+      "role": "review",
+      "context": "if (blob.indexOf(\"webcam\") !== -1 || blob.indexOf(\"camera\") !== -1) return \"\udb80\udd00\""
+    }
+  ],
+  "audio-src": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 132,
+      "role": "review",
+      "context": "return streamLabelKey(label) === \"audio-src\""
+    }
+  ],
+  "application.name": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 138,
+      "role": "review",
+      "context": "return p[\"application.name\"]"
+    },
+    {
+      "file": "plugins/media/MediaModel.js",
+      "line": 59,
+      "role": "review",
+      "context": "return p[\"application.name\"]"
+    }
+  ],
+  "playerctld": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 153,
+      "role": "review",
+      "context": "return dbusName.indexOf(\"playerctld\") !== -1 || desktopEntry === \"playerctld\""
+    },
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 153,
+      "role": "review",
+      "context": "return dbusName.indexOf(\"playerctld\") !== -1 || desktopEntry === \"playerctld\""
+    },
+    {
+      "file": "plugins/media/MediaModel.js",
+      "line": 4,
+      "role": "review",
+      "context": "return dbusName.indexOf(\"playerctld\") !== -1 || desktopEntry === \"playerctld\""
+    },
+    {
+      "file": "plugins/media/MediaModel.js",
+      "line": 4,
+      "role": "review",
+      "context": "return dbusName.indexOf(\"playerctld\") !== -1 || desktopEntry === \"playerctld\""
+    }
+  ],
+  "Stream": [
+    {
+      "file": "plugins/audio/Model.js",
+      "line": 219,
+      "role": "review",
+      "context": "if (!node) return \"Stream\""
+    }
+  ],
+  "Mute": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 177,
+      "role": "review",
+      "context": "readonly property string toggleHint: anyAudible ? \"Mute\" : \"Unmute\""
+    }
+  ],
+  "Unmute": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 177,
+      "role": "review",
+      "context": "readonly property string toggleHint: anyAudible ? \"Mute\" : \"Unmute\""
+    }
+  ],
+  "output": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 187,
+      "role": "review",
+      "context": "if (section === \"output\") return displayAudioSinks.length"
+    },
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 194,
+      "role": "review",
+      "context": "if (section === \"output\") return true"
+    },
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 201,
+      "role": "review",
+      "context": "if (section === \"output\") return true"
+    }
+  ],
+  "input": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 188,
+      "role": "review",
+      "context": "if (section === \"input\") return displayAudioSources.length"
+    },
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 195,
+      "role": "review",
+      "context": "if (section === \"input\") return displayAudioSources.length > 0 || !!source"
+    },
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 202,
+      "role": "review",
+      "context": "if (section === \"input\") return !!source"
+    },
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 201,
+      "role": "review",
+      "context": "if (root.mode === \"input\") return 0"
+    },
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 822,
+      "role": "review",
+      "context": "dmenuPrompt = String(payload.prompt || (mode === \"input\" ? \"Input\" : \"Select\"))"
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 205,
+      "role": "review",
+      "context": "if (root.mode === \"input\") return 0"
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 858,
+      "role": "review",
+      "context": "dmenuPrompt = String(payload.prompt || (mode === \"input\" ? \"Input\" : \"Select\"))"
+    }
+  ],
+  "streams": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 189,
+      "role": "review",
+      "context": "if (section === \"streams\") return displayAudioStreams.length"
+    },
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 196,
+      "role": "review",
+      "context": "if (section === \"streams\") return displayAudioStreams.length > 0"
+    }
+  ],
+  "header": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 291,
+      "role": "review",
+      "context": "if (focusSection === \"header\") { toggleAllMuted(); return }"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 334,
+      "role": "review",
+      "context": "if (!sections || sections.length === 0) { focusSection = \"header\"; actionFocused = false; return }"
+    }
+  ],
+  "Audio": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 754,
+      "role": "display",
+      "context": "text: \"Audio\""
+    },
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1664,
+      "role": "display",
+      "context": "{ value: \"audio\", label: \"Audio\", description: \"Output sink + volume\" },"
+    }
+  ],
+  "OUTPUT": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 796,
+      "role": "display",
+      "context": "text: \"OUTPUT\""
+    }
+  ],
+  "INPUT": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 883,
+      "role": "display",
+      "context": "text: \"INPUT\""
+    }
+  ],
+  "SOURCES": [
+    {
+      "file": "plugins/audio/Panel.qml",
+      "line": 986,
+      "role": "display",
+      "context": "text: \"SOURCES\""
+    }
+  ],
+  "function": [
+    {
+      "file": "plugins/bar/Bar.qml",
+      "line": 792,
+      "role": "review",
+      "context": "if (!item || typeof item.open !== \"function\") return false"
+    },
+    {
+      "file": "plugins/bar/Bar.qml",
+      "line": 799,
+      "role": "review",
+      "context": "if (!item || typeof item.close !== \"function\") return false"
+    },
+    {
+      "file": "plugins/bar/Bar.qml",
+      "line": 950,
+      "role": "review",
+      "context": "if (!root.shell || typeof root.shell.mutateShellConfig !== \"function\") return false"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 428,
+      "role": "review",
+      "context": "if (!bar || typeof bar.moduleWidgets !== \"function\") return null"
+    }
+  ],
+  "tooltip": [
+    {
+      "file": "plugins/bar/Bar.qml",
+      "line": 1408,
+      "role": "review",
+      "context": "borderSpec: Border.surfaceSpec(\"tooltip\", \"border\", Color.tooltip.border, 1)"
+    },
+    {
+      "file": "plugins/bar/Bar.qml",
+      "line": 2109,
+      "role": "review",
+      "context": "outputTooltip = data.tooltip || String(setting(\"tooltip\", \"\"))"
+    },
+    {
+      "file": "plugins/bar/Bar.qml",
+      "line": 2115,
+      "role": "display",
+      "context": "tooltipText: outputTooltip || String(setting(\"tooltip\", \"\"))"
+    },
+    {
+      "file": "shared/frames/PanelToolTip.qml",
+      "line": 28,
+      "role": "review",
+      "context": "readonly property var panelBorderSpec: Border.localOrSurfaceSpec(\"tooltip\", \"border\", panelBorder, Color.tooltip.border, Style.normalBorderWidth)"
+    }
+  ],
+  "border": [
+    {
+      "file": "plugins/bar/Bar.qml",
+      "line": 1408,
+      "role": "review",
+      "context": "borderSpec: Border.surfaceSpec(\"tooltip\", \"border\", Color.tooltip.border, 1)"
+    },
+    {
+      "file": "plugins/polkit/PolkitAgent.qml",
+      "line": 20,
+      "role": "review",
+      "context": "property var borderSpec: Border.surfaceSpec(\"polkit\", errorFlash ? \"border-error\" : \"border\", errorFlash ? borderError : border, Math.max(1, Style.space(2)), \"border-alpha\")"
+    },
+    {
+      "file": "shared/frames/PanelToolTip.qml",
+      "line": 28,
+      "role": "review",
+      "context": "readonly property var panelBorderSpec: Border.localOrSurfaceSpec(\"tooltip\", \"border\", panelBorder, Color.tooltip.border, Style.normalBorderWidth)"
+    }
+  ],
+  "text": [
+    {
+      "file": "plugins/bar/Bar.qml",
+      "line": 2114,
+      "role": "display",
+      "context": "text: outputText || String(setting(\"text\", \"\"))"
+    },
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 3,
+      "role": "review",
+      "context": "return value.trim().length > 0 ? { type: \"text\", text: value } : null"
+    },
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 10,
+      "role": "review",
+      "context": "return text.trim().length > 0 ? { type: \"text\", text: text } : null"
+    },
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 110,
+      "role": "review",
+      "context": "if (!entry || entry.type !== \"text\") return []"
+    },
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 167,
+      "role": "review",
+      "context": "if (!entry || entry.type !== \"text\" || entry.text.length <= displayTextLimit) return entry"
+    },
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 171,
+      "role": "review",
+      "context": "return { type: \"text\", text: entry.text.slice(0, cut > 0 ? cut : displayTextLimit) }"
+    }
+  ],
+  "top": [
+    {
+      "file": "plugins/bar/BarModel.js",
+      "line": 7,
+      "role": "review",
+      "context": "return /^(top|bottom|left|right)$/.test(next) ? next : \"top\""
+    }
+  ],
+  "string": [
+    {
+      "file": "plugins/bar/BarModel.js",
+      "line": 21,
+      "role": "review",
+      "context": "if (typeof entry === \"string\") return entry"
+    },
+    {
+      "file": "plugins/bar/widgets/Indicators.qml",
+      "line": 25,
+      "role": "review",
+      "context": "if (typeof entry === \"string\") return entry"
+    },
+    {
+      "file": "plugins/bar/widgets/TrayModel.js",
+      "line": 13,
+      "role": "review",
+      "context": "if (typeof entry === \"string\") return entry"
+    },
+    {
+      "file": "plugins/indicators/Indicators.qml",
+      "line": 25,
+      "role": "review",
+      "context": "if (typeof entry === \"string\") return entry"
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 9,
+      "role": "review",
+      "context": "if (typeof value === \"string\" && value) return [value]"
+    },
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 173,
+      "role": "review",
+      "context": "if (typeof parsed[i] !== \"string\") return null"
+    },
+    {
+      "file": "plugins/tray/TrayModel.js",
+      "line": 13,
+      "role": "review",
+      "context": "if (typeof entry === \"string\") return entry"
+    }
+  ],
+  "command": [
+    {
+      "file": "plugins/bar/BarModel.js",
+      "line": 121,
+      "role": "review",
+      "context": "if (settings.exec) return \"command\""
+    }
+  ],
+  "qml": [
+    {
+      "file": "plugins/bar/BarModel.js",
+      "line": 122,
+      "role": "review",
+      "context": "if (settings.source) return \"qml\""
+    }
+  ],
+  "bash": [
+    {
+      "file": "plugins/bar/indicators/Dictation.qml",
+      "line": 27,
+      "role": "review",
+      "context": "command: [\"bash\", \"-c\", \"omarchy-voxtype-status\"]"
+    },
+    {
+      "file": "plugins/indicators/indicators/Dictation.qml",
+      "line": 27,
+      "role": "review",
+      "context": "command: [\"bash\", \"-c\", \"omarchy-voxtype-status\"]"
+    }
+  ],
+  "omarchy-voxtype-status": [
+    {
+      "file": "plugins/bar/indicators/Dictation.qml",
+      "line": 27,
+      "role": "review",
+      "context": "command: [\"bash\", \"-c\", \"omarchy-voxtype-status\"]"
+    },
+    {
+      "file": "plugins/indicators/indicators/Dictation.qml",
+      "line": 27,
+      "role": "review",
+      "context": "command: [\"bash\", \"-c\", \"omarchy-voxtype-status\"]"
+    }
+  ],
+  "pgrep": [
+    {
+      "file": "plugins/bar/indicators/ScreenRecording.qml",
+      "line": 18,
+      "role": "review",
+      "context": "statusProc.command = [\"pgrep\", \"--quiet\", \"-f\", \"^gpu-screen-recorder\"]"
+    },
+    {
+      "file": "plugins/indicators/indicators/ScreenRecording.qml",
+      "line": 18,
+      "role": "review",
+      "context": "statusProc.command = [\"pgrep\", \"--quiet\", \"-f\", \"^gpu-screen-recorder\"]"
+    }
+  ],
+  "--quiet": [
+    {
+      "file": "plugins/bar/indicators/ScreenRecording.qml",
+      "line": 18,
+      "role": "review",
+      "context": "statusProc.command = [\"pgrep\", \"--quiet\", \"-f\", \"^gpu-screen-recorder\"]"
+    },
+    {
+      "file": "plugins/indicators/indicators/ScreenRecording.qml",
+      "line": 18,
+      "role": "review",
+      "context": "statusProc.command = [\"pgrep\", \"--quiet\", \"-f\", \"^gpu-screen-recorder\"]"
+    }
+  ],
+  "^gpu-screen-recorder": [
+    {
+      "file": "plugins/bar/indicators/ScreenRecording.qml",
+      "line": 18,
+      "role": "review",
+      "context": "statusProc.command = [\"pgrep\", \"--quiet\", \"-f\", \"^gpu-screen-recorder\"]"
+    },
+    {
+      "file": "plugins/indicators/indicators/ScreenRecording.qml",
+      "line": 18,
+      "role": "review",
+      "context": "statusProc.command = [\"pgrep\", \"--quiet\", \"-f\", \"^gpu-screen-recorder\"]"
+    }
+  ],
+  "Indicator loader error": [
+    {
+      "file": "plugins/bar/widgets/Indicators.qml",
+      "line": 439,
+      "role": "review",
+      "context": "onStatusChanged: if (status === Loader.Error) console.warn(\"Indicator loader error\", indicatorSlot.indicatorId, source)"
+    },
+    {
+      "file": "plugins/indicators/Indicators.qml",
+      "line": 439,
+      "role": "review",
+      "context": "onStatusChanged: if (status === Loader.Error) console.warn(\"Indicator loader error\", indicatorSlot.indicatorId, source)"
+    }
+  ],
+  "hl-virtual-keyboard": [
+    {
+      "file": "plugins/bar/widgets/KeyboardLayoutModel.js",
+      "line": 73,
+      "role": "review",
+      "context": "return name.indexOf(\"hl-virtual-keyboard\") === 0 ? \"\" : name"
+    },
+    {
+      "file": "plugins/keyboard-layout/KeyboardLayoutModel.js",
+      "line": 73,
+      "role": "review",
+      "context": "return name.indexOf(\"hl-virtual-keyboard\") === 0 ? \"\" : name"
+    }
+  ],
+  "Microphone muted": [
+    {
+      "file": "plugins/bar/widgets/Microphone.qml",
+      "line": 43,
+      "role": "display",
+      "context": "tooltipText: root.muted ? \"Microphone muted\" : (root.inUse ? \"Microphone in use\" : \"Microphone live\")"
+    },
+    {
+      "file": "plugins/microphone/Microphone.qml",
+      "line": 43,
+      "role": "display",
+      "context": "tooltipText: root.muted ? \"Microphone muted\" : (root.inUse ? \"Microphone in use\" : \"Microphone live\")"
+    }
+  ],
+  "Microphone in use": [
+    {
+      "file": "plugins/bar/widgets/Microphone.qml",
+      "line": 43,
+      "role": "display",
+      "context": "tooltipText: root.muted ? \"Microphone muted\" : (root.inUse ? \"Microphone in use\" : \"Microphone live\")"
+    },
+    {
+      "file": "plugins/microphone/Microphone.qml",
+      "line": 43,
+      "role": "display",
+      "context": "tooltipText: root.muted ? \"Microphone muted\" : (root.inUse ? \"Microphone in use\" : \"Microphone live\")"
+    }
+  ],
+  "Microphone live": [
+    {
+      "file": "plugins/bar/widgets/Microphone.qml",
+      "line": 43,
+      "role": "display",
+      "context": "tooltipText: root.muted ? \"Microphone muted\" : (root.inUse ? \"Microphone in use\" : \"Microphone live\")"
+    },
+    {
+      "file": "plugins/microphone/Microphone.qml",
+      "line": 43,
+      "role": "display",
+      "context": "tooltipText: root.muted ? \"Microphone muted\" : (root.inUse ? \"Microphone in use\" : \"Microphone live\")"
+    }
+  ],
+  "Pending Omarchy Updates": [
+    {
+      "file": "plugins/bar/widgets/SystemUpdate.qml",
+      "line": 62,
+      "role": "display",
+      "context": "tooltipText: \"Pending Omarchy Updates\""
+    },
+    {
+      "file": "plugins/system-update/SystemUpdate.qml",
+      "line": 62,
+      "role": "display",
+      "context": "tooltipText: \"Pending Omarchy Updates\""
+    }
+  ],
+  "-symbolic": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 148,
+      "role": "review",
+      "context": "return name.slice(-9) === \"-symbolic\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 148,
+      "role": "review",
+      "context": "return name.slice(-9) === \"-symbolic\""
+    }
+  ],
+  "hidden": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 157,
+      "role": "review",
+      "context": "if (hiddenIds.indexOf(iid) !== -1) return \"hidden\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 157,
+      "role": "review",
+      "context": "if (hiddenIds.indexOf(iid) !== -1) return \"hidden\""
+    }
+  ],
+  "pinned": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 158,
+      "role": "review",
+      "context": "if (pinnedIds.indexOf(iid) !== -1) return \"pinned\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 158,
+      "role": "review",
+      "context": "if (pinnedIds.indexOf(iid) !== -1) return \"pinned\""
+    }
+  ],
+  "drawer": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 159,
+      "role": "review",
+      "context": "return \"drawer\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 159,
+      "role": "review",
+      "context": "return \"drawer\""
+    }
+  ],
+  "Tray icons": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 413,
+      "role": "display",
+      "context": "text: \"Tray icons\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 413,
+      "role": "display",
+      "context": "text: \"Tray icons\""
+    }
+  ],
+  "Pinned icons stay visible. Hidden icons never show.": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 421,
+      "role": "display",
+      "context": "text: \"Pinned icons stay visible. Hidden icons never show.\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 421,
+      "role": "display",
+      "context": "text: \"Pinned icons stay visible. Hidden icons never show.\""
+    }
+  ],
+  "No tray items reporting.": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 431,
+      "role": "display",
+      "context": "text: \"No tray items reporting.\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 431,
+      "role": "display",
+      "context": "text: \"No tray items reporting.\""
+    }
+  ],
+  "Unpin": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 488,
+      "role": "display",
+      "context": "text: rowRoot.isPinned ? \"Unpin\" : \"Pin\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 488,
+      "role": "display",
+      "context": "text: rowRoot.isPinned ? \"Unpin\" : \"Pin\""
+    }
+  ],
+  "Pin": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 488,
+      "role": "display",
+      "context": "text: rowRoot.isPinned ? \"Unpin\" : \"Pin\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 488,
+      "role": "display",
+      "context": "text: rowRoot.isPinned ? \"Unpin\" : \"Pin\""
+    }
+  ],
+  "Show": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 503,
+      "role": "display",
+      "context": "text: rowRoot.isHidden ? \"Show\" : \"Hide\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 503,
+      "role": "display",
+      "context": "text: rowRoot.isHidden ? \"Show\" : \"Hide\""
+    }
+  ],
+  "Hide": [
+    {
+      "file": "plugins/bar/widgets/Tray.qml",
+      "line": 503,
+      "role": "display",
+      "context": "text: rowRoot.isHidden ? \"Show\" : \"Hide\""
+    },
+    {
+      "file": "plugins/tray/Tray.qml",
+      "line": 503,
+      "role": "display",
+      "context": "text: rowRoot.isHidden ? \"Show\" : \"Hide\""
+    }
+  ],
+  "localsend": [
+    {
+      "file": "plugins/bar/widgets/TrayModel.js",
+      "line": 37,
+      "role": "review",
+      "context": "return itemNamed(item, \"localsend\")"
+    },
+    {
+      "file": "plugins/tray/TrayModel.js",
+      "line": 37,
+      "role": "review",
+      "context": "return itemNamed(item, \"localsend\")"
+    }
+  ],
+  "connected": [
+    {
+      "file": "plugins/bluetooth/Model.js",
+      "line": 151,
+      "role": "review",
+      "context": "if (section === \"connected\") return lists.connected || []"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 114,
+      "role": "review",
+      "context": "if (section === \"connected\") return connectedDevices.length"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 121,
+      "role": "review",
+      "context": "if (section === \"connected\") return connectedDevices.length > 0"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 918,
+      "role": "review",
+      "context": "return sectionName === \"connected\" ? \"\" : \"Connected\""
+    }
+  ],
+  "known": [
+    {
+      "file": "plugins/bluetooth/Model.js",
+      "line": 152,
+      "role": "review",
+      "context": "if (section === \"known\") return lists.known || []"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 115,
+      "role": "review",
+      "context": "if (section === \"known\") return knownDevices.length"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 122,
+      "role": "review",
+      "context": "if (section === \"known\") return knownDevices.length > 0"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 175,
+      "role": "review",
+      "context": "if (focusSection !== \"known\" && focusSection !== \"discovered\") return -1"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 186,
+      "role": "review",
+      "context": "return rows[index].section === \"known\" ? \"PAIRED\" : \"AVAILABLE\""
+    }
+  ],
+  "discovered": [
+    {
+      "file": "plugins/bluetooth/Model.js",
+      "line": 153,
+      "role": "review",
+      "context": "if (section === \"discovered\") return lists.discovered || []"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 116,
+      "role": "review",
+      "context": "if (section === \"discovered\") return discoveredDevices.length"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 123,
+      "role": "review",
+      "context": "if (section === \"discovered\") return adapter && adapter.discovering && discoveredDevices.length > 0"
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 175,
+      "role": "review",
+      "context": "if (focusSection !== \"known\" && focusSection !== \"discovered\") return -1"
+    }
+  ],
+  "No adapter": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 78,
+      "role": "review",
+      "context": "if (!adapter) return \"No adapter\""
+    }
+  ],
+  "Turned Off": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 79,
+      "role": "review",
+      "context": "if (!adapter.enabled) return \"Turned Off\""
+    }
+  ],
+  "Turn Bluetooth off": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 104,
+      "role": "review",
+      "context": "readonly property string toggleHint: root.adapter && root.adapter.enabled ? \"Turn Bluetooth off\" : \"Turn Bluetooth on\""
+    },
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 970,
+      "role": "display",
+      "context": "tooltipText: \"Turn Bluetooth off\""
+    }
+  ],
+  "Turn Bluetooth on": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 104,
+      "role": "review",
+      "context": "readonly property string toggleHint: root.adapter && root.adapter.enabled ? \"Turn Bluetooth off\" : \"Turn Bluetooth on\""
+    }
+  ],
+  "PAIRED": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 186,
+      "role": "review",
+      "context": "return rows[index].section === \"known\" ? \"PAIRED\" : \"AVAILABLE\""
+    }
+  ],
+  "AVAILABLE": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 186,
+      "role": "review",
+      "context": "return rows[index].section === \"known\" ? \"PAIRED\" : \"AVAILABLE\""
+    }
+  ],
+  "omarchy-bluetooth-device": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 267,
+      "role": "review",
+      "context": "return [\"omarchy-bluetooth-device\", action, address]"
+    }
+  ],
+  "opacity": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 605,
+      "role": "review",
+      "context": "target: heroStatus; property: \"opacity\""
+    },
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 612,
+      "role": "review",
+      "context": "target: heroStatus; property: \"opacity\""
+    },
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 248,
+      "role": "review",
+      "context": "target: heroStatus; property: \"opacity\""
+    },
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 258,
+      "role": "review",
+      "context": "target: heroStatus; property: \"opacity\""
+    }
+  ],
+  "Bluetooth": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 741,
+      "role": "display",
+      "context": "text: \"Bluetooth\""
+    },
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1666,
+      "role": "display",
+      "context": "{ value: \"bluetooth\", label: \"Bluetooth\", description: \"Paired and nearby devices\" },"
+    }
+  ],
+  "CONNECTED": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 778,
+      "role": "display",
+      "context": "text: \"CONNECTED\""
+    }
+  ],
+  "No Bluetooth adapter": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 870,
+      "role": "display",
+      "context": "text: !root.adapter ? \"No Bluetooth adapter\""
+    }
+  ],
+  "Disconnect": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 897,
+      "role": "review",
+      "context": "if (isConnected) return \"Disconnect\""
+    }
+  ],
+  "Pair": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 898,
+      "role": "review",
+      "context": "if (isDiscovered) return \"Pair\""
+    }
+  ],
+  "Connect": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 899,
+      "role": "review",
+      "context": "return \"Connect\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1924,
+      "role": "display",
+      "context": "tooltipText: \"Connect\""
+    }
+  ],
+  "forgetting": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 914,
+      "role": "review",
+      "context": "if (action === \"forgetting\") return \"Forgetting\u2026\""
+    }
+  ],
+  "Forgetting\u2026": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 914,
+      "role": "review",
+      "context": "if (action === \"forgetting\") return \"Forgetting\u2026\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1655,
+      "role": "review",
+      "context": "if (isBusy && root.actionKind === \"forget\") return \"Forgetting\u2026\""
+    }
+  ],
+  "disconnecting": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 915,
+      "role": "review",
+      "context": "if (action === \"disconnecting\" || devState === 2) return \"Disconnecting\u2026\""
+    }
+  ],
+  "Disconnecting\u2026": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 915,
+      "role": "review",
+      "context": "if (action === \"disconnecting\" || devState === 2) return \"Disconnecting\u2026\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1654,
+      "role": "review",
+      "context": "if (isBusy && root.actionKind === \"disconnect\") return \"Disconnecting\u2026\""
+    }
+  ],
+  "Connected": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 918,
+      "role": "review",
+      "context": "return sectionName === \"connected\" ? \"\" : \"Connected\""
+    },
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1788,
+      "role": "display",
+      "context": "text: \"Connected\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1657,
+      "role": "review",
+      "context": "if (isConnected) return \"Connected\""
+    },
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 256,
+      "role": "review",
+      "context": "statusText = \"Connected\""
+    }
+  ],
+  "connecting": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 920,
+      "role": "review",
+      "context": "if (action === \"connecting\" || devState === 3 || dev.pairing === true) return \"Connecting\u2026\""
+    }
+  ],
+  "Connecting\u2026": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 920,
+      "role": "review",
+      "context": "if (action === \"connecting\" || devState === 3 || dev.pairing === true) return \"Connecting\u2026\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1653,
+      "role": "review",
+      "context": "if (isBusy && root.actionKind === \"connect\") return \"Connecting\u2026\""
+    }
+  ],
+  "Device": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 997,
+      "role": "display",
+      "context": "text: root.deviceLabel(row.dev) || \"Device\""
+    }
+  ],
+  "Forget": [
+    {
+      "file": "plugins/bluetooth/Panel.qml",
+      "line": 1022,
+      "role": "display",
+      "context": "tooltipText: \"Forget\""
+    }
+  ],
+  "Delete": [
+    {
+      "file": "plugins/clipboard/Clipboard.qml",
+      "line": 407,
+      "role": "display",
+      "context": "confirmText: \"Delete\""
+    }
+  ],
+  "Search clipboard\u2026": [
+    {
+      "file": "plugins/clipboard/Clipboard.qml",
+      "line": 439,
+      "role": "display",
+      "context": "text: root.filterText || \"Search clipboard\u2026\""
+    }
+  ],
+  "Clipboard is empty": [
+    {
+      "file": "plugins/clipboard/Clipboard.qml",
+      "line": 600,
+      "role": "display",
+      "context": "text: root.history.length === 0 ? \"Clipboard is empty\" : \"No matches for \u201c\" + root.filterText + \"\u201d\""
+    }
+  ],
+  "No matches for \u201c": [
+    {
+      "file": "plugins/clipboard/Clipboard.qml",
+      "line": 600,
+      "role": "display",
+      "context": "text: root.history.length === 0 ? \"Clipboard is empty\" : \"No matches for \u201c\" + root.filterText + \"\u201d\""
+    },
+    {
+      "file": "plugins/emojis/Emojis.qml",
+      "line": 332,
+      "role": "display",
+      "context": "text: \"No matches for \u201c\" + root.filterText + \"\u201d\""
+    },
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 1409,
+      "role": "display",
+      "context": "text: root.filterText ? \"No matches for \u201c\" + root.filterText + \"\u201d\" : \"Nothing here yet\""
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 1515,
+      "role": "display",
+      "context": "text: root.filterText ? \"No matches for \u201c\" + root.filterText + \"\u201d\" : \"Nothing here yet\""
+    }
+  ],
+  "image": [
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 31,
+      "role": "review",
+      "context": "if (entry.type === \"image\") return \"image:\" + String(entry.path || \"\")"
+    },
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 94,
+      "role": "review",
+      "context": "if (entry.type === \"image\") return \"image screenshot \" + String(entry.mime || \"\") + \" \" + String(entry.capturedAt || \"\")"
+    },
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 147,
+      "role": "review",
+      "context": "if (entry.type === \"image\") return imagePreviewText(entry)"
+    },
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 58,
+      "role": "review",
+      "context": "if (IMAGE_EXTENSIONS[ext]) return \"image\""
+    },
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 66,
+      "role": "review",
+      "context": "if (kind === \"image\") return \"\udb80\udee9\""
+    }
+  ],
+  "image:": [
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 31,
+      "role": "review",
+      "context": "if (entry.type === \"image\") return \"image:\" + String(entry.path || \"\")"
+    }
+  ],
+  "text:": [
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 32,
+      "role": "review",
+      "context": "return \"text:\" + String(entry.text || \"\")"
+    }
+  ],
+  "image screenshot ": [
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 94,
+      "role": "review",
+      "context": "if (entry.type === \"image\") return \"image screenshot \" + String(entry.mime || \"\") + \" \" + String(entry.capturedAt || \"\")"
+    }
+  ],
+  " files": [
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 134,
+      "role": "review",
+      "context": "return paths.length + \" files\""
+    }
+  ],
+  "Image": [
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 139,
+      "role": "review",
+      "context": "if (!timestamp) return \"Image\""
+    }
+  ],
+  " from ": [
+    {
+      "file": "plugins/clipboard/ClipboardHistory.js",
+      "line": 142,
+      "role": "review",
+      "context": "return label + \" from \" + timestamp"
+    }
+  ],
+  "MMMM d": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 318,
+      "role": "display",
+      "context": "text: Qt.formatDate(root.today, \"MMMM d\")"
+    }
+  ],
+  "Back to today": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 341,
+      "role": "display",
+      "context": "text: \"Back to today\""
+    }
+  ],
+  "BORN": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 374,
+      "role": "display",
+      "context": "text: \"BORN\""
+    }
+  ],
+  "year": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 385,
+      "role": "display",
+      "context": "placeholderText: \"year\""
+    }
+  ],
+  "LIVE TO": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 397,
+      "role": "display",
+      "context": "text: \"LIVE TO\""
+    }
+  ],
+  "LIFE": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 484,
+      "role": "display",
+      "context": "text: \"LIFE\""
+    }
+  ],
+  "Memento Mori": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 534,
+      "role": "display",
+      "context": "text: \"Memento Mori\""
+    }
+  ],
+  "Start weeks on ": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 603,
+      "role": "display",
+      "context": "text: \"Start weeks on \" + root.nextWeekStartLabel"
+    }
+  ],
+  "MMMM yyyy": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 726,
+      "role": "display",
+      "context": "text: Qt.formatDate(root.viewDate, \"MMMM yyyy\").toUpperCase()"
+    }
+  ],
+  "Previous month": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 740,
+      "role": "display",
+      "context": "tooltipText: \"Previous month\""
+    }
+  ],
+  "Next month": [
+    {
+      "file": "plugins/clock/Panel.qml",
+      "line": 751,
+      "role": "display",
+      "context": "tooltipText: \"Next month\""
+    }
+  ],
+  "cursor-surface": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 122,
+      "role": "review",
+      "context": "case \"cursor-surface\":      return 3"
+    }
+  ],
+  "button": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 123,
+      "role": "review",
+      "context": "case \"button\":              return 5"
+    },
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 142,
+      "role": "review",
+      "context": "return section === \"button\""
+    }
+  ],
+  "button-group": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 124,
+      "role": "review",
+      "context": "case \"button-group\":        return 4"
+    }
+  ],
+  "panel-action-button": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 125,
+      "role": "review",
+      "context": "case \"panel-action-button\": return 4"
+    }
+  ],
+  "panel-tool-tip": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 126,
+      "role": "review",
+      "context": "case \"panel-tool-tip\":      return 1"
+    }
+  ],
+  "slider": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 127,
+      "role": "review",
+      "context": "case \"slider\":              return 1"
+    },
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 150,
+      "role": "review",
+      "context": "return section === \"slider\""
+    }
+  ],
+  "text-field": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 128,
+      "role": "review",
+      "context": "case \"text-field\":          return 2"
+    }
+  ],
+  "number-field": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 129,
+      "role": "review",
+      "context": "case \"number-field\":        return 1"
+    }
+  ],
+  "toggle": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 130,
+      "role": "review",
+      "context": "case \"toggle\":              return 2"
+    }
+  ],
+  "toggle-switch": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 131,
+      "role": "review",
+      "context": "case \"toggle-switch\":       return 2"
+    }
+  ],
+  "dropdown": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 132,
+      "role": "review",
+      "context": "case \"dropdown\":            return 1"
+    }
+  ],
+  "searchable-dropdown": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 133,
+      "role": "review",
+      "context": "case \"searchable-dropdown\": return 1"
+    }
+  ],
+  "composed": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 134,
+      "role": "review",
+      "context": "case \"composed\":            return 2"
+    }
+  ],
+  "Omarchy shell \u2013 dev gallery": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 279,
+      "role": "display",
+      "context": "title: \"Omarchy shell \u2013 dev gallery\""
+    }
+  ],
+  "Omarchy shell \u00b7 dev gallery": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 357,
+      "role": "display",
+      "context": "text: \"Omarchy shell \u00b7 dev gallery\""
+    }
+  ],
+  "Conventions": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 381,
+      "role": "display",
+      "context": "text: \"Conventions\""
+    }
+  ],
+  "Typography": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 448,
+      "role": "display",
+      "context": "text: \"Typography\""
+    }
+  ],
+  "Style.font.* is the shell-wide type scale. Themes ship a single ": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 455,
+      "role": "display",
+      "context": "text: \"Style.font.* is the shell-wide type scale. Themes ship a single \""
+    }
+  ],
+  "Scale": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 486,
+      "role": "display",
+      "context": "text: \"Scale\""
+    }
+  ],
+  "bodySmall": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 499,
+      "role": "review",
+      "context": "{ key: \"bodySmall\",    size: Style.font.bodySmall,    sample: \"Secondary / tooltip text\" },"
+    }
+  ],
+  "Style.font.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 523,
+      "role": "display",
+      "context": "text: \"Style.font.\" + modelData.key"
+    }
+  ],
+  "Theme tokens": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 560,
+      "role": "display",
+      "context": "text: \"Theme tokens\""
+    }
+  ],
+  "Style.font.family": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 574,
+      "role": "display",
+      "context": "text: \"Style.font.family\""
+    }
+  ],
+  "Style.font.resolvedFamily": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 588,
+      "role": "display",
+      "context": "text: \"Style.font.resolvedFamily\""
+    }
+  ],
+  "Style.font.baseSize": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 602,
+      "role": "display",
+      "context": "text: \"Style.font.baseSize\""
+    }
+  ],
+  "Style.bar.sizeHorizontal": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 616,
+      "role": "display",
+      "context": "text: \"Style.bar.sizeHorizontal\""
+    }
+  ],
+  "Style.bar.sizeVertical": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 630,
+      "role": "display",
+      "context": "text: \"Style.bar.sizeVertical\""
+    }
+  ],
+  "Style.spacing.scale": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 644,
+      "role": "display",
+      "context": "text: \"Style.spacing.scale\""
+    }
+  ],
+  "Style.spacing.panelPadding": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 658,
+      "role": "display",
+      "context": "text: \"Style.spacing.panelPadding\""
+    }
+  ],
+  "PanelSectionHeader": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 683,
+      "role": "display",
+      "context": "text: \"PanelSectionHeader\""
+    }
+  ],
+  "Small-caps-style intro label for a section.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 690,
+      "role": "display",
+      "context": "text: \"Small-caps-style intro label for a section.\""
+    }
+  ],
+  "DNS provider": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 713,
+      "role": "display",
+      "context": "text: \"DNS provider\""
+    }
+  ],
+  "Wi-Fi networks": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 718,
+      "role": "display",
+      "context": "text: \"Wi-Fi networks\""
+    },
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1721,
+      "role": "display",
+      "context": "text: \"Wi-Fi networks\""
+    }
+  ],
+  "Playing": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 723,
+      "role": "display",
+      "context": "text: \"Playing\""
+    }
+  ],
+  "PanelSeparator": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 738,
+      "role": "display",
+      "context": "text: \"PanelSeparator\""
+    }
+  ],
+  "1px horizontal rule. Default 0.12 alpha on foreground; tweak via strength.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 745,
+      "role": "display",
+      "context": "text: \"1px horizontal rule. Default 0.12 alpha on foreground; tweak via strength.\""
+    }
+  ],
+  "CursorSurface": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 780,
+      "role": "display",
+      "context": "text: \"CursorSurface\""
+    }
+  ],
+  "Button": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 865,
+      "role": "display",
+      "context": "text: \"Button\""
+    }
+  ],
+  "DHCP": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 902,
+      "role": "display",
+      "context": "text: \"DHCP\""
+    }
+  ],
+  "Use DNS from DHCP": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 903,
+      "role": "display",
+      "context": "tooltipText: \"Use DNS from DHCP\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1427,
+      "role": "display",
+      "context": "tooltipText: \"Use DNS from DHCP\""
+    }
+  ],
+  "idle": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 912,
+      "role": "display",
+      "context": "text: \"idle\""
+    }
+  ],
+  "Cloudflare": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 923,
+      "role": "display",
+      "context": "text: \"Cloudflare\""
+    }
+  ],
+  "Set DNS to Cloudflare": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 924,
+      "role": "display",
+      "context": "tooltipText: \"Set DNS to Cloudflare\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1435,
+      "role": "display",
+      "context": "tooltipText: \"Set DNS to Cloudflare\""
+    }
+  ],
+  "active": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 934,
+      "role": "display",
+      "context": "text: \"active\""
+    }
+  ],
+  "Refresh": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 946,
+      "role": "display",
+      "context": "tooltipText: \"Refresh\""
+    }
+  ],
+  "icon only": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 957,
+      "role": "display",
+      "context": "text: \"icon only\""
+    }
+  ],
+  "icon + active": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 980,
+      "role": "display",
+      "context": "text: \"icon + active\""
+    }
+  ],
+  "Apply": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 991,
+      "role": "display",
+      "context": "text: \"Apply\""
+    }
+  ],
+  "bordered + focusable": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1002,
+      "role": "display",
+      "context": "text: \"bordered + focusable\""
+    }
+  ],
+  "ButtonGroup": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1021,
+      "role": "display",
+      "context": "text: \"ButtonGroup\""
+    }
+  ],
+  "PanelActionButton": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1071,
+      "role": "display",
+      "context": "text: \"PanelActionButton\""
+    }
+  ],
+  "Confirm (default flavor)": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1102,
+      "role": "display",
+      "context": "tooltipText: \"Confirm (default flavor)\""
+    }
+  ],
+  "Forget network (urgent flavor)": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1114,
+      "role": "display",
+      "context": "tooltipText: \"Forget network (urgent flavor)\""
+    }
+  ],
+  "Disabled \u2014 type a passphrase first": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1127,
+      "role": "display",
+      "context": "tooltipText: \"Disabled \u2014 type a passphrase first\""
+    }
+  ],
+  "Focusable (settings form button)": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1140,
+      "role": "display",
+      "context": "tooltipText: \"Focusable (settings form button)\""
+    }
+  ],
+  "PanelToolTip": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1162,
+      "role": "display",
+      "context": "text: \"PanelToolTip\""
+    }
+  ],
+  "Hover the swatch below to see the styled tooltip. Use this whenever a custom button or row needs a hover hint.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1169,
+      "role": "display",
+      "context": "text: \"Hover the swatch below to see the styled tooltip. Use this whenever a custom button or row needs a hover hint.\""
+    }
+  ],
+  "hover me": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1193,
+      "role": "display",
+      "context": "text: \"hover me\""
+    }
+  ],
+  "Styled tooltip \u2014 drop into any panel": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1212,
+      "role": "display",
+      "context": "text: \"Styled tooltip \u2014 drop into any panel\""
+    }
+  ],
+  "Slider": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1226,
+      "role": "display",
+      "context": "text: \"Slider\""
+    }
+  ],
+  "TextField": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1306,
+      "role": "display",
+      "context": "text: \"TextField\""
+    }
+  ],
+  "Single-line input. Inherits Qt Quick Controls TextField, swaps in the kit's focus chrome and selection styling. Toggle `password: true` for masked entry.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1313,
+      "role": "display",
+      "context": "text: \"Single-line input. Inherits Qt Quick Controls TextField, swaps in the kit's focus chrome and selection styling. Toggle `password: true` for masked entry.\""
+    }
+  ],
+  "Type something (Enter to start editing, Esc to leave)": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1340,
+      "role": "display",
+      "context": "placeholderText: \"Type something (Enter to start editing, Esc to leave)\""
+    }
+  ],
+  "Password": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1362,
+      "role": "display",
+      "context": "placeholderText: \"Password\""
+    }
+  ],
+  "NumberField": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1389,
+      "role": "display",
+      "context": "text: \"NumberField\""
+    }
+  ],
+  "Auto-refresh interval (minutes)": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1416,
+      "role": "display",
+      "context": "label: \"Auto-refresh interval (minutes)\""
+    }
+  ],
+  "Toggle": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1439,
+      "role": "display",
+      "context": "text: \"Toggle\""
+    }
+  ],
+  "Transparent bar": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1456,
+      "role": "display",
+      "context": "label: \"Transparent bar\""
+    }
+  ],
+  "Hide the bar background so the wallpaper shows through.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1457,
+      "role": "display",
+      "context": "description: \"Hide the bar background so the wallpaper shows through.\""
+    }
+  ],
+  "Square switch (forced)": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1475,
+      "role": "display",
+      "context": "label: \"Square switch (forced)\""
+    }
+  ],
+  "`rounded: false` overrides the theme auto-detect so the switch reads square even when corners are round. Set `rounded: Style.cornerRadius > 0` (the default) to follow the theme.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1476,
+      "role": "display",
+      "context": "description: \"`rounded: false` overrides the theme auto-detect so the switch reads square even when corners are round. Set `rounded: Style.cornerRadius > 0` (the default) to follow the theme.\""
+    }
+  ],
+  "ToggleSwitch": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1500,
+      "role": "display",
+      "context": "text: \"ToggleSwitch\""
+    }
+  ],
+  "The bare switch Toggle puts at the end of its row, for places with no room for a labeled row \u2014 a panel hero's trailingControl, for instance. Caller owns `checked` and flips it on `toggled()`. Set `busy` while an operation is in flight to swallow further clicks without disturbing hover or tooltips; services that track a desired state optimistically get an instant knob throw because `checked` is already the optimistic value.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1507,
+      "role": "display",
+      "context": "text: \"The bare switch Toggle puts at the end of its row, for places with no room for a labeled row \u2014 a panel hero's trailingControl, for instance. Caller owns `checked` and flips it on `toggled()`. Set `busy` while an operation is in flight to swallow further clicks without disturbing hover or tooltips; services that track a desired state optimistically get an instant knob throw because `checked` is already the optimistic value.\""
+    }
+  ],
+  "The second switch is `busy: true` \u2014 hover still responds, clicks do not.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1548,
+      "role": "display",
+      "context": "text: \"The second switch is `busy: true` \u2014 hover still responds, clicks do not.\""
+    }
+  ],
+  "Dropdown": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1563,
+      "role": "display",
+      "context": "text: \"Dropdown\""
+    }
+  ],
+  "Center anchor": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1597,
+      "role": "display",
+      "context": "label: \"Center anchor\""
+    }
+  ],
+  "SearchableDropdown": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1618,
+      "role": "display",
+      "context": "text: \"SearchableDropdown\""
+    }
+  ],
+  "Dropdown with an embedded filter input. Type to narrow the list, Down to jump from the search to the first match, Enter to select. Use this for long option lists where plain scrolling is friction.": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1625,
+      "role": "display",
+      "context": "text: \"Dropdown with an embedded filter input. Type to narrow the list, Down to jump from the search to the first match, Enter to select. Use this for long option lists where plain scrolling is friction.\""
+    }
+  ],
+  "Add widget": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1652,
+      "role": "display",
+      "context": "label: \"Add widget\""
+    }
+  ],
+  "Search widgets...": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1654,
+      "role": "display",
+      "context": "placeholderText: \"Search widgets...\""
+    }
+  ],
+  "Clock": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1661,
+      "role": "display",
+      "context": "{ value: \"Clock\", label: \"Clock\", description: \"Time + date display\" },"
+    }
+  ],
+  "Time + date display": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1661,
+      "role": "display",
+      "context": "{ value: \"Clock\", label: \"Clock\", description: \"Time + date display\" },"
+    }
+  ],
+  "Weather": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1662,
+      "role": "display",
+      "context": "{ value: \"Weather\", label: \"Weather\", description: \"Local conditions and forecast\" },"
+    }
+  ],
+  "Local conditions and forecast": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1662,
+      "role": "display",
+      "context": "{ value: \"Weather\", label: \"Weather\", description: \"Local conditions and forecast\" },"
+    }
+  ],
+  "Power": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1663,
+      "role": "display",
+      "context": "{ value: \"omarchy.power\", label: \"Power\", description: \"Charge level + power profile\" },"
+    }
+  ],
+  "Charge level + power profile": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1663,
+      "role": "display",
+      "context": "{ value: \"omarchy.power\", label: \"Power\", description: \"Charge level + power profile\" },"
+    }
+  ],
+  "Output sink + volume": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1664,
+      "role": "display",
+      "context": "{ value: \"audio\", label: \"Audio\", description: \"Output sink + volume\" },"
+    }
+  ],
+  "network": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1665,
+      "role": "review",
+      "context": "{ value: \"network\", label: \"Network\", description: \"Wi-Fi + ethernet status\" },"
+    }
+  ],
+  "Network": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1665,
+      "role": "display",
+      "context": "{ value: \"network\", label: \"Network\", description: \"Wi-Fi + ethernet status\" },"
+    }
+  ],
+  "Wi-Fi + ethernet status": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1665,
+      "role": "display",
+      "context": "{ value: \"network\", label: \"Network\", description: \"Wi-Fi + ethernet status\" },"
+    }
+  ],
+  "Paired and nearby devices": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1666,
+      "role": "display",
+      "context": "{ value: \"bluetooth\", label: \"Bluetooth\", description: \"Paired and nearby devices\" },"
+    }
+  ],
+  "Monitor": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1667,
+      "role": "display",
+      "context": "{ value: \"monitor\", label: \"Monitor\", description: \"Brightness + scale\" },"
+    }
+  ],
+  "Brightness + scale": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1667,
+      "role": "display",
+      "context": "{ value: \"monitor\", label: \"Monitor\", description: \"Brightness + scale\" },"
+    }
+  ],
+  "Media": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1668,
+      "role": "display",
+      "context": "{ value: \"Media\", label: \"Media\", description: \"Now-playing + transport\" },"
+    }
+  ],
+  "Now-playing + transport": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1668,
+      "role": "display",
+      "context": "{ value: \"Media\", label: \"Media\", description: \"Now-playing + transport\" },"
+    }
+  ],
+  "Workspaces": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1669,
+      "role": "display",
+      "context": "{ value: \"Workspaces\", label: \"Workspaces\", description: \"Hyprland workspace pills\" },"
+    }
+  ],
+  "Hyprland workspace pills": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1669,
+      "role": "display",
+      "context": "{ value: \"Workspaces\", label: \"Workspaces\", description: \"Hyprland workspace pills\" },"
+    }
+  ],
+  "system-tray": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1670,
+      "role": "review",
+      "context": "{ value: \"system-tray\", label: \"System tray\", description: \"StatusNotifierItem icons\" },"
+    }
+  ],
+  "System tray": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1670,
+      "role": "display",
+      "context": "{ value: \"system-tray\", label: \"System tray\", description: \"StatusNotifierItem icons\" },"
+    }
+  ],
+  "StatusNotifierItem icons": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1670,
+      "role": "display",
+      "context": "{ value: \"system-tray\", label: \"System tray\", description: \"StatusNotifierItem icons\" },"
+    }
+  ],
+  "Omarchy menu": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1671,
+      "role": "display",
+      "context": "{ value: \"omarchy-menu\", label: \"Omarchy menu\", description: \"Launcher / system menu\" },"
+    }
+  ],
+  "Power profiles": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1672,
+      "role": "display",
+      "context": "{ value: \"power-profiles\", label: \"Power profiles\", description: \"Performance / balanced / saver\" },"
+    }
+  ],
+  "Hardware": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1673,
+      "role": "display",
+      "context": "{ value: \"hardware\", label: \"Hardware\", description: \"CPU, GPU, mem utilization\" },"
+    }
+  ],
+  "CPU, GPU, mem utilization": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1673,
+      "role": "display",
+      "context": "{ value: \"hardware\", label: \"Hardware\", description: \"CPU, GPU, mem utilization\" },"
+    }
+  ],
+  "Notifications": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1674,
+      "role": "display",
+      "context": "{ value: \"notifications\", label: \"Notifications\", description: \"Recent notification history\" }"
+    }
+  ],
+  "Recent notification history": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1674,
+      "role": "display",
+      "context": "{ value: \"notifications\", label: \"Notifications\", description: \"Recent notification history\" }"
+    }
+  ],
+  "Composed example": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1689,
+      "role": "display",
+      "context": "text: \"Composed example\""
+    }
+  ],
+  "Forget network": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1765,
+      "role": "display",
+      "context": "tooltipText: \"Forget network\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1772,
+      "role": "display",
+      "context": "text: \"Forget network\""
+    }
+  ],
+  "HughesWiFi": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1780,
+      "role": "display",
+      "context": "text: \"HughesWiFi\""
+    }
+  ],
+  "HughesATT": [
+    {
+      "file": "plugins/dev-gallery/GalleryPanel.qml",
+      "line": 1837,
+      "role": "display",
+      "context": "text: \"HughesATT\""
+    }
+  ],
+  "Disk speed test failed": [
+    {
+      "file": "plugins/disk-speedtest/Panel.qml",
+      "line": 120,
+      "role": "review",
+      "context": "root.error = root.stderrText || \"Disk speed test failed\""
+    }
+  ],
+  "Measure again": [
+    {
+      "file": "plugins/disk-speedtest/Panel.qml",
+      "line": 139,
+      "role": "display",
+      "context": "runAgainTooltip: \"Measure again\""
+    },
+    {
+      "file": "shared/frames/SpeedTestOverlay.qml",
+      "line": 25,
+      "role": "display",
+      "context": "property string runAgainTooltip: \"Measure again\""
+    }
+  ],
+  "Failed to parse Dropbox status": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 28,
+      "role": "review",
+      "context": "failed.lastError = \"Failed to parse Dropbox status\""
+    }
+  ],
+  "Unavailable": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 39,
+      "role": "review",
+      "context": "statusText: \"Unavailable\","
+    }
+  ],
+  "video": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 59,
+      "role": "review",
+      "context": "if (VIDEO_EXTENSIONS[ext]) return \"video\""
+    },
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 67,
+      "role": "review",
+      "context": "if (kind === \"video\") return \"\udb80\ude2b\""
+    }
+  ],
+  "document": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 60,
+      "role": "review",
+      "context": "if (DOCUMENT_EXTENSIONS[ext]) return \"document\""
+    },
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 68,
+      "role": "review",
+      "context": "if (kind === \"document\") return \"\udb80\ude19\""
+    }
+  ],
+  "misc": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 61,
+      "role": "review",
+      "context": "return \"misc\""
+    }
+  ],
+  "Unknown time": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 101,
+      "role": "review",
+      "context": "if (!isFinite(ts) || ts <= 0) return \"Unknown time\""
+    }
+  ],
+  "Just now": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 104,
+      "role": "review",
+      "context": "if (diff < 60) return \"Just now\""
+    }
+  ],
+  "m ago": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 106,
+      "role": "review",
+      "context": "if (minutes < 60) return minutes + \"m ago\""
+    }
+  ],
+  "h ago": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 108,
+      "role": "review",
+      "context": "if (hours < 24) return hours + \"h ago\""
+    }
+  ],
+  "d ago": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 110,
+      "role": "review",
+      "context": "if (days < 30) return days + \"d ago\""
+    }
+  ],
+  "mo ago": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 112,
+      "role": "review",
+      "context": "if (months < 12) return months + \"mo ago\""
+    }
+  ],
+  "y ago": [
+    {
+      "file": "plugins/dropbox/Model.js",
+      "line": 113,
+      "role": "review",
+      "context": "return Math.floor(days / 365) + \"y ago\""
+    }
+  ],
+  "Pause syncing": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 40,
+      "role": "review",
+      "context": "readonly property string toggleHint: dropbox.active ? \"Pause syncing\" : \"Resume syncing\""
+    }
+  ],
+  "Resume syncing": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 40,
+      "role": "review",
+      "context": "readonly property string toggleHint: dropbox.active ? \"Pause syncing\" : \"Resume syncing\""
+    }
+  ],
+  "Dropbox": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 246,
+      "role": "display",
+      "context": "title: \"Dropbox\""
+    }
+  ],
+  "Stored": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 307,
+      "role": "display",
+      "context": "InfoPair { label: \"Stored\"; value: Model.usageText(dropbox.usedBytes, dropbox.quotaBytes, dropbox.quotaKnown) }"
+    }
+  ],
+  "RECENT FILES": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 322,
+      "role": "display",
+      "context": "text: \"RECENT FILES\""
+    }
+  ],
+  "No synced files found.": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 330,
+      "role": "display",
+      "context": "text: \"No synced files found.\""
+    }
+  ],
+  "Login to Dropbox": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 427,
+      "role": "display",
+      "context": "text: dropbox.installed ? \"Login to Dropbox\" : \"Dropbox CLI is not installed\""
+    }
+  ],
+  "Dropbox CLI is not installed": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 427,
+      "role": "display",
+      "context": "text: dropbox.installed ? \"Login to Dropbox\" : \"Dropbox CLI is not installed\""
+    }
+  ],
+  "Start the authentication flow": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 437,
+      "role": "display",
+      "context": "text: dropbox.installed ? \"Start the authentication flow\" : \"Install Dropbox from the service menu\""
+    }
+  ],
+  "Install Dropbox from the service menu": [
+    {
+      "file": "plugins/dropbox/Panel.qml",
+      "line": 437,
+      "role": "display",
+      "context": "text: dropbox.installed ? \"Start the authentication flow\" : \"Install Dropbox from the service menu\""
+    }
+  ],
+  "Checking\u2026": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 23,
+      "role": "review",
+      "context": "property string statusText: \"Checking\u2026\""
+    },
+    {
+      "file": "plugins/lock/LockView.qml",
+      "line": 189,
+      "role": "display",
+      "context": "text: root.authenticatingPassword ? \"Checking\u2026\" : (root.failureMessage.length > 0 ? root.failureMessage : root.placeholderText)"
+    },
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 23,
+      "role": "review",
+      "context": "property string statusText: \"Checking\u2026\""
+    }
+  ],
+  "python3": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 64,
+      "role": "review",
+      "context": "statusProcess.command = [\"python3\", helperPath, \"25\"]"
+    }
+  ],
+  "Failed to read Dropbox status": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 71,
+      "role": "review",
+      "context": "lastError = parsed.lastError || \"Failed to read Dropbox status\""
+    }
+  ],
+  "Stopped": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 79,
+      "role": "review",
+      "context": "statusText = String(parsed.statusText || (installed ? \"Stopped\" : \"Not installed\"))"
+    }
+  ],
+  "Not installed": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 79,
+      "role": "review",
+      "context": "statusText = String(parsed.statusText || (installed ? \"Stopped\" : \"Not installed\"))"
+    }
+  ],
+  "Starting Dropbox login\u2026": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 100,
+      "role": "review",
+      "context": "actionStatus = \"Starting Dropbox login\u2026\""
+    }
+  ],
+  "Opened Dropbox login": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 146,
+      "role": "review",
+      "context": "actionStatus = \"Opened Dropbox login\""
+    }
+  ],
+  "Could not read Dropbox status": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 231,
+      "role": "review",
+      "context": "else root.lastError = root.elideStatus(stderr || stdout || \"Could not read Dropbox status\")"
+    }
+  ],
+  "Dropbox login failed": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 245,
+      "role": "review",
+      "context": "root.lastError = root.elideStatus(combined || \"Dropbox login failed\")"
+    }
+  ],
+  "Dropbox command failed": [
+    {
+      "file": "plugins/dropbox/Service.qml",
+      "line": 266,
+      "role": "review",
+      "context": "root.lastError = root.elideStatus(stderr || stdout || \"Dropbox command failed\")"
+    }
+  ],
+  "Search emojis\u2026": [
+    {
+      "file": "plugins/emojis/Emojis.qml",
+      "line": 254,
+      "role": "display",
+      "context": "text: root.filterText || \"Search emojis\u2026\""
+    }
+  ],
+  "disabled": [
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 238,
+      "role": "review",
+      "context": "if (!changed) return enabled ? \"disabled\" : \"enabled\""
+    },
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 244,
+      "role": "review",
+      "context": "return enabled ? \"disabled\" : \"enabled\""
+    },
+    {
+      "file": "plugins/nightlight/Service.qml",
+      "line": 106,
+      "role": "review",
+      "context": "return \"disabled\""
+    },
+    {
+      "file": "plugins/nightlight/Service.qml",
+      "line": 112,
+      "role": "review",
+      "context": "return enabling ? \"enabled\" : \"disabled\""
+    }
+  ],
+  "ipc": [
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 248,
+      "role": "review",
+      "context": "return applyStayAwake(!value, true, \"ipc\")"
+    }
+  ],
+  "process-exit": [
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 291,
+      "role": "review",
+      "context": "onExited: function(exitCode, exitStatus) { root.logEvent(\"process-exit\", \"screensaver exitCode=\" + exitCode + \" status=\" + exitStatus) }"
+    },
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 295,
+      "role": "review",
+      "context": "onExited: function(exitCode, exitStatus) { root.logEvent(\"process-exit\", \"lock exitCode=\" + exitCode + \" status=\" + exitStatus) }"
+    },
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 299,
+      "role": "review",
+      "context": "onExited: function(exitCode, exitStatus) { root.logEvent(\"process-exit\", \"wake exitCode=\" + exitCode + \" status=\" + exitStatus) }"
+    }
+  ],
+  "screensaver exitCode=": [
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 291,
+      "role": "review",
+      "context": "onExited: function(exitCode, exitStatus) { root.logEvent(\"process-exit\", \"screensaver exitCode=\" + exitCode + \" status=\" + exitStatus) }"
+    }
+  ],
+  " status=": [
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 291,
+      "role": "review",
+      "context": "onExited: function(exitCode, exitStatus) { root.logEvent(\"process-exit\", \"screensaver exitCode=\" + exitCode + \" status=\" + exitStatus) }"
+    },
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 295,
+      "role": "review",
+      "context": "onExited: function(exitCode, exitStatus) { root.logEvent(\"process-exit\", \"lock exitCode=\" + exitCode + \" status=\" + exitStatus) }"
+    },
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 299,
+      "role": "review",
+      "context": "onExited: function(exitCode, exitStatus) { root.logEvent(\"process-exit\", \"wake exitCode=\" + exitCode + \" status=\" + exitStatus) }"
+    }
+  ],
+  "lock exitCode=": [
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 295,
+      "role": "review",
+      "context": "onExited: function(exitCode, exitStatus) { root.logEvent(\"process-exit\", \"lock exitCode=\" + exitCode + \" status=\" + exitStatus) }"
+    }
+  ],
+  "wake exitCode=": [
+    {
+      "file": "plugins/idle/Service.qml",
+      "line": 299,
+      "role": "review",
+      "context": "onExited: function(exitCode, exitStatus) { root.logEvent(\"process-exit\", \"wake exitCode=\" + exitCode + \" status=\" + exitStatus) }"
+    }
+  ],
+  "No matches": [
+    {
+      "file": "plugins/image-picker/ImagePicker.qml",
+      "line": 84,
+      "role": "review",
+      "context": "if (!path) return filterText ? \"No matches\" : \"\""
+    }
+  ],
+  "Enter Password": [
+    {
+      "file": "plugins/lock/LockView.qml",
+      "line": 20,
+      "role": "display",
+      "context": "readonly property string placeholderText: \"Enter Password\""
+    }
+  ],
+  "lock": [
+    {
+      "file": "plugins/lock/LockView.qml",
+      "line": 38,
+      "role": "review",
+      "context": "? Border.surfaceSpec(\"lock\", \"border-error\", Color.lock.borderError, root.outlineThickness, \"border-alpha\")"
+    }
+  ],
+  "border-error": [
+    {
+      "file": "plugins/lock/LockView.qml",
+      "line": 38,
+      "role": "review",
+      "context": "? Border.surfaceSpec(\"lock\", \"border-error\", Color.lock.borderError, root.outlineThickness, \"border-alpha\")"
+    },
+    {
+      "file": "plugins/polkit/PolkitAgent.qml",
+      "line": 20,
+      "role": "review",
+      "context": "property var borderSpec: Border.surfaceSpec(\"polkit\", errorFlash ? \"border-error\" : \"border\", errorFlash ? borderError : border, Math.max(1, Style.space(2)), \"border-alpha\")"
+    }
+  ],
+  "border-alpha": [
+    {
+      "file": "plugins/lock/LockView.qml",
+      "line": 38,
+      "role": "review",
+      "context": "? Border.surfaceSpec(\"lock\", \"border-error\", Color.lock.borderError, root.outlineThickness, \"border-alpha\")"
+    },
+    {
+      "file": "plugins/polkit/PolkitAgent.qml",
+      "line": 20,
+      "role": "review",
+      "context": "property var borderSpec: Border.surfaceSpec(\"polkit\", errorFlash ? \"border-error\" : \"border\", errorFlash ? borderError : border, Math.max(1, Style.space(2)), \"border-alpha\")"
+    }
+  ],
+  "missing-pam": [
+    {
+      "file": "plugins/lock/Service.qml",
+      "line": 514,
+      "role": "review",
+      "context": "if (!root.passwordPamConfigured) return \"missing-pam\""
+    }
+  ],
+  "failed": [
+    {
+      "file": "plugins/lock/Service.qml",
+      "line": 515,
+      "role": "review",
+      "context": "if (!root.locked && !root.beginLock()) return \"failed\""
+    }
+  ],
+  "false": [
+    {
+      "file": "plugins/lock/Service.qml",
+      "line": 520,
+      "role": "review",
+      "context": "return root.locked ? \"true\" : \"false\""
+    }
+  ],
+  "Nothing playing": [
+    {
+      "file": "plugins/media/BarWidget.qml",
+      "line": 154,
+      "role": "display",
+      "context": "text: root.title || \"Nothing playing\""
+    }
+  ],
+  "next": [
+    {
+      "file": "plugins/media/MediaModel.js",
+      "line": 21,
+      "role": "review",
+      "context": "if (action === \"next\") return !!player.canGoNext"
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 488,
+      "role": "review",
+      "context": "return root.runAction(\"next\", true) ? \"ok\" : \"unhandled\""
+    }
+  ],
+  "previous": [
+    {
+      "file": "plugins/media/MediaModel.js",
+      "line": 22,
+      "role": "review",
+      "context": "if (action === \"previous\") return !!player.canGoPrevious"
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 492,
+      "role": "review",
+      "context": "return root.runAction(\"previous\", true) ? \"ok\" : \"unhandled\""
+    }
+  ],
+  "play": [
+    {
+      "file": "plugins/media/MediaModel.js",
+      "line": 23,
+      "role": "review",
+      "context": "if (action === \"play\") return !!(player.canPlay || player.canTogglePlaying)"
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 496,
+      "role": "review",
+      "context": "return root.runAction(\"play\", true) ? \"ok\" : \"unhandled\""
+    }
+  ],
+  "pause": [
+    {
+      "file": "plugins/media/MediaModel.js",
+      "line": 24,
+      "role": "review",
+      "context": "if (action === \"pause\") return !!(player.canPause || player.canTogglePlaying)"
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 500,
+      "role": "review",
+      "context": "return root.runAction(\"pause\", true) ? \"ok\" : \"unhandled\""
+    }
+  ],
+  "playPause": [
+    {
+      "file": "plugins/media/MediaModel.js",
+      "line": 25,
+      "role": "review",
+      "context": "if (action === \"playPause\") return !!(player.canTogglePlaying || player.canPlay || player.canPause)"
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 484,
+      "role": "review",
+      "context": "return root.runAction(\"playPause\", true) ? \"ok\" : \"unhandled\""
+    }
+  ],
+  "unhandled": [
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 484,
+      "role": "review",
+      "context": "return root.runAction(\"playPause\", true) ? \"ok\" : \"unhandled\""
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 488,
+      "role": "review",
+      "context": "return root.runAction(\"next\", true) ? \"ok\" : \"unhandled\""
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 492,
+      "role": "review",
+      "context": "return root.runAction(\"previous\", true) ? \"ok\" : \"unhandled\""
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 496,
+      "role": "review",
+      "context": "return root.runAction(\"play\", true) ? \"ok\" : \"unhandled\""
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 500,
+      "role": "review",
+      "context": "return root.runAction(\"pause\", true) ? \"ok\" : \"unhandled\""
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 504,
+      "role": "review",
+      "context": "return root.switchSource(1, false, true) ? \"ok\" : \"unhandled\""
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 508,
+      "role": "review",
+      "context": "return root.switchSource(-1, false, true) ? \"ok\" : \"unhandled\""
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 512,
+      "role": "review",
+      "context": "return root.switchSource(1, true, true) ? \"ok\" : \"unhandled\""
+    },
+    {
+      "file": "plugins/media/Service.qml",
+      "line": 516,
+      "role": "review",
+      "context": "return root.switchSource(-1, true, true) ? \"ok\" : \"unhandled\""
+    }
+  ],
+  "omarchy-font-set ": [
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 274,
+      "role": "review",
+      "context": "actionFor: function(value) { return \"omarchy-font-set \" + Util.shellQuote(value) }"
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 278,
+      "role": "review",
+      "context": "actionFor: function(value) { return \"omarchy-font-set \" + Util.shellQuote(value) }"
+    }
+  ],
+  "omarchy-powerprofiles-set autodetect ": [
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 279,
+      "role": "review",
+      "context": "actionFor: function(value) { return \"omarchy-powerprofiles-set autodetect \" + Util.shellQuote(value) }"
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 283,
+      "role": "review",
+      "context": "actionFor: function(value) { return \"omarchy-powerprofiles-set autodetect \" + Util.shellQuote(value) }"
+    }
+  ],
+  "root": [
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 703,
+      "role": "review",
+      "context": "if (root.activeMenu === \"root\") return false"
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 178,
+      "role": "review",
+      "context": "if (!raw || raw === \"go\" || raw === \"menu\") return \"root\""
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 226,
+      "role": "review",
+      "context": "if (!entry || !entry.parent || entry.parent === \"root\") return \"\""
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 231,
+      "role": "review",
+      "context": "if (ancestorId === \"root\") return id !== \"root\""
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 231,
+      "role": "review",
+      "context": "if (ancestorId === \"root\") return id !== \"root\""
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 313,
+      "role": "review",
+      "context": "if (!entry || entry.id === \"root\") return false"
+    }
+  ],
+  "Input": [
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 822,
+      "role": "review",
+      "context": "dmenuPrompt = String(payload.prompt || (mode === \"input\" ? \"Input\" : \"Select\"))"
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 858,
+      "role": "review",
+      "context": "dmenuPrompt = String(payload.prompt || (mode === \"input\" ? \"Input\" : \"Select\"))"
+    }
+  ],
+  "Select": [
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 822,
+      "role": "review",
+      "context": "dmenuPrompt = String(payload.prompt || (mode === \"input\" ? \"Input\" : \"Select\"))"
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 858,
+      "role": "review",
+      "context": "dmenuPrompt = String(payload.prompt || (mode === \"input\" ? \"Input\" : \"Select\"))"
+    }
+  ],
+  "Uninstall": [
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 1126,
+      "role": "display",
+      "context": "confirmText: \"Uninstall\""
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 1229,
+      "role": "display",
+      "context": "confirmText: \"Uninstall\""
+    }
+  ],
+  "menu": [
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 1325,
+      "role": "display",
+      "context": "text: row.kind === \"menu\" || row.kind === \"link\" ? \"\u203a\" : \"\""
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 178,
+      "role": "review",
+      "context": "if (!raw || raw === \"go\" || raw === \"menu\") return \"root\""
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 257,
+      "role": "review",
+      "context": "if (entry.kind !== \"menu\" && entry.kind !== \"link\") return true"
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 1431,
+      "role": "display",
+      "context": "text: row.kind === \"menu\" || row.kind === \"link\" ? \"\u203a\" : \"\""
+    }
+  ],
+  "link": [
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 1325,
+      "role": "display",
+      "context": "text: row.kind === \"menu\" || row.kind === \"link\" ? \"\u203a\" : \"\""
+    },
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 257,
+      "role": "review",
+      "context": "if (entry.kind !== \"menu\" && entry.kind !== \"link\") return true"
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 1431,
+      "role": "display",
+      "context": "text: row.kind === \"menu\" || row.kind === \"link\" ? \"\u203a\" : \"\""
+    }
+  ],
+  "Nothing here yet": [
+    {
+      "file": "plugins/menu/Menu.qml",
+      "line": 1409,
+      "role": "display",
+      "context": "text: root.filterText ? \"No matches for \u201c\" + root.filterText + \"\u201d\" : \"Nothing here yet\""
+    },
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 1515,
+      "role": "display",
+      "context": "text: root.filterText ? \"No matches for \u201c\" + root.filterText + \"\u201d\" : \"Nothing here yet\""
+    }
+  ],
+  "item": [
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 193,
+      "role": "review",
+      "context": "return String(value || \"\").toLowerCase().replace(/[^a-z0-9]+/g, \"-\").replace(/^-+|-+$/g, \"\") || \"item\""
+    }
+  ],
+  "__omarchy_pkg_has() { [[ -n ${__omarchy_pkgs[$1]-} ]] && return 0; ": [
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 417,
+      "role": "review",
+      "context": "+ '__omarchy_pkg_has() { [[ -n ${__omarchy_pkgs[$1]-} ]] && return 0; '"
+    }
+  ],
+  "${__omarchy_read_": [
+    {
+      "file": "plugins/menu/MenuModel.js",
+      "line": 447,
+      "role": "review",
+      "context": "return \"${__omarchy_read_\" + index + \"}\""
+    }
+  ],
+  "Sun blast": [
+    {
+      "file": "plugins/monitor/Model.js",
+      "line": 84,
+      "role": "review",
+      "context": "if (p >= 95) return \"Sun blast\""
+    }
+  ],
+  "Solar flare": [
+    {
+      "file": "plugins/monitor/Model.js",
+      "line": 85,
+      "role": "review",
+      "context": "if (p >= 80) return \"Solar flare\""
+    }
+  ],
+  "Golden hour": [
+    {
+      "file": "plugins/monitor/Model.js",
+      "line": 86,
+      "role": "review",
+      "context": "if (p >= 65) return \"Golden hour\""
+    }
+  ],
+  "Even day": [
+    {
+      "file": "plugins/monitor/Model.js",
+      "line": 87,
+      "role": "review",
+      "context": "if (p >= 45) return \"Even day\""
+    }
+  ],
+  "Soft glow": [
+    {
+      "file": "plugins/monitor/Model.js",
+      "line": 88,
+      "role": "review",
+      "context": "if (p >= 30) return \"Soft glow\""
+    }
+  ],
+  "Lamp light": [
+    {
+      "file": "plugins/monitor/Model.js",
+      "line": 89,
+      "role": "review",
+      "context": "if (p >= 20) return \"Lamp light\""
+    }
+  ],
+  "Candlelit": [
+    {
+      "file": "plugins/monitor/Model.js",
+      "line": 90,
+      "role": "review",
+      "context": "if (p >= 10) return \"Candlelit\""
+    }
+  ],
+  "Night owl": [
+    {
+      "file": "plugins/monitor/Model.js",
+      "line": 91,
+      "role": "review",
+      "context": "return \"Night owl\""
+    }
+  ],
+  "brightness": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 85,
+      "role": "review",
+      "context": "if (section === \"brightness\") return 0  // only the slider sentinel at -1"
+    },
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 94,
+      "role": "review",
+      "context": "return section === \"brightness\" || section === \"textsize\" || section === \"scale\""
+    },
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 98,
+      "role": "review",
+      "context": "if (section === \"brightness\" || section === \"textsize\") return -1"
+    },
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 18,
+      "role": "review",
+      "context": "if (n === \"brightness\" || n === \"display\") return \"\udb80\udf79\""
+    }
+  ],
+  "textsize": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 86,
+      "role": "review",
+      "context": "if (section === \"textsize\") return 0    // slider sentinel at -1, like brightness"
+    },
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 94,
+      "role": "review",
+      "context": "return section === \"brightness\" || section === \"textsize\" || section === \"scale\""
+    },
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 98,
+      "role": "review",
+      "context": "if (section === \"brightness\" || section === \"textsize\") return -1"
+    }
+  ],
+  "scale": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 87,
+      "role": "review",
+      "context": "if (section === \"scale\") return scaleValues.length"
+    },
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 94,
+      "role": "review",
+      "context": "return section === \"brightness\" || section === \"textsize\" || section === \"scale\""
+    }
+  ],
+  "monitors": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 88,
+      "role": "review",
+      "context": "if (section === \"monitors\") return displays.length"
+    }
+  ],
+  "got ": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 207,
+      "role": "review",
+      "context": "return \"got \" + root.pendingBrightnessPercent"
+    }
+  ],
+  "Display": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 552,
+      "role": "display",
+      "context": "text: \"Display\""
+    }
+  ],
+  "FIXED BRIGHTNESS": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 568,
+      "role": "review",
+      "context": "return \"FIXED BRIGHTNESS\""
+    }
+  ],
+  "BRIGHTNESS": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 598,
+      "role": "display",
+      "context": "text: \"BRIGHTNESS\""
+    }
+  ],
+  "TEXT SIZE": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 671,
+      "role": "display",
+      "context": "text: \"TEXT SIZE\""
+    }
+  ],
+  "SCALE": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 743,
+      "role": "display",
+      "context": "text: \"SCALE\""
+    }
+  ],
+  "DISPLAYS": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 805,
+      "role": "display",
+      "context": "text: \"DISPLAYS\""
+    }
+  ],
+  " \u00b7 focused": [
+    {
+      "file": "plugins/monitor/Panel.qml",
+      "line": 896,
+      "role": "display",
+      "context": "text: monitorRow.display.name + (monitorRow.display.focused ? \" \u00b7 focused\" : \"\")"
+    }
+  ],
+  "wifi": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 18,
+      "role": "review",
+      "context": "if (kind === \"wifi\") return wifiIconFor(signalStrength)"
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 441,
+      "role": "review",
+      "context": "if (connectedWifiNetwork) return \"wifi\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1178,
+      "role": "review",
+      "context": "if (root.info.type === \"wifi\") return root.info.ssid || \"Wi-Fi\""
+    }
+  ],
+  "ethernet": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 19,
+      "role": "review",
+      "context": "if (kind === \"ethernet\") return \"\udb80\ude00\""
+    },
+    {
+      "file": "plugins/network/Model.js",
+      "line": 47,
+      "role": "review",
+      "context": "if (value.type === \"ethernet\") return formatHeaderSpeed(value.speed || \"\")"
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 440,
+      "role": "review",
+      "context": "if (wiredDevice && wiredDevice.connected) return \"ethernet\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1179,
+      "role": "review",
+      "context": "if (root.info.type === \"ethernet\") return \"Ethernet\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1202,
+      "role": "review",
+      "context": "if (root.info.type === \"ethernet\") return root.connectionPhrase.toUpperCase()"
+    }
+  ],
+  "gbit": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 26,
+      "role": "review",
+      "context": "if (v >= 1000) return (v / 1000).toFixed(v % 1000 === 0 ? 0 : 1) + \"gbit\""
+    }
+  ],
+  "mbit": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 27,
+      "role": "review",
+      "context": "return v + \"mbit\""
+    }
+  ],
+  "2.4ghz": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 34,
+      "role": "review",
+      "context": "if (v >= 2400 && v < 2500) return \"2.4ghz\""
+    }
+  ],
+  "5ghz": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 35,
+      "role": "review",
+      "context": "if (v >= 4900 && v < 5925) return \"5ghz\""
+    }
+  ],
+  "6ghz": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 36,
+      "role": "review",
+      "context": "if (v >= 5925 && v < 7125) return \"6ghz\""
+    }
+  ],
+  "60ghz": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 37,
+      "role": "review",
+      "context": "if (v >= 57000 && v < 71000) return \"60ghz\""
+    }
+  ],
+  "ghz": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 40,
+      "role": "review",
+      "context": "return ghz.toFixed(ghz % 1 === 0 ? 0 : 1) + \"ghz\""
+    },
+    {
+      "file": "plugins/network/Model.js",
+      "line": 54,
+      "role": "review",
+      "context": "return band + \"ghz\""
+    }
+  ],
+  "auto": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 52,
+      "role": "review",
+      "context": "if (band === \"auto\") return \"Auto\""
+    },
+    {
+      "file": "plugins/network/Model.js",
+      "line": 61,
+      "role": "review",
+      "context": "if (selected !== \"auto\") return \"WI-FI BAND\""
+    },
+    {
+      "file": "plugins/network/Model.js",
+      "line": 70,
+      "role": "review",
+      "context": "if (band === \"auto\") return \"Let Wi-Fi pick the band\""
+    }
+  ],
+  "Auto": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 52,
+      "role": "review",
+      "context": "if (band === \"auto\") return \"Auto\""
+    }
+  ],
+  "WI-FI BAND": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 61,
+      "role": "review",
+      "context": "if (selected !== \"auto\") return \"WI-FI BAND\""
+    },
+    {
+      "file": "plugins/network/Model.js",
+      "line": 64,
+      "role": "review",
+      "context": "if (label === \"\") return \"WI-FI BAND\""
+    }
+  ],
+  "WI-FI BAND: ": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 66,
+      "role": "review",
+      "context": "return \"WI-FI BAND: \" + label.toUpperCase()"
+    }
+  ],
+  "Let Wi-Fi pick the band": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 70,
+      "role": "review",
+      "context": "if (band === \"auto\") return \"Let Wi-Fi pick the band\""
+    }
+  ],
+  "Stay on ": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 72,
+      "role": "review",
+      "context": "return \"Stay on \" + bandLabel(band)"
+    }
+  ],
+  "Timeout": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 260,
+      "role": "review",
+      "context": "if (!isFinite(value) || value < 0) return \"Timeout\""
+    }
+  ],
+  "KNOWN NETWORKS": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 297,
+      "role": "review",
+      "context": "if (net.known && index === 0) return \"KNOWN NETWORKS\""
+    }
+  ],
+  "OTHER NETWORKS": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 298,
+      "role": "review",
+      "context": "if (!net.known && (index === 0 || (networks[index - 1] && networks[index - 1].known))) return \"OTHER NETWORKS\""
+    }
+  ],
+  "Passphrase required": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 330,
+      "role": "review",
+      "context": "if (needsCredentials && reason === r.NoSecrets) return \"Passphrase required\""
+    }
+  ],
+  "Wrong password": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 331,
+      "role": "review",
+      "context": "if (needsCredentials && reason === r.WifiAuthTimeout) return \"Wrong password\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1907,
+      "role": "display",
+      "context": "text: row.isFailed ? \"Wrong password\" : \"Connecting...\""
+    }
+  ],
+  "Network lost": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 332,
+      "role": "review",
+      "context": "if (reason === r.WifiNetworkLost) return \"Network lost\""
+    }
+  ],
+  "Disconnected": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 333,
+      "role": "review",
+      "context": "if (reason === r.WifiClientDisconnected) return \"Disconnected\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1180,
+      "role": "review",
+      "context": "return root.info.iface || (root.kind === \"disconnected\" ? \"Disconnected\" : \"No connection\")"
+    },
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 225,
+      "role": "review",
+      "context": "if (text === \"\") return { ok: true, unavailable: true, message: \"Disconnected\" }"
+    },
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 262,
+      "role": "review",
+      "context": "statusText = \"Disconnected\""
+    }
+  ],
+  "Connection failed": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 334,
+      "role": "review",
+      "context": "if (reason === r.WifiClientFailed) return \"Connection failed\""
+    }
+  ],
+  "Failed to connect": [
+    {
+      "file": "plugins/network/Model.js",
+      "line": 335,
+      "role": "review",
+      "context": "return \"Failed to connect\""
+    }
+  ],
+  "Turn Wi-Fi off": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 140,
+      "role": "review",
+      "context": "readonly property string toggleHint: Networking.wifiEnabled ? \"Turn Wi-Fi off\" : \"Turn Wi-Fi on\""
+    }
+  ],
+  "Turn Wi-Fi on": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 140,
+      "role": "review",
+      "context": "readonly property string toggleHint: Networking.wifiEnabled ? \"Turn Wi-Fi off\" : \"Turn Wi-Fi on\""
+    }
+  ],
+  "disconnected": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 442,
+      "role": "review",
+      "context": "return \"disconnected\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1180,
+      "role": "review",
+      "context": "return root.info.iface || (root.kind === \"disconnected\" ? \"Disconnected\" : \"No connection\")"
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1199,
+      "role": "review",
+      "context": "if (root.kind === \"disconnected\") return \"NOT CONNECTED\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1203,
+      "role": "review",
+      "context": "if (root.kind === \"disconnected\") return \"NOT CONNECTED\""
+    }
+  ],
+  "omarchy-network-status": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 812,
+      "role": "review",
+      "context": "command: [\"omarchy-network-status\", \"--verbose\"]"
+    },
+    {
+      "file": "plugins/speedtest/Panel.qml",
+      "line": 174,
+      "role": "review",
+      "context": "command: [\"omarchy-network-status\"]"
+    }
+  ],
+  "--verbose": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 812,
+      "role": "review",
+      "context": "command: [\"omarchy-network-status\", \"--verbose\"]"
+    }
+  ],
+  "Show QR code": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1115,
+      "role": "display",
+      "context": "tooltipText: \"Show QR code\""
+    }
+  ],
+  "Run a speed test": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1131,
+      "role": "display",
+      "context": "tooltipText: \"Run a speed test\""
+    }
+  ],
+  "Ethernet": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1179,
+      "role": "review",
+      "context": "if (root.info.type === \"ethernet\") return \"Ethernet\""
+    }
+  ],
+  "No connection": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1180,
+      "role": "review",
+      "context": "return root.info.iface || (root.kind === \"disconnected\" ? \"Disconnected\" : \"No connection\")"
+    }
+  ],
+  "NOT CONNECTED": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1199,
+      "role": "review",
+      "context": "if (root.kind === \"disconnected\") return \"NOT CONNECTED\""
+    },
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1203,
+      "role": "review",
+      "context": "if (root.kind === \"disconnected\") return \"NOT CONNECTED\""
+    }
+  ],
+  "Ping": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1234,
+      "role": "display",
+      "context": "InfoLabel { text: \"Ping\" }"
+    }
+  ],
+  "Packet Loss": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1239,
+      "role": "display",
+      "context": "InfoLabel { text: \"Packet Loss\" }"
+    }
+  ],
+  "Receiving": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1245,
+      "role": "display",
+      "context": "InfoLabel { text: \"Receiving\" }"
+    }
+  ],
+  "Sending": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1247,
+      "role": "display",
+      "context": "InfoLabel { text: \"Sending\" }"
+    }
+  ],
+  "Downloaded": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1250,
+      "role": "display",
+      "context": "InfoLabel { text: \"Downloaded\" }"
+    }
+  ],
+  "Uploaded": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1252,
+      "role": "display",
+      "context": "InfoLabel { text: \"Uploaded\" }"
+    }
+  ],
+  "IP Address": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1255,
+      "role": "display",
+      "context": "InfoLabel { text: \"IP Address\" }"
+    }
+  ],
+  "Copy IP": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1259,
+      "role": "display",
+      "context": "tooltipText: \"Copy IP\""
+    }
+  ],
+  "Gateway": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1261,
+      "role": "display",
+      "context": "InfoLabel { text: \"Gateway\" }"
+    }
+  ],
+  "Copy gateway": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1265,
+      "role": "display",
+      "context": "tooltipText: \"Copy gateway\""
+    }
+  ],
+  "AUTOMATIC": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1306,
+      "role": "display",
+      "context": "text: \"AUTOMATIC\""
+    }
+  ],
+  "DNS PROVIDER": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1411,
+      "role": "display",
+      "context": "text: \"DNS PROVIDER\""
+    }
+  ],
+  "Set DNS to Google": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1443,
+      "role": "display",
+      "context": "tooltipText: \"Set DNS to Google\""
+    }
+  ],
+  "Set custom DNS servers": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1451,
+      "role": "display",
+      "context": "tooltipText: \"Set custom DNS servers\""
+    }
+  ],
+  "SCANNING WI-FI\u2026": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1467,
+      "role": "display",
+      "context": "text: \"SCANNING WI-FI\u2026\""
+    }
+  ],
+  "connect": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1653,
+      "role": "review",
+      "context": "if (isBusy && root.actionKind === \"connect\") return \"Connecting\u2026\""
+    }
+  ],
+  "disconnect": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1654,
+      "role": "review",
+      "context": "if (isBusy && root.actionKind === \"disconnect\") return \"Disconnecting\u2026\""
+    }
+  ],
+  "forget": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1655,
+      "role": "review",
+      "context": "if (isBusy && root.actionKind === \"forget\") return \"Forgetting\u2026\""
+    }
+  ],
+  "Failed": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1656,
+      "role": "review",
+      "context": "if (isFailed) return root.failureReason || \"Failed\""
+    }
+  ],
+  "Hidden": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1788,
+      "role": "display",
+      "context": "text: row.net ? (row.net.ssid || \"Hidden\") : \"\""
+    }
+  ],
+  "Identity (user@domain)": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1848,
+      "role": "display",
+      "context": "placeholderText: \"Identity (user@domain)\""
+    }
+  ],
+  "Passphrase": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1874,
+      "role": "display",
+      "context": "placeholderText: \"Passphrase\""
+    }
+  ],
+  "Connecting...": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1907,
+      "role": "display",
+      "context": "text: row.isFailed ? \"Wrong password\" : \"Connecting...\""
+    }
+  ],
+  "Copy to clipboard": [
+    {
+      "file": "plugins/network/Panel.qml",
+      "line": 1935,
+      "role": "display",
+      "context": "property string tooltipText: \"Copy to clipboard\""
+    }
+  ],
+  "chrom": [
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 3,
+      "role": "review",
+      "context": "return source.indexOf(\"chrom\") >= 0 || source.indexOf(\"brave\") >= 0 ||"
+    }
+  ],
+  "brave": [
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 3,
+      "role": "review",
+      "context": "return source.indexOf(\"chrom\") >= 0 || source.indexOf(\"brave\") >= 0 ||"
+    }
+  ],
+  "img": [
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 24,
+      "role": "review",
+      "context": "return !!name && name[1].toLowerCase() === \"img\""
+    }
+  ],
+  "omarchy-action": [
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 120,
+      "role": "review",
+      "context": "if (appName === \"omarchy-action\") return true"
+    },
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 126,
+      "role": "review",
+      "context": "return name === \"notify-send\" || name === \"omarchy-action\""
+    }
+  ],
+  "notify-send": [
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 121,
+      "role": "review",
+      "context": "return appName === \"notify-send\" && notification && notification.urgency === criticalUrgency"
+    },
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 126,
+      "role": "review",
+      "context": "return name === \"notify-send\" || name === \"omarchy-action\""
+    }
+  ],
+  "omarchy-glyph": [
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 141,
+      "role": "review",
+      "context": "return stringHint(hints, \"omarchy-glyph\")"
+    }
+  ],
+  "omarchy-exec-argv": [
+    {
+      "file": "plugins/notifications/NotificationLogic.js",
+      "line": 150,
+      "role": "review",
+      "context": "return stringHint(hints, \"omarchy-exec-argv\")"
+    }
+  ],
+  "transient": [
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 151,
+      "role": "review",
+      "context": "transient = !!(notification.hints && notification.hints[\"transient\"])"
+    }
+  ],
+  "imageChanged": [
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 237,
+      "role": "review",
+      "context": "\"imageChanged\", \"urgencyChanged\", \"expireTimeoutChanged\", \"hintsChanged\""
+    }
+  ],
+  "urgencyChanged": [
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 237,
+      "role": "review",
+      "context": "\"imageChanged\", \"urgencyChanged\", \"expireTimeoutChanged\", \"hintsChanged\""
+    }
+  ],
+  "expireTimeoutChanged": [
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 237,
+      "role": "review",
+      "context": "\"imageChanged\", \"urgencyChanged\", \"expireTimeoutChanged\", \"hintsChanged\""
+    }
+  ],
+  "hintsChanged": [
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 237,
+      "role": "review",
+      "context": "\"imageChanged\", \"urgencyChanged\", \"expireTimeoutChanged\", \"hintsChanged\""
+    }
+  ],
+  "notifications: settings parse failed:": [
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 816,
+      "role": "review",
+      "context": "if (parsed.error) console.warn(\"notifications: settings parse failed:\", parsed.errorMessage || \"\")"
+    }
+  ],
+  "off": [
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 861,
+      "role": "review",
+      "context": "return service.doNotDisturb ? \"on\" : \"off\""
+    }
+  ],
+  "none": [
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 898,
+      "role": "review",
+      "context": "if (popupModel.count === 0) return \"none\""
+    },
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 905,
+      "role": "review",
+      "context": "if (popupModel.count === 0) return \"none\""
+    },
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 914,
+      "role": "review",
+      "context": "if (!needle) return \"none\""
+    },
+    {
+      "file": "plugins/notifications/Service.qml",
+      "line": 923,
+      "role": "review",
+      "context": "return hit ? \"ok\" : \"none\""
+    }
+  ],
+  "open": [
+    {
+      "file": "plugins/osd/Osd.qml",
+      "line": 122,
+      "role": "review",
+      "context": "function state(): string { return root.opened ? \"open\" : \"closed\" }"
+    }
+  ],
+  "closed": [
+    {
+      "file": "plugins/osd/Osd.qml",
+      "line": 122,
+      "role": "review",
+      "context": "function state(): string { return root.opened ? \"open\" : \"closed\" }"
+    }
+  ],
+  "volume-muted": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 11,
+      "role": "review",
+      "context": "if (n === \"volume-muted\" || n === \"volume-mute\" || n === \"muted\" || n === \"mute\") return \"\ueee8\""
+    }
+  ],
+  "volume-mute": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 11,
+      "role": "review",
+      "context": "if (n === \"volume-muted\" || n === \"volume-mute\" || n === \"muted\" || n === \"mute\") return \"\ueee8\""
+    }
+  ],
+  "muted": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 11,
+      "role": "review",
+      "context": "if (n === \"volume-muted\" || n === \"volume-mute\" || n === \"muted\" || n === \"mute\") return \"\ueee8\""
+    }
+  ],
+  "mute": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 11,
+      "role": "review",
+      "context": "if (n === \"volume-muted\" || n === \"volume-mute\" || n === \"muted\" || n === \"mute\") return \"\ueee8\""
+    }
+  ],
+  "volume-low": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 12,
+      "role": "review",
+      "context": "if (n === \"volume-low\") return \"\uf026\""
+    }
+  ],
+  "volume-medium": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 13,
+      "role": "review",
+      "context": "if (n === \"volume-medium\") return \"\uf027\""
+    }
+  ],
+  "volume-high": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 14,
+      "role": "review",
+      "context": "if (n === \"volume-high\" || n === \"volume\") return \"\uf028\""
+    }
+  ],
+  "volume": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 14,
+      "role": "review",
+      "context": "if (n === \"volume-high\" || n === \"volume\") return \"\uf028\""
+    }
+  ],
+  "microphone-muted": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 15,
+      "role": "review",
+      "context": "if (n === \"microphone-muted\" || n === \"microphone-off\" || n === \"mic-muted\" || n === \"mic-off\") return \"\udb80\udf6d\""
+    }
+  ],
+  "microphone-off": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 15,
+      "role": "review",
+      "context": "if (n === \"microphone-muted\" || n === \"microphone-off\" || n === \"mic-muted\" || n === \"mic-off\") return \"\udb80\udf6d\""
+    }
+  ],
+  "mic-muted": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 15,
+      "role": "review",
+      "context": "if (n === \"microphone-muted\" || n === \"microphone-off\" || n === \"mic-muted\" || n === \"mic-off\") return \"\udb80\udf6d\""
+    }
+  ],
+  "mic-off": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 15,
+      "role": "review",
+      "context": "if (n === \"microphone-muted\" || n === \"microphone-off\" || n === \"mic-muted\" || n === \"mic-off\") return \"\udb80\udf6d\""
+    }
+  ],
+  "microphone": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 16,
+      "role": "review",
+      "context": "if (n === \"microphone\" || n === \"mic\") return \"\udb80\udf6c\""
+    }
+  ],
+  "mic": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 16,
+      "role": "review",
+      "context": "if (n === \"microphone\" || n === \"mic\") return \"\udb80\udf6c\""
+    }
+  ],
+  "keyboard": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 17,
+      "role": "review",
+      "context": "if (n === \"keyboard\") return \"\udb80\udf0c\""
+    }
+  ],
+  "touchpad": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 19,
+      "role": "review",
+      "context": "if (n === \"touchpad\") return \"\udb81\udff8\""
+    }
+  ],
+  "touch": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 20,
+      "role": "review",
+      "context": "if (n === \"touch\" || n === \"touchscreen\") return \"\udb81\udf41\""
+    }
+  ],
+  "touchscreen": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 20,
+      "role": "review",
+      "context": "if (n === \"touch\" || n === \"touchscreen\") return \"\udb81\udf41\""
+    }
+  ],
+  "reboot": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 21,
+      "role": "review",
+      "context": "if (n === \"reboot\" || n === \"restart\") return \"\udb81\udf09\""
+    }
+  ],
+  "restart": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 21,
+      "role": "review",
+      "context": "if (n === \"reboot\" || n === \"restart\") return \"\udb81\udf09\""
+    }
+  ],
+  "shutdown": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 22,
+      "role": "review",
+      "context": "if (n === \"shutdown\" || n === \"power\" || n === \"poweroff\") return \"\udb81\udc25\""
+    }
+  ],
+  "power": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 22,
+      "role": "review",
+      "context": "if (n === \"shutdown\" || n === \"power\" || n === \"poweroff\") return \"\udb81\udc25\""
+    }
+  ],
+  "poweroff": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 22,
+      "role": "review",
+      "context": "if (n === \"shutdown\" || n === \"power\" || n === \"poweroff\") return \"\udb81\udc25\""
+    }
+  ],
+  "logout": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 23,
+      "role": "review",
+      "context": "if (n === \"logout\" || n === \"sign-out\" || n === \"leave\") return \"\udb80\udf43\""
+    }
+  ],
+  "sign-out": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 23,
+      "role": "review",
+      "context": "if (n === \"logout\" || n === \"sign-out\" || n === \"leave\") return \"\udb80\udf43\""
+    }
+  ],
+  "leave": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 23,
+      "role": "review",
+      "context": "if (n === \"logout\" || n === \"sign-out\" || n === \"leave\") return \"\udb80\udf43\""
+    }
+  ],
+  "media": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 24,
+      "role": "review",
+      "context": "if (n === \"media\" || n === \"player\") return \"\udb81\udf5a\""
+    }
+  ],
+  "player": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 24,
+      "role": "review",
+      "context": "if (n === \"media\" || n === \"player\") return \"\udb81\udf5a\""
+    }
+  ],
+  "media-source": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 25,
+      "role": "review",
+      "context": "if (n === \"media-source\" || n === \"player-source\") return \"\udb81\udf5a\""
+    }
+  ],
+  "player-source": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 25,
+      "role": "review",
+      "context": "if (n === \"media-source\" || n === \"player-source\") return \"\udb81\udf5a\""
+    }
+  ],
+  "media-play": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 26,
+      "role": "review",
+      "context": "if (n === \"media-play\" || n === \"player-play\") return \"\udb81\udc0a\""
+    }
+  ],
+  "player-play": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 26,
+      "role": "review",
+      "context": "if (n === \"media-play\" || n === \"player-play\") return \"\udb81\udc0a\""
+    }
+  ],
+  "media-pause": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 27,
+      "role": "review",
+      "context": "if (n === \"media-pause\" || n === \"player-pause\") return \"\udb80\udfe4\""
+    }
+  ],
+  "player-pause": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 27,
+      "role": "review",
+      "context": "if (n === \"media-pause\" || n === \"player-pause\") return \"\udb80\udfe4\""
+    }
+  ],
+  "media-next": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 28,
+      "role": "review",
+      "context": "if (n === \"media-next\" || n === \"player-next\") return \"\udb81\udcad\""
+    }
+  ],
+  "player-next": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 28,
+      "role": "review",
+      "context": "if (n === \"media-next\" || n === \"player-next\") return \"\udb81\udcad\""
+    }
+  ],
+  "media-previous": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 29,
+      "role": "review",
+      "context": "if (n === \"media-previous\" || n === \"player-previous\") return \"\udb81\udcae\""
+    }
+  ],
+  "player-previous": [
+    {
+      "file": "plugins/osd/OsdModel.js",
+      "line": 29,
+      "role": "review",
+      "context": "if (n === \"media-previous\" || n === \"player-previous\") return \"\udb81\udcae\""
+    }
+  ],
+  "polkit": [
+    {
+      "file": "plugins/polkit/PolkitAgent.qml",
+      "line": 20,
+      "role": "review",
+      "context": "property var borderSpec: Border.surfaceSpec(\"polkit\", errorFlash ? \"border-error\" : \"border\", errorFlash ? borderError : border, Math.max(1, Style.space(2)), \"border-alpha\")"
+    }
+  ],
+  "Wrong": [
+    {
+      "file": "plugins/polkit/PolkitAgent.qml",
+      "line": 339,
+      "role": "display",
+      "context": "text: root.errorFlash ? \"Wrong\" : (root.submitted ? \"Checking...\" : \"Enter password\")"
+    }
+  ],
+  "Checking...": [
+    {
+      "file": "plugins/polkit/PolkitAgent.qml",
+      "line": 339,
+      "role": "display",
+      "context": "text: root.errorFlash ? \"Wrong\" : (root.submitted ? \"Checking...\" : \"Enter password\")"
+    }
+  ],
+  "Enter password": [
+    {
+      "file": "plugins/polkit/PolkitAgent.qml",
+      "line": 339,
+      "role": "display",
+      "context": "text: root.errorFlash ? \"Wrong\" : (root.submitted ? \"Checking...\" : \"Enter password\")"
+    }
+  ],
+  "finger": [
+    {
+      "file": "plugins/polkit/PolkitModel.js",
+      "line": 3,
+      "role": "review",
+      "context": "return s.indexOf(\"finger\") !== -1 || s.indexOf(\"fprint\") !== -1 || s.indexOf(\"swipe\") !== -1"
+    }
+  ],
+  "fprint": [
+    {
+      "file": "plugins/polkit/PolkitModel.js",
+      "line": 3,
+      "role": "review",
+      "context": "return s.indexOf(\"finger\") !== -1 || s.indexOf(\"fprint\") !== -1 || s.indexOf(\"swipe\") !== -1"
+    }
+  ],
+  "swipe": [
+    {
+      "file": "plugins/polkit/PolkitModel.js",
+      "line": 3,
+      "role": "review",
+      "context": "return s.indexOf(\"finger\") !== -1 || s.indexOf(\"fprint\") !== -1 || s.indexOf(\"swipe\") !== -1"
+    }
+  ],
+  "pam_fprintd.so": [
+    {
+      "file": "plugins/polkit/PolkitModel.js",
+      "line": 15,
+      "role": "review",
+      "context": "if (line.indexOf(\"pam_fprintd.so\") !== -1) return true"
+    }
+  ],
+  "Authorize running '": [
+    {
+      "file": "plugins/polkit/PolkitModel.js",
+      "line": 23,
+      "role": "review",
+      "context": "return match ? \"Authorize running '\" + match[1] + \"'\" : text"
+    }
+  ],
+  "power-saver": [
+    {
+      "file": "plugins/power/Model.js",
+      "line": 42,
+      "role": "review",
+      "context": "if (name === \"power-saver\") return \"\udb80\udf2a\""
+    }
+  ],
+  "balanced": [
+    {
+      "file": "plugins/power/Model.js",
+      "line": 43,
+      "role": "review",
+      "context": "if (name === \"balanced\") return \"\udb80\ude9a\""
+    }
+  ],
+  "performance": [
+    {
+      "file": "plugins/power/Model.js",
+      "line": 44,
+      "role": "review",
+      "context": "if (name === \"performance\") return \"\udb81\udcc5\""
+    }
+  ],
+  "Threshold": [
+    {
+      "file": "plugins/power/Model.js",
+      "line": 86,
+      "role": "review",
+      "context": "if (chargeThresholdActive(d, onBattery, states)) return \"Threshold\""
+    }
+  ],
+  "On battery": [
+    {
+      "file": "plugins/power/Model.js",
+      "line": 87,
+      "role": "review",
+      "context": "if (onBattery) return \"On battery\""
+    }
+  ],
+  "Fully charged": [
+    {
+      "file": "plugins/power/Model.js",
+      "line": 88,
+      "role": "review",
+      "context": "if (!onBattery && percentage >= 1) return \"Fully charged\""
+    },
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 130,
+      "role": "review",
+      "context": "if (fullyCharged) return \"Fully charged\""
+    }
+  ],
+  "Charging": [
+    {
+      "file": "plugins/power/Model.js",
+      "line": 89,
+      "role": "review",
+      "context": "return \"Charging\""
+    },
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 448,
+      "role": "display",
+      "context": "label: root.chargeThresholdActive ? \"Battery state\" : (root.discharging ? \"Discharging\" : \"Charging\")"
+    }
+  ],
+  "omarchy-battery-status": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 210,
+      "role": "review",
+      "context": "command: [\"omarchy-battery-status\", \"--shell\"]"
+    }
+  ],
+  "--shell": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 210,
+      "role": "review",
+      "context": "command: [\"omarchy-battery-status\", \"--shell\"]"
+    }
+  ],
+  "Battery": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 349,
+      "role": "display",
+      "context": "text: \"Battery\""
+    }
+  ],
+  "Battery size": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 436,
+      "role": "display",
+      "context": "InfoPair { label: \"Battery size\"; value: root.batteryInfo.size || \"\" }"
+    }
+  ],
+  "Charge cycles": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 437,
+      "role": "display",
+      "context": "InfoPair { label: \"Charge cycles\"; value: root.batteryInfo.cycles || \"\u2014\" }"
+    }
+  ],
+  "Charge limit": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 444,
+      "role": "display",
+      "context": "label: root.chargeThresholdActive ? \"Charge limit\" : (root.discharging ? \"Time left\" : \"Time to full\")"
+    }
+  ],
+  "Time left": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 444,
+      "role": "display",
+      "context": "label: root.chargeThresholdActive ? \"Charge limit\" : (root.discharging ? \"Time left\" : \"Time to full\")"
+    }
+  ],
+  "Time to full": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 444,
+      "role": "display",
+      "context": "label: root.chargeThresholdActive ? \"Charge limit\" : (root.discharging ? \"Time left\" : \"Time to full\")"
+    }
+  ],
+  "Battery state": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 448,
+      "role": "display",
+      "context": "label: root.chargeThresholdActive ? \"Battery state\" : (root.discharging ? \"Discharging\" : \"Charging\")"
+    }
+  ],
+  "Discharging": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 448,
+      "role": "display",
+      "context": "label: root.chargeThresholdActive ? \"Battery state\" : (root.discharging ? \"Discharging\" : \"Charging\")"
+    }
+  ],
+  "POWER PROFILE": [
+    {
+      "file": "plugins/power/Panel.qml",
+      "line": 464,
+      "role": "display",
+      "context": "text: \"POWER PROFILE\""
+    }
+  ],
+  "message": [
+    {
+      "file": "plugins/reminders/ReminderFlow.qml",
+      "line": 31,
+      "role": "display",
+      "context": "readonly property string promptText: root.step === \"message\" ? \"Reminder message\" : \"Remind in minutes\""
+    }
+  ],
+  "Reminder message": [
+    {
+      "file": "plugins/reminders/ReminderFlow.qml",
+      "line": 31,
+      "role": "display",
+      "context": "readonly property string promptText: root.step === \"message\" ? \"Reminder message\" : \"Remind in minutes\""
+    }
+  ],
+  "Remind in minutes": [
+    {
+      "file": "plugins/reminders/ReminderFlow.qml",
+      "line": 31,
+      "role": "display",
+      "context": "readonly property string promptText: root.step === \"message\" ? \"Reminder message\" : \"Remind in minutes\""
+    }
+  ],
+  "Speed test failed": [
+    {
+      "file": "plugins/speedtest/Panel.qml",
+      "line": 152,
+      "role": "review",
+      "context": "root.error = root.stderrText || \"Speed test failed\""
+    }
+  ],
+  "Measure again via fast.com": [
+    {
+      "file": "plugins/speedtest/Panel.qml",
+      "line": 191,
+      "role": "display",
+      "context": "runAgainTooltip: \"Measure again via fast.com\""
+    }
+  ],
+  "number": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 3,
+      "role": "review",
+      "context": "if (!ips || typeof ips.length !== \"number\") return result"
+    },
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 13,
+      "role": "review",
+      "context": "if (!ips || typeof ips.length !== \"number\") return result"
+    },
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 94,
+      "role": "review",
+      "context": "if (typeof target === \"number\" && target !== 0) return target === 1"
+    }
+  ],
+  "localhost": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 34,
+      "role": "review",
+      "context": "if (host !== \"\" && host.toLowerCase() !== \"localhost\") return host"
+    }
+  ],
+  "linux": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 52,
+      "role": "review",
+      "context": "if (value === \"linux\") return \"\udb80\udf3d\""
+    }
+  ],
+  "macos": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 53,
+      "role": "review",
+      "context": "if (value === \"macos\" || value === \"ios\") return \"\udb80\udc35\""
+    }
+  ],
+  "ios": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 53,
+      "role": "review",
+      "context": "if (value === \"macos\" || value === \"ios\") return \"\udb80\udc35\""
+    }
+  ],
+  "windows": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 54,
+      "role": "review",
+      "context": "if (value === \"windows\") return \"\udb80\udf72\""
+    }
+  ],
+  "android": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 55,
+      "role": "review",
+      "context": "if (value === \"android\") return \"\udb80\udc32\""
+    }
+  ],
+  "mullvad": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 56,
+      "role": "review",
+      "context": "if (value === \"mullvad\") return \"\udb81\udd82\""
+    }
+  ],
+  "Unknown account": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 61,
+      "role": "review",
+      "context": "if (!account) return \"Unknown account\""
+    },
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 65,
+      "role": "review",
+      "context": "return String(account.id || \"Unknown account\")"
+    }
+  ],
+  "tailscale": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 73,
+      "role": "review",
+      "context": "return { authUrl: \"\", command: [\"tailscale\", \"up\"] }"
+    },
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 167,
+      "role": "review",
+      "context": "statusProcess.command = [\"tailscale\", \"status\", \"--json\"]"
+    },
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 230,
+      "role": "review",
+      "context": "console.warn(\"tailscale\", lastError)"
+    }
+  ],
+  "STATUS": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 142,
+      "role": "review",
+      "context": "var statusStart = header.indexOf(\"STATUS\")"
+    }
+  ],
+  "Status error": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 269,
+      "role": "review",
+      "context": "return { ok: false, unavailable: true, message: \"Status error\", error: \"Failed to parse tailscale status\" }"
+    },
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 228,
+      "role": "review",
+      "context": "resetUnavailable(parsed.message || \"Status error\")"
+    }
+  ],
+  "Failed to parse tailscale status": [
+    {
+      "file": "plugins/tailscale/Model.js",
+      "line": 269,
+      "role": "review",
+      "context": "return { ok: false, unavailable: true, message: \"Status error\", error: \"Failed to parse tailscale status\" }"
+    },
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 229,
+      "role": "review",
+      "context": "lastError = parsed.error || \"Failed to parse tailscale status\""
+    }
+  ],
+  "Turn Tailscale off": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 55,
+      "role": "review",
+      "context": "readonly property string toggleHint: tailscale.active ? \"Turn Tailscale off\" : (tailscale.needsLogin ? \"Authorize this device\" : \"Turn Tailscale on\")"
+    }
+  ],
+  "Authorize this device": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 55,
+      "role": "review",
+      "context": "readonly property string toggleHint: tailscale.active ? \"Turn Tailscale off\" : (tailscale.needsLogin ? \"Authorize this device\" : \"Turn Tailscale on\")"
+    }
+  ],
+  "Turn Tailscale on": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 55,
+      "role": "review",
+      "context": "readonly property string toggleHint: tailscale.active ? \"Turn Tailscale off\" : (tailscale.needsLogin ? \"Authorize this device\" : \"Turn Tailscale on\")"
+    }
+  ],
+  "Any": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 138,
+      "role": "review",
+      "context": "if (city === \"\" || city === \"Any\") return country || String(peer.DisplayName || \"Unknown\")"
+    }
+  ],
+  "Tailscale": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 460,
+      "role": "display",
+      "context": "title: tailscale.installed ? (tailscale.selfName || \"Tailscale\") : \"Tailscale\""
+    },
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 460,
+      "role": "display",
+      "context": "title: tailscale.installed ? (tailscale.selfName || \"Tailscale\") : \"Tailscale\""
+    }
+  ],
+  "Tailscale CLI is not installed or not on PATH.": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 523,
+      "role": "display",
+      "context": "text: \"Tailscale CLI is not installed or not on PATH.\""
+    }
+  ],
+  "CONNECTIONS": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 542,
+      "role": "display",
+      "context": "text: \"CONNECTIONS\""
+    }
+  ],
+  "EXIT NODES": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 575,
+      "role": "display",
+      "context": "text: \"EXIT NODES\""
+    }
+  ],
+  "Search regions": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 605,
+      "role": "display",
+      "context": "placeholderText: \"Search regions\""
+    }
+  ],
+  "No Mullvad regions found.": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 641,
+      "role": "display",
+      "context": "text: \"No Mullvad regions found.\""
+    }
+  ],
+  "MACHINES": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 679,
+      "role": "display",
+      "context": "text: \"MACHINES\""
+    }
+  ],
+  "No machines found on this tailnet.": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 687,
+      "role": "display",
+      "context": "text: \"No machines found on this tailnet.\""
+    }
+  ],
+  "Authorize Tailscale operator": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 780,
+      "role": "display",
+      "context": "text: \"Authorize Tailscale operator\""
+    }
+  ],
+  "Allow this user to operate this Tailscale profile": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 789,
+      "role": "display",
+      "context": "text: \"Allow this user to operate this Tailscale profile\""
+    }
+  ],
+  "Send files": [
+    {
+      "file": "plugins/tailscale/Panel.qml",
+      "line": 981,
+      "role": "display",
+      "context": "tooltipText: \"Send files\""
+    }
+  ],
+  "status": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 167,
+      "role": "review",
+      "context": "statusProcess.command = [\"tailscale\", \"status\", \"--json\"]"
+    }
+  ],
+  "--json": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 167,
+      "role": "review",
+      "context": "statusProcess.command = [\"tailscale\", \"status\", \"--json\"]"
+    }
+  ],
+  "Needs login": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 254,
+      "role": "review",
+      "context": "if (needsLogin) statusText = \"Needs login\""
+    }
+  ],
+  "Starting Tailscale login\u2026": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 307,
+      "role": "review",
+      "context": "if (needsLogin) actionStatus = \"Starting Tailscale login\u2026\""
+    }
+  ],
+  "Authorizing Tailscale operator...": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 352,
+      "role": "review",
+      "context": "actionStatus = \"Authorizing Tailscale operator...\""
+    }
+  ],
+  "Tailscale login link not available yet": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 452,
+      "role": "review",
+      "context": "root.actionStatus = \"Tailscale login link not available yet\""
+    }
+  ],
+  "Authorize Tailscale operator to show connections": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 503,
+      "role": "review",
+      "context": "root.lastError = \"Authorize Tailscale operator to show connections\""
+    }
+  ],
+  "Could not list Tailscale connections": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 505,
+      "role": "review",
+      "context": "root.lastError = elideStatus(stderr || stdout || \"Could not list Tailscale connections\")"
+    }
+  ],
+  "Tailscale command failed": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 535,
+      "role": "review",
+      "context": "root.lastError = elideStatus(stderr || stdout || \"Tailscale command failed\")"
+    }
+  ],
+  "tailscale up failed": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 558,
+      "role": "review",
+      "context": "root.lastError = elideStatus(combined || \"tailscale up failed\")"
+    }
+  ],
+  "Account switch failed": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 579,
+      "role": "review",
+      "context": "root.lastError = elideStatus(stderr || stdout || \"Account switch failed\")"
+    }
+  ],
+  "Exit node selection failed": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 602,
+      "role": "review",
+      "context": "root.lastError = elideStatus(stderr || stdout || \"Exit node selection failed\")"
+    }
+  ],
+  "Tailscale authorization failed": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 624,
+      "role": "review",
+      "context": "root.lastError = elideStatus(stderr || stdout || \"Tailscale authorization failed\")"
+    }
+  ],
+  "Tailscale operator authorized": [
+    {
+      "file": "plugins/tailscale/Service.qml",
+      "line": 630,
+      "role": "review",
+      "context": "root.actionStatus = \"Tailscale operator authorized\""
+    }
+  ],
+  "usa": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 109,
+      "role": "review",
+      "context": "if (country === \"us\" || country === \"usa\" || country === \"united states\" || country === \"united states of america\") return true"
+    }
+  ],
+  "united states": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 109,
+      "role": "review",
+      "context": "if (country === \"us\" || country === \"usa\" || country === \"united states\" || country === \"united states of america\") return true"
+    }
+  ],
+  "united states of america": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 109,
+      "role": "review",
+      "context": "if (country === \"us\" || country === \"usa\" || country === \"united states\" || country === \"united states of america\") return true"
+    }
+  ],
+  "liberia": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 110,
+      "role": "review",
+      "context": "if (country === \"liberia\" || country === \"myanmar\" || country === \"burma\") return true"
+    }
+  ],
+  "myanmar": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 110,
+      "role": "review",
+      "context": "if (country === \"liberia\" || country === \"myanmar\" || country === \"burma\") return true"
+    }
+  ],
+  "burma": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 110,
+      "role": "review",
+      "context": "if (country === \"liberia\" || country === \"myanmar\" || country === \"burma\") return true"
+    }
+  ],
+  "imperial": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 116,
+      "role": "review",
+      "context": "if (unit === \"imperial\") return true"
+    }
+  ],
+  "metric": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 117,
+      "role": "review",
+      "context": "if (unit === \"metric\") return false"
+    }
+  ],
+  "Sunday": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 130,
+      "role": "review",
+      "context": "return [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"][d.getDay()]"
+    }
+  ],
+  "Monday": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 130,
+      "role": "review",
+      "context": "return [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"][d.getDay()]"
+    }
+  ],
+  "Tuesday": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 130,
+      "role": "review",
+      "context": "return [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"][d.getDay()]"
+    }
+  ],
+  "Wednesday": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 130,
+      "role": "review",
+      "context": "return [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"][d.getDay()]"
+    }
+  ],
+  "Thursday": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 130,
+      "role": "review",
+      "context": "return [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"][d.getDay()]"
+    }
+  ],
+  "Friday": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 130,
+      "role": "review",
+      "context": "return [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"][d.getDay()]"
+    }
+  ],
+  "Saturday": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 130,
+      "role": "review",
+      "context": "return [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"][d.getDay()]"
+    }
+  ],
+  "open-meteo": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 192,
+      "role": "review",
+      "context": "return hasConfiguredCoordinates ? source === \"open-meteo\" : source === \"wttr\""
+    }
+  ],
+  "wttr": [
+    {
+      "file": "plugins/weather/Model.js",
+      "line": 192,
+      "role": "review",
+      "context": "return hasConfiguredCoordinates ? source === \"open-meteo\" : source === \"wttr\""
+    }
+  ],
+  "yyyy-MM-dd": [
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 283,
+      "role": "review",
+      "context": "return Model.buildForecastDays(report, dailyForecastReport, Qt.formatDate(new Date(), \"yyyy-MM-dd\"))"
+    },
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 287,
+      "role": "review",
+      "context": "return Model.openMeteoForecastDays(dailyForecastReport, Qt.formatDate(new Date(), \"yyyy-MM-dd\"))"
+    },
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 291,
+      "role": "review",
+      "context": "return Model.wttrNextForecastDays(report, Qt.formatDate(new Date(), \"yyyy-MM-dd\"))"
+    },
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 295,
+      "role": "review",
+      "context": "return Model.isFutureForecastDate(dateString, Qt.formatDate(new Date(), \"yyyy-MM-dd\"))"
+    }
+  ],
+  "dddd": [
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 311,
+      "role": "review",
+      "context": "return Model.dayName(dateString, function(date) { return Qt.formatDate(date, \"dddd\") })"
+    }
+  ],
+  "Search city": [
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 619,
+      "role": "display",
+      "context": "placeholderText: \"Search city\""
+    }
+  ],
+  "FEELS": [
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 686,
+      "role": "display",
+      "context": "text: \"FEELS\""
+    }
+  ],
+  "WIND": [
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 704,
+      "role": "display",
+      "context": "text: \"WIND\""
+    }
+  ],
+  "HUMID": [
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 722,
+      "role": "display",
+      "context": "text: \"HUMID\""
+    }
+  ],
+  "Fetching forecast\u2026": [
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 795,
+      "role": "display",
+      "context": "text: \"Fetching forecast\u2026\""
+    }
+  ],
+  "max": [
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 858,
+      "role": "display",
+      "context": "text: root.bareTempForDay(modelData, \"max\")"
+    }
+  ],
+  "min": [
+    {
+      "file": "plugins/weather/Panel.qml",
+      "line": 865,
+      "role": "display",
+      "context": "text: root.bareTempForDay(modelData, \"min\")"
+    }
+  ],
+  "Could not generate the Wi-Fi QR code": [
+    {
+      "file": "plugins/wifiqr/Panel.qml",
+      "line": 186,
+      "role": "review",
+      "context": "if (root.error === \"\") root.error = \"Could not generate the Wi-Fi QR code\""
+    }
+  ],
+  "Could not read the Wi-Fi password": [
+    {
+      "file": "plugins/wifiqr/Panel.qml",
+      "line": 209,
+      "role": "review",
+      "context": "else root.passwordError = \"Could not read the Wi-Fi password\""
+    }
+  ],
+  "Generating QR code\u2026": [
+    {
+      "file": "plugins/wifiqr/Panel.qml",
+      "line": 313,
+      "role": "display",
+      "context": "text: \"Generating QR code\u2026\""
+    }
+  ],
+  "Scan to join this network": [
+    {
+      "file": "plugins/wifiqr/Panel.qml",
+      "line": 336,
+      "role": "display",
+      "context": "text: \"Scan to join this network\""
+    }
+  ],
+  "Cancel": [
+    {
+      "file": "shared/frames/ConfirmDialog.qml",
+      "line": 10,
+      "role": "display",
+      "context": "property string cancelText: \"Cancel\""
+    }
+  ],
+  "Confirm": [
+    {
+      "file": "shared/frames/ConfirmDialog.qml",
+      "line": 11,
+      "role": "display",
+      "context": "property string confirmText: \"Confirm\""
+    }
+  ],
+  "bottom": [
+    {
+      "file": "shared/frames/KeyboardPanel.qml",
+      "line": 291,
+      "role": "review",
+      "context": "if (root.barPos === \"bottom\") return py >= root.screenH - root._barStripSize"
+    },
+    {
+      "file": "shared/frames/KeyboardPanel.qml",
+      "line": 298,
+      "role": "review",
+      "context": "if (root.barPos === \"bottom\") return Qt.point(px, py - (root.screenH - root.barH))"
+    }
+  ],
+  "left": [
+    {
+      "file": "shared/frames/KeyboardPanel.qml",
+      "line": 292,
+      "role": "review",
+      "context": "if (root.barPos === \"left\") return px <= root._barStripSize"
+    }
+  ],
+  "right": [
+    {
+      "file": "shared/frames/KeyboardPanel.qml",
+      "line": 293,
+      "role": "review",
+      "context": "if (root.barPos === \"right\") return px >= root.screenW - root._barStripSize"
+    },
+    {
+      "file": "shared/frames/KeyboardPanel.qml",
+      "line": 299,
+      "role": "review",
+      "context": "if (root.barPos === \"right\") return Qt.point(px - (root.screenW - root.barW), py)"
+    }
+  ],
+  "Run Again": [
+    {
+      "file": "shared/frames/SpeedTestOverlay.qml",
+      "line": 168,
+      "role": "display",
+      "context": "text: \"Run Again\""
+    }
+  ],
+  "application-x-executable": [
+    {
+      "file": "qml/Service.qml",
+      "line": 148,
+      "role": "review",
+      "context": "return Quickshell.iconPath(\"application-x-executable\", true)"
+    },
+    {
+      "file": "qml/Service.qml",
+      "line": 152,
+      "role": "review",
+      "context": "return themed !== \"\" ? themed : Quickshell.iconPath(\"application-x-executable\", true)"
+    }
+  ],
+  "HARDLINE": [
+    {
+      "file": "qml/Service.qml",
+      "line": 183,
+      "role": "review",
+      "context": "return \"HARDLINE\""
+    }
+  ],
+  "WIRELESS": [
+    {
+      "file": "qml/Service.qml",
+      "line": 186,
+      "role": "review",
+      "context": "return ssid === \"\" ? \"WIRELESS\" : ssid.toUpperCase().substring(0, 14)"
+    }
+  ],
+  "RELAY LOST": [
+    {
+      "file": "qml/Service.qml",
+      "line": 188,
+      "role": "review",
+      "context": "return \"RELAY LOST\""
+    }
+  ],
+  "NO OUTPUT": [
+    {
+      "file": "qml/Service.qml",
+      "line": 194,
+      "role": "review",
+      "context": "return \"NO OUTPUT\""
+    }
+  ],
+  "MUTED": [
+    {
+      "file": "qml/Service.qml",
+      "line": 196,
+      "role": "review",
+      "context": "return \"MUTED\""
+    },
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 147,
+      "role": "display",
+      "context": "TelemetryRow { label: \"VOX ARRAY\"; value: root.service.voxText; alert: root.service.voxText === \"MUTED\" }"
+    }
+  ],
+  "NO RELAY": [
+    {
+      "file": "qml/Service.qml",
+      "line": 202,
+      "role": "review",
+      "context": "return \"NO RELAY\""
+    }
+  ],
+  "DORMANT": [
+    {
+      "file": "qml/Service.qml",
+      "line": 204,
+      "role": "review",
+      "context": "return \"DORMANT\""
+    }
+  ],
+  " LINKED": [
+    {
+      "file": "qml/Service.qml",
+      "line": 210,
+      "role": "review",
+      "context": "return linked > 0 ? linked + \" LINKED\" : \"IDLE\""
+    }
+  ],
+  "IDLE": [
+    {
+      "file": "qml/Service.qml",
+      "line": 210,
+      "role": "review",
+      "context": "return linked > 0 ? linked + \" LINKED\" : \"IDLE\""
+    }
+  ],
+  "NOOSPHERIC LINK ......... ESTABLISHED": [
+    {
+      "file": "qml/burn/Burn.qml",
+      "line": 69,
+      "role": "display",
+      "context": "text: \"NOOSPHERIC LINK ......... ESTABLISHED\""
+    }
+  ],
+  "DATA INTEGRITY .......... 99.7%": [
+    {
+      "file": "qml/burn/Burn.qml",
+      "line": 79,
+      "role": "display",
+      "context": "text: \"DATA INTEGRITY .......... 99.7%\""
+    }
+  ],
+  "MACHINE SPIRIT .... STABLE": [
+    {
+      "file": "qml/burn/Burn.qml",
+      "line": 89,
+      "role": "display",
+      "context": "text: \"MACHINE SPIRIT .... STABLE\""
+    }
+  ],
+  "[ READY ]": [
+    {
+      "file": "qml/launcher/Launcher.qml",
+      "line": 256,
+      "role": "display",
+      "context": "text: index === root.selected ? \"[ READY ]\" : \"\""
+    }
+  ],
+  " RITES": [
+    {
+      "file": "qml/menu/Menu.qml",
+      "line": 226,
+      "role": "display",
+      "context": "text: \"> \" + root.filter.toUpperCase() + \"  //  \" + root.visibleEntries().length + \" RITES\""
+    }
+  ],
+  "[ ENTER ]": [
+    {
+      "file": "qml/menu/Menu.qml",
+      "line": 273,
+      "role": "display",
+      "context": "text: index === root.selected ? (modelData.internal ? \"[ ENTER ]\" : \"[ OPEN ]\") : \"\""
+    }
+  ],
+  "[ OPEN ]": [
+    {
+      "file": "qml/menu/Menu.qml",
+      "line": 273,
+      "role": "display",
+      "context": "text: index === root.selected ? (modelData.internal ? \"[ ENTER ]\" : \"[ OPEN ]\") : \"\""
+    }
+  ],
+  "Apps": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 3,
+      "role": "display",
+      "context": "{ index: \"01\", id: \"apps\", icon: \"\udb80\udc3b\", label: \"Apps\", internal: true },"
+    }
+  ],
+  "Learn": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 4,
+      "role": "display",
+      "context": "{ index: \"02\", id: \"learn\", icon: \"\udb82\uddd1\", label: \"Learn\", internal: false },"
+    }
+  ],
+  "Trigger": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 5,
+      "role": "display",
+      "context": "{ index: \"03\", id: \"trigger\", icon: \"\udb85\udcde\", label: \"Trigger\", internal: false },"
+    }
+  ],
+  "Style": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 6,
+      "role": "display",
+      "context": "{ index: \"04\", id: \"style\", icon: \"\uebcf\", label: \"Style\", internal: false },"
+    }
+  ],
+  "Setup": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 7,
+      "role": "display",
+      "context": "{ index: \"05\", id: \"setup\", icon: \"\ue615\", label: \"Setup\", internal: false },"
+    }
+  ],
+  "Install": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 8,
+      "role": "display",
+      "context": "{ index: \"06\", id: \"install\", icon: \"\udb80\ude49\", label: \"Install\", internal: false },"
+    }
+  ],
+  "Remove": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 9,
+      "role": "display",
+      "context": "{ index: \"07\", id: \"remove\", icon: \"\udb82\udf4c\", label: \"Remove\", internal: false },"
+    }
+  ],
+  "Update": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 10,
+      "role": "display",
+      "context": "{ index: \"08\", id: \"update\", icon: \"\uf021\", label: \"Update\", internal: false },"
+    }
+  ],
+  "About": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 11,
+      "role": "display",
+      "context": "{ index: \"09\", id: \"about\", icon: \"\uea74\", label: \"About\", internal: false },"
+    }
+  ],
+  "System": [
+    {
+      "file": "qml/menu/Routes.js",
+      "line": 12,
+      "role": "display",
+      "context": "{ index: \"10\", id: \"system\", icon: \"\uf011\", label: \"System\", internal: false },"
+    }
+  ],
+  "LOGIC ENGINE": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 136,
+      "role": "display",
+      "context": "TelemetryRow { label: \"LOGIC ENGINE\"; value: root.service.cpuPercent + \"%\"; alert: root.service.cpuPercent >= 90 }"
+    }
+  ],
+  "MEMORY VAULT": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 137,
+      "role": "display",
+      "context": "TelemetryRow { label: \"MEMORY VAULT\"; value: root.service.memText; alert: root.service.memPercent >= 90 }"
+    }
+  ],
+  "POWER": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 139,
+      "role": "display",
+      "context": "label: \"POWER\""
+    }
+  ],
+  "CHRONO": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 144,
+      "role": "display",
+      "context": "TelemetryRow { label: \"CHRONO\"; value: root.service.timeText }"
+    }
+  ],
+  "CHANNEL": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 145,
+      "role": "display",
+      "context": "TelemetryRow { label: \"CHANNEL\"; value: root.service.channelText }"
+    }
+  ],
+  "NET LINK": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 146,
+      "role": "display",
+      "context": "TelemetryRow { label: \"NET LINK\"; value: root.service.netText; alert: !root.service.netOk; critical: !root.service.netOk }"
+    }
+  ],
+  "VOX ARRAY": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 147,
+      "role": "display",
+      "context": "TelemetryRow { label: \"VOX ARRAY\"; value: root.service.voxText; alert: root.service.voxText === \"MUTED\" }"
+    }
+  ],
+  "RELAY": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 148,
+      "role": "display",
+      "context": "TelemetryRow { label: \"RELAY\"; value: root.service.relayText }"
+    }
+  ],
+  "MACHINE COMMUNIQUE": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 153,
+      "role": "display",
+      "context": "text: \"MACHINE COMMUNIQUE\""
+    }
+  ],
+  "AUSPEX SWEEP ........ COMPLETE": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 173,
+      "role": "display",
+      "context": "text: \"AUSPEX SWEEP ........ COMPLETE\""
+    }
+  ],
+  "ACCESS .............. SANCTIFIED": [
+    {
+      "file": "qml/prop/Prop.qml",
+      "line": 179,
+      "role": "display",
+      "context": "text: \"ACCESS .............. SANCTIFIED\""
+    }
+  ],
+  "apps": [
+    {
+      "file": "overlays/rowdy.menu/Menu.qml",
+      "line": 695,
+      "role": "review",
+      "context": "if (id !== \"apps\") return false"
+    }
+  ]
+}

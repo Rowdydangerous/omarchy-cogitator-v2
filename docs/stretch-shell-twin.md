@@ -1,6 +1,8 @@
-# Stretch goal: full Cogitator twin of the Omarchy shell
+# Historical proposal: full Cogitator twin of the Omarchy shell
 
-Pinned at user request. Not started. The Application Cogitator
+Superseded by `architecture.md`: the full suite is now the primary scope,
+with stock-based baselines imported in `plugins/`. The notes below preserve
+the earlier independent-overlay proposal for reference. The Application Cogitator
 (`qml/launcher/`) is the reference implementation: own overlay window,
 native resolvers underneath, stock plugin untouched, IPC summon, no
 keybinding theft.

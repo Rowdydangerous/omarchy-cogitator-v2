@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "cogitator.spacer",
+  "name": "Cogitator Spacer",
+  "version": "1.0.0",
+  "author": "Omarchy",
+  "description": "Configurable blank space",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Spacer.qml"
+  },
+  "barWidget": {
+    "displayName": "Cogitator Spacer",
+    "description": "Configurable blank space",
+    "category": "Layout",
+    "allowMultiple": true,
+    "settingsForm": "spacerSettings"
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.spacer"
+  }
+}

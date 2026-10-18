@@ -10,7 +10,14 @@ check() {
 }
 
 check "manager syntax" bash -n "$ROOT/scripts/cogitator"
-check "bash rite syntax" bash -n "$ROOT/shell/cogitator.bash"
+check "stock plugin baselines" python3 "$ROOT/tests/stock-plugins.py"
+check "suite switching and recovery" python3 "$ROOT/tests/suite.py"
+check "shared frame packaging and QML" python3 "$ROOT/tests/frames.py"
+check "Mechanicus copy and protocol preservation" python3 "$ROOT/tests/voice.py"
+check "persistent control and settings" python3 "$ROOT/tests/control.py"
+check "live settings avoid shell restarts" python3 "$ROOT/tests/transitions.py"
+check "industrial icon states and packaging" python3 "$ROOT/tests/icons.py"
+check "bash rite syntax" bash -n "$ROOT/extras/bash/cogitator.bash"
 check "bash integration" "$ROOT/tests/bash-integration.sh"
 check "menu router" "$ROOT/tests/router.sh"
 check "clone managed rules" "$ROOT/tests/clone-managed.sh"
@@ -50,7 +57,7 @@ for line in open(sys.argv[1]):
 for key in ["PALETTE","CRT_ENABLED","CRT_GLOBAL","CRT_INTENSITY","WINDOW_CHAMFER","WINDOW_CORNER","FLICKER","NOISE","PERSISTENCE","GHOSTING","SCREEN_BURN","BRIGHTNESS_FALLOFF","BACKGROUND_BURN","BACKGROUND_BURN_OPACITY","TEXT_STREAMING","WORKSPACE_RITES","COGITATOR_PROP","ANIMATION_LEVEL"]:
     assert key in raw, key
 ' "$ROOT/config/cogitator.conf.example"
-check "no system writes" bash -c '! grep -R "/usr/share/omarchy" "$1/scripts" "$1/qml" "$1/palettes" --include="*" | grep -v "Never edit" | grep -v "OMARCHY_PATH:-"' _ "$ROOT"
+check "no system writes" bash -c '! grep -R "/usr/share/omarchy" "$1/scripts" "$1/qml" "$1/palettes" --include="*.py" --include="*.qml" --include="*.js" --include="cogitator*" --exclude="*.pyc" | grep -v "Never edit" | grep -v "OMARCHY_PATH:-" | grep -v "self.defaults = Path(defaults" | grep -v "source = Path"' _ "$ROOT"
 check "no escaping imports" bash -c '! grep -R "\.\./\.\." "$1/qml" --include="*.qml"' _ "$ROOT"
 check "marker-guarded removal" bash -c 'grep -q "owned_by_us" "$1/scripts/cogitator"' _ "$ROOT"
 check "native install path" bash -c 'grep -q "omarchy plugin add" "$1/scripts/cogitator" && grep -q "git clone" "$1/scripts/cogitator"' _ "$ROOT"

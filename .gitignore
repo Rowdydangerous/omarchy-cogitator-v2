@@ -1,1 +1,3 @@
 .cogitator-v2-installed
+__pycache__/
+*.pyc

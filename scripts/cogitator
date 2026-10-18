@@ -66,6 +66,22 @@ owned_by_us() {
   [[ $(git -C "$dir" config --get remote.origin.url 2>/dev/null) == "$REPO_URL" ]]
 }
 
+stamp_owned_install() {
+  local dir="$1"
+  if [[ ! -f $dir/$MARKER || $(< "$dir/$MARKER") != "$VERSION" ]]; then
+    printf '%s\n' "$VERSION" > "$dir/$MARKER"
+  fi
+}
+
+set_background_if_changed() {
+  local target="$1" current
+  current=$(readlink -f "$STATE_HOME/omarchy/current/background" 2>/dev/null || true)
+  if [[ -f $current && -f $target ]] && cmp -s "$current" "$target"; then
+    return
+  fi
+  omarchy theme bg set "$target"
+}
+
 # ID of the installed clone for a built-in source (clonedFrom routing), if any.
 find_clone() {
   omarchy-shell shell listPlugins 2>/dev/null \
@@ -77,28 +93,40 @@ find_menu_clone() { find_clone "$MENU_SOURCE"; }
 
 write_snapshot() {
   local previous="$1" previous_bg
-  previous_bg=$(omarchy theme bg current 2>/dev/null || true)
+  # The CLI returns a display label; rollback needs the actual file path.
+  previous_bg=$(readlink -f "$STATE_HOME/omarchy/current/background" 2>/dev/null || true)
   mkdir -p "$STATE_DIR" "$BACKUP_ROOT"
   local backup=""
   if [[ -f $SHELL_JSON ]]; then
     backup="$BACKUP_ROOT/shell-$(date +%Y%m%d-%H%M%S).json"
     cp -a -- "$SHELL_JSON" "$backup"
   fi
-  local herald_clone herald_backup="" menu_clone menu_backup=""
+  # Clone ownership decides the restore path. A clone carrying OUR receipt
+  # was created by a previous engagement (whose snapshot may be lost) and
+  # must be removed on disable — backing up its styled files as "prior
+  # state" would poison the snapshot. Only receipt-less clones (the user's
+  # own) get file backups for byte-identical restore.
+  local herald_clone herald_backup="" menu_clone menu_backup="" plugdir
   herald_clone=$(find_herald_clone)
-  if [[ -n $herald_clone && -d $HOME/.config/omarchy/plugins/$herald_clone ]]; then
-    herald_backup="$BACKUP_ROOT/notifications-$(date +%Y%m%d-%H%M%S)"
-    mkdir -p "$herald_backup"
-    cp -a -- "$HOME/.config/omarchy/plugins/$herald_clone/Service.qml" \
-      "$HOME/.config/omarchy/plugins/$herald_clone/components/NotificationCard.qml" \
-      "$herald_backup/"
+  if [[ -n $herald_clone ]]; then
+    plugdir="$HOME/.config/omarchy/plugins/$herald_clone"
+    if [[ -d $plugdir && ! -f $plugdir/$HERALD_MARKER && ! -f $plugdir/.cogitator-suite.json ]]; then
+      herald_backup="$BACKUP_ROOT/notifications-$(date +%Y%m%d-%H%M%S)"
+      mkdir -p "$herald_backup"
+      cp -a -- "$plugdir/Service.qml" \
+        "$plugdir/components/NotificationCard.qml" \
+        "$herald_backup/"
+    fi
   fi
   menu_clone=$(find_menu_clone)
-  if [[ -n $menu_clone && -d $HOME/.config/omarchy/plugins/$menu_clone ]]; then
-    menu_backup="$BACKUP_ROOT/menu-$(date +%Y%m%d-%H%M%S)"
-    mkdir -p "$menu_backup"
-    cp -a -- "$HOME/.config/omarchy/plugins/$menu_clone/Menu.qml" \
-      "$menu_backup/"
+  if [[ -n $menu_clone ]]; then
+    plugdir="$HOME/.config/omarchy/plugins/$menu_clone"
+    if [[ -d $plugdir && ! -f $plugdir/$MENU_MARKER && ! -f $plugdir/.cogitator-suite.json ]]; then
+      menu_backup="$BACKUP_ROOT/menu-$(date +%Y%m%d-%H%M%S)"
+      mkdir -p "$menu_backup"
+      cp -a -- "$plugdir/Menu.qml" \
+        "$menu_backup/"
+    fi
   fi
   jq -n --arg v "$VERSION" --arg prev "$previous" --arg prevBg "$previous_bg" \
     --arg backup "$backup" --arg heraldClone "$herald_clone" --arg heraldBackup "$herald_backup" \
@@ -112,7 +140,7 @@ write_snapshot() {
 render_config_json() {
   [[ -f $CONF_FILE ]] || fail "missing $CONF_FILE"
   python3 - "$CONF_FILE" "$CONFIG_JSON" <<'EOF'
-import json, sys
+import json, shlex, sys
 
 CONF, OUT = sys.argv[1], sys.argv[2]
 
@@ -138,7 +166,7 @@ with open(CONF) as handle:
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, _, value = line.partition("=")
-        raw[key.strip()] = value.strip().strip('"')
+        raw[key.strip()] = " ".join(shlex.split(value, comments=True))
 
 config = {
     "palette": raw.get("PALETTE", "green").lower(),
@@ -184,18 +212,7 @@ readonly CHAMFER_END="-- cogitator-v2-chamfer-end"
 readonly CRT_FRAG="$CONFIG_DIR/crt.frag"
 
 conf_value() {
-  local key="$1" fallback="$2" value
-  value=$(awk -F= -v key="$key" '
-    $1 ~ "^[[:space:]]*" key "[[:space:]]*$" {
-      value=$0
-      sub(/^[^=]*=[[:space:]]*/, "", value)
-      sub(/[[:space:]]*#.*$/, "", value)
-      gsub(/^[[:space:]\"]+|[[:space:]\"]+$/, "", value)
-      print value
-      exit
-    }
-  ' "$CONF_FILE" 2>/dev/null || true)
-  printf '%s\n' "${value:-$fallback}"
+  python3 "$SOURCE_DIR/scripts/control-backend.py" config-value "$1" "$2"
 }
 
 set_conf() {
@@ -290,7 +307,24 @@ ensure_window_chamfer() {
   (( corner >= 0 && corner <= 40 )) || corner=14
   [[ -f $HYPR_LUA ]] || { printf 'No looknfeel.lua; window chamfer skipped.\n' >&2; return; }
   if grep -qF -- "$CHAMFER_BEGIN" "$HYPR_LUA"; then
-    [[ $want == true ]] || remove_window_chamfer
+    if [[ $want != true ]]; then
+      remove_window_chamfer
+      return
+    fi
+    # Update only our existing cut depth; avoid rewriting identical geometry.
+    awk -v begin="$CHAMFER_BEGIN" -v end="$CHAMFER_END" -v corner="$corner" '
+      $0 == begin { managed=1 }
+      managed && /rounding = [0-9]+/ { sub(/rounding = [0-9]+/, "rounding = " corner) }
+      { print }
+      $0 == end { managed=0 }
+    ' "$HYPR_LUA" > "$HYPR_LUA.tmp"
+    if cmp -s "$HYPR_LUA" "$HYPR_LUA.tmp"; then
+      rm -f "$HYPR_LUA.tmp"
+    else
+      cp -a -- "$HYPR_LUA" "$HYPR_LUA.bak.$(date +%Y%m%d-%H%M%S)"
+      mv "$HYPR_LUA.tmp" "$HYPR_LUA"
+      hyprctl reload >/dev/null
+    fi
     return
   fi
   [[ $want == true ]] || return
@@ -327,10 +361,8 @@ remove_window_chamfer() {
 }
 
 prepare_config() {
-  mkdir -p "$CONFIG_DIR" "$CONFIG_DIR/bash" "$HOME/.local/bin"
+  mkdir -p "$CONFIG_DIR" "$HOME/.local/bin"
   [[ -f $CONF_FILE ]] || install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"
-  # File only, never wired into startup. Sourcing stays a manual operator act.
-  install -m 0644 "$SOURCE_DIR/shell/cogitator.bash" "$CONFIG_DIR/bash/cogitator.bash"
   install -m 0755 "$SOURCE_DIR/scripts/cogitator-menu" "$CONFIG_DIR/cogitator-menu"
   # Convenience on PATH; points at this repo, removed on uninstall.
   ln -sf "$SOURCE_DIR/scripts/cogitator" "$HOME/.local/bin/cogitator"
@@ -372,7 +404,11 @@ remove_keybinding() {
 }
 
 queue_transition() {
-  systemd-run --user --collect --unit=cogitator-v2-transition "$@" >/dev/null
+  if [[ ${COGITATOR_FOREGROUND:-0} == 1 ]]; then
+    "$@"
+  else
+    systemd-run --user --collect --unit=cogitator-v2-transition "$@" >/dev/null
+  fi
 }
 
 # Herald overlay: while engaged, the notifications clone (created if absent)
@@ -491,12 +527,9 @@ _unit_enable() {
   local plugindir="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
   if omarchy-shell shell listPlugins 2>/dev/null | jq -e --arg id "$PLUGIN_ID" 'any(.[]; .id == $id)' >/dev/null 2>&1; then
     if [[ -d $plugindir/.git ]] && owned_by_us "$plugindir"; then
-      # Dev copies or interrupted runs can leave tracked modifications or
-      # untracked files that collide with incoming paths and block
-      # fast-forward; the clone always rebuilds from the repo.
-      git -C "$plugindir" checkout -q -- . || true
-      git -C "$plugindir" clean -q -fd || true
-      printf '%s\n' "$VERSION" > "$plugindir/$MARKER"
+      # Native update may refuse local changes; preserve them instead of
+      # clearing the checkout. Working-tree QML deploys use checked receipts.
+      stamp_owned_install "$plugindir"
       omarchy plugin update "$PLUGIN_ID" --yes
     elif [[ -d $plugindir/.git ]]; then
       fail "plugin dir is a foreign git checkout; remove it manually"
@@ -508,36 +541,55 @@ _unit_enable() {
   else
     omarchy plugin add "$REPO_URL" --yes
   fi
-  printf '%s\n' "$VERSION" > "$HOME/.config/omarchy/plugins/$PLUGIN_ID/$MARKER"
+  stamp_owned_install "$HOME/.config/omarchy/plugins/$PLUGIN_ID"
   rm -rf "$HOME/.config/omarchy/themes/$THEME_SLUG"
   git clone -- "$REPO_URL" "$HOME/.config/omarchy/themes/$THEME_SLUG"
   printf '%s\n' "$VERSION" > "$HOME/.config/omarchy/themes/$THEME_SLUG/$MARKER"
-  omarchy theme set "$THEME_SLUG"
-  omarchy theme bg set "$HOME/.config/omarchy/themes/$THEME_SLUG/backgrounds/cogitator-green-grid.png"
-  omarchy plugin enable "$PLUGIN_ID"
-  ensure_herald
-  ensure_menu_overlay
-  # Service-kind plugins only reload on a full shell restart; rescan is not
-  # enough (stale service keeps serving old IPC surface).
-  omarchy restart shell
+  local selected_palette
+  selected_palette=$(conf_value PALETTE green)
+  if [[ $selected_palette == green ]]; then
+    omarchy theme set "$THEME_SLUG"
+    set_background_if_changed "$HOME/.config/omarchy/themes/$THEME_SLUG/backgrounds/cogitator-green-grid.png"
+  else
+    COGITATOR_FOREGROUND=1 cmd_palette "$selected_palette"
+  fi
+  # The suite's atomic config includes the coordinator. Enabling it separately
+  # starts an extra generation before the replacement services are selected.
+  python3 "$SOURCE_DIR/scripts/cogitator-suite.py" enable
+  # These newly selected services mount from the config watcher. Do not issue
+  # quit while their asynchronous QML/IPC objects are still being incubated.
+  # Source-development reloads are handled separately by `cogitator apply`.
 }
 
 # Runs INSIDE the detached unit: disable plugin, restore theme, clear snapshot.
 _unit_disable() {
   set -euo pipefail
   local plugin_dst="$1" theme_dst="$2" previous="$3" previous_bg="$4" snapshot="$5" herald_clone="${6:-}" herald_backup="${7:-}" menu_clone="${8:-}" menu_backup="${9:-}"
-  restore_herald "$herald_clone" "$herald_backup"
-  restore_menu_overlay "$menu_clone" "$menu_backup"
-  if [[ -f $plugin_dst/$MARKER ]]; then
-    omarchy plugin disable "$PLUGIN_ID" || true
-  else
-    echo "Plugin install not ours; leaving files, only restoring theme selection." >&2
+  local suite_restore=false
+  [[ -f $STATE_DIR/suite.json ]] && suite_restore=true
+  if ! $suite_restore; then
+    # Older engagements still use the two-clone restoration path.
+    restore_herald "$herald_clone" "$herald_backup"
+    restore_menu_overlay "$menu_clone" "$menu_backup"
+  fi
+  if ! $suite_restore; then
+    if [[ -f $plugin_dst/$MARKER ]]; then
+      omarchy plugin disable "$PLUGIN_ID" || true
+    else
+      echo "Plugin install not ours; leaving files, only restoring theme selection." >&2
+    fi
+  fi
+  if $suite_restore; then
+    python3 "$SOURCE_DIR/scripts/cogitator-suite.py" disable
   fi
   remove_crt_snippet || true
   remove_window_chamfer || true
   omarchy theme set "$previous"
-  if [[ -n $previous_bg ]]; then omarchy theme bg set "$previous_bg" || true; fi
+  if [[ -n $previous_bg ]]; then set_background_if_changed "$previous_bg" || true; fi
   omarchy restart shell
+  if $suite_restore; then
+    python3 "$SOURCE_DIR/scripts/cogitator-suite.py" finish
+  fi
   rm -f "$snapshot"
 }
 
@@ -548,7 +600,8 @@ cmd_status() {
       --argjson plugin "$(plugin_enabled && printf true || printf false)" \
       --argjson installed "$([[ -f $PLUGIN_DST/manifest.json && -f $THEME_DST/colors.toml ]] && printf true || printf false)" \
       --argjson snapshot "$([[ -f $SNAPSHOT ]] && printf true || printf false)" \
-      '{theme: $theme, palette: $palette, pluginEnabled: $plugin, installed: $installed, snapshot: $snapshot, version: $version}' \
+      --arg suite "$(if [[ -f $STATE_DIR/suite.json ]]; then jq -r '.phase' "$STATE_DIR/suite.json"; else printf inactive; fi)" \
+      '{theme: $theme, palette: $palette, pluginEnabled: $plugin, installed: $installed, snapshot: $snapshot, suite: $suite, version: $version}' \
       --arg version "$VERSION"
     return
   fi
@@ -562,13 +615,17 @@ cmd_enable() {
   local current
   current=$(current_theme)
   [[ -d $SOURCE_DIR/.git ]] || fail "repo is not a git checkout; native install needs one"
+  cmd_install
   if [[ -f $SNAPSHOT ]]; then
+    [[ -f $STATE_DIR/suite.json ]] || fail "legacy engagement is active; run cogitator disable before enabling the suite"
     printf 'Snapshot exists; re-applying without overwriting it.\n'
   else
     write_snapshot "$current"
     printf 'Snapshot armed. Previous theme: %s\n' "${current:-unknown}"
   fi
   prepare_config
+  # Capture plugin state before native installation mutates shell.json.
+  python3 "$SOURCE_DIR/scripts/cogitator-suite.py" prepare --with-rite
   omarchy plugin validate "$SOURCE_DIR" >/dev/null
   install_keybinding
   ensure_crt_snippet
@@ -587,6 +644,9 @@ repair_menus_to_stock() {
     clone_id=$(find_clone "$src")
     [[ -n $clone_id ]] || continue
     clone_dir="$HOME/.config/omarchy/plugins/$clone_id"
+    # New-suite installs intentionally remain on disk while disengaged.
+    # Their config restoration belongs to the suite journal, not legacy repair.
+    [[ -f $clone_dir/.cogitator-suite.json ]] && continue
     if clone_is_managed "$kind" "$clone_dir"; then
       printf 'Removing managed %s clone; stock %s resumes.\n' "$clone_id" "$src"
       omarchy plugin remove "$clone_id" --yes
@@ -599,13 +659,22 @@ repair_menus_to_stock() {
     omarchy restart shell
     printf 'Menus restored to stock.\n'
   else
-    printf 'Already disengaged; menus already stock.\n'
+    printf 'Already disengaged; no legacy managed overlays to remove.\n'
   fi
 }
 
 cmd_disable() {
   local previous previous_bg
-  [[ -f $SNAPSHOT ]] || { repair_menus_to_stock; return; }
+  if [[ ! -f $SNAPSHOT ]]; then
+    if [[ -f $STATE_DIR/suite.json ]]; then
+      python3 "$SOURCE_DIR/scripts/cogitator-suite.py" disable
+      omarchy restart shell
+      python3 "$SOURCE_DIR/scripts/cogitator-suite.py" finish
+    else
+      repair_menus_to_stock
+    fi
+    return
+  fi
   previous=$(jq -r '.previousTheme // ""' "$SNAPSHOT")
   previous_bg=$(jq -r '.previousBackground // ""' "$SNAPSHOT")
   [[ -n $previous ]] || fail "snapshot has no previous theme; refusing to guess"
@@ -646,14 +715,47 @@ cmd_palette() {
     if [[ "$src" == */themes/* ]]; then cp -a "$src/." "$dst/"; else cp -a "$src/colors.toml" "$src/shell.toml" "$src/icons.theme" "$src/backgrounds" "$dst/"; fi
     printf "%s\n" "0.3.0" > "$dst/.cogitator-v2-installed"
     omarchy theme set "$slug"
-    omarchy theme bg set "$dst/backgrounds/$slug-grid.png"
-    omarchy-shell -q shell rescanPlugins
+    current_bg=$(readlink -f "$HOME/.local/state/omarchy/current/background" 2>/dev/null || true)
+    if [[ ! -f $current_bg ]] || ! cmp -s "$current_bg" "$dst/backgrounds/$slug-grid.png"; then
+      omarchy theme bg set "$dst/backgrounds/$slug-grid.png"
+    fi
   ' _ "$slug" "$src"
   printf 'Palette %s queued. Shell surfaces follow the theme file live.\n' "$name"
 }
 
 cmd_apply() {
-  render_config_json && omarchy restart shell && printf 'Config applied.\n'
+  prepare_config
+  if [[ ! -f $SNAPSHOT && ! -f $STATE_DIR/suite.json ]]; then
+    printf 'Settings saved for the next engagement.\n'
+    return
+  fi
+  ensure_crt_snippet
+  ensure_window_chamfer
+  python3 "$SOURCE_DIR/scripts/cogitator-suite.py" refresh
+  python3 "$SOURCE_DIR/scripts/control-backend.py" install
+  omarchy restart shell
+  printf 'Config and suite sources applied.\n'
+}
+
+# UI/config changes are already watched by the running service. Do not deploy
+# plugin source, rescan or restart the shell merely to update a setting.
+cmd_settings_apply() {
+  render_config_json
+  if [[ ! -f $SNAPSHOT && ! -f $STATE_DIR/suite.json ]]; then
+    printf 'Settings saved for the next engagement.\n'
+    return
+  fi
+  local key crt=false corners=false
+  if (( $# == 0 )); then crt=true; corners=true; fi
+  for key in "$@"; do
+    case "$key" in
+      CRT_GLOBAL|CRT_INTENSITY) crt=true ;;
+      WINDOW_CHAMFER|WINDOW_CORNER) corners=true ;;
+    esac
+  done
+  if $crt; then render_crt_frag; ensure_crt_snippet; fi
+  if $corners; then ensure_window_chamfer; fi
+  printf 'Settings applied live; shell kept running.\n'
 }
 
 cmd_configure() {
@@ -664,10 +766,16 @@ cmd_configure() {
   after=$(sha256sum < "$CONF_FILE")
   if [[ $before != "$after" ]]; then
     printf 'Configuration changed; applying.\n'
-    cmd_apply
+    cmd_settings_apply
   else
     printf 'No changes; shell untouched.\n'
   fi
+}
+
+cmd_install() {
+  prepare_config
+  python3 "$SOURCE_DIR/scripts/control-backend.py" install
+  printf 'Cogitator installed; engage from the widget beside the clock.\n'
 }
 
 cmd_uninstall() {
@@ -676,6 +784,8 @@ cmd_uninstall() {
     printf 'Re-run `cogitator uninstall%s` after the restore completes.\n' "${1:+ $1}"
     return
   fi
+  python3 "$SOURCE_DIR/scripts/cogitator-suite.py" uninstall
+  python3 "$SOURCE_DIR/scripts/control-backend.py" uninstall
   if owned_by_us "$PLUGIN_DST"; then
     omarchy plugin remove "$PLUGIN_ID" --yes
   elif [[ -e $PLUGIN_DST ]]; then
@@ -711,17 +821,23 @@ case "${1:-}" in
   --unit-enable) _unit_enable ;;
   --unit-disable) _unit_disable "$2" "$3" "$4" "$5" "$6" "${7:-}" "${8:-}" "${9:-}" "${10:-}" ;;
   status) cmd_status "${2:-}" ;;
+  install) cmd_install ;;
+  suite)
+    [[ ${2:-status} == status ]] || fail "usage: cogitator suite status"
+    python3 "$SOURCE_DIR/scripts/cogitator-suite.py" status
+    ;;
   enable) cmd_enable ;;
   disable) cmd_disable ;;
   toggle)
     if plugin_enabled || [[ $(current_theme) == *cogitator* ]]; then cmd_disable; else cmd_enable; fi
     ;;
-  apply) prepare_config && ensure_crt_snippet && ensure_window_chamfer; cmd_apply ;;
+  apply) cmd_apply ;;
+  settings-apply) shift; cmd_settings_apply "$@" ;;
   configure) cmd_configure ;;
   palette) cmd_palette "${2:-}" ;;
   uninstall) cmd_uninstall "${2:-}" ;;
   -h|--help|help)
-    printf 'Usage: cogitator <status|enable|disable|toggle|apply|configure|palette|uninstall>\nNative equivalents: omarchy plugin add|update|remove %s, omarchy theme install|set|remove\n' "$PLUGIN_ID"
+    printf 'Usage: cogitator <install|status|suite status|enable|disable|toggle|apply|configure|palette|uninstall>\nNative equivalents: omarchy plugin add|update|remove %s, omarchy theme install|set|remove\n' "$PLUGIN_ID"
     ;;
   *) printf 'Usage: cogitator <status|enable|disable|toggle|apply|configure|palette|uninstall>\n' >&2; exit 1 ;;
 esac

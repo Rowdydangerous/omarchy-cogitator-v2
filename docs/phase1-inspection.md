@@ -45,7 +45,7 @@ Observed stock plugin IDs/kinds:
 
 ## Microcopy inventory (initial)
 * `panels/power/Panel.qml:96-117`: `chargingPhrases=[Pumping power, Injecting electrons, Pouring juice, Amassing watts, Hoarding joules, Sucking volts, Topping reserves, Soaking amps, Inhaling kilowatts]`, `onBatteryPhrases=[Slurping power, Spending joules, Draining watts, Burning electrons, Sipping juice, ...]`, hero `Fully charged`.
-* Full audit still open: clock, workspaces, network, bluetooth, audio, volume/brightness OSD, updates, weather, tray, agents, indicators, menus, dialogs, tooltips, errors. See `vocab/microcopy.md`.
+* Full audit still open: clock, workspaces, network, bluetooth, audio, volume/brightness OSD, updates, weather, tray, agents, indicators, menus, dialogs, tooltips, errors. See `reference/microcopy.md`.
 
 ## Decisions locked
 * Fresh repo `omarchy-cogitator-v2`, old untouched.

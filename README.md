@@ -7,35 +7,38 @@ Goal: **a 40K Cogitator that happens to run Linux** — cinematic green-phosphor
 ## Safety contract
 
 * Only user locations are ever touched:
-  * `~/.config/omarchy/themes/cogitator-green/`
-  * `~/.config/omarchy/plugins/cogitator-rite/`
+  * `~/.config/omarchy/themes/cogitator-*/`
+  * `~/.config/omarchy/plugins/cogitator-rite/` and `cogitator.*/`
   * `~/.config/cogitator-v2/`
   * `~/.local/state/cogitator-v2/`
 * Never edit `/usr/share/omarchy/`, never edit stock themes, never overwrite `shell.json` without timestamped backup.
 * `cogitator enable` snapshots, `cogitator disable` restores, `cogitator uninstall` removes only what it installed.
-* TTY recovery: `cogitator-v2 disable; omarchy theme set "Osaka Jade"; omarchy restart shell`.
+* TTY recovery: `cogitator disable`, then inspect `cogitator status` and transition logs.
 
 ## Current phase
 
-Phase 3 shell expansion, live-verified (2026-09-14): workspace channel
-rites with OSD, read-only net/vox/relay telemetry, Application Cogitator
-launcher (`omarchy-shell cogitator-rite openLauncher`), themed critical
-notifications, opt-in Bash rite. Full enable → disable → exact-restore
-cycle re-proven after every addition. Screenshots in `docs/screenshots/`.
+Stock-based replacement suite: `cogitator enable` installs all 37 plugins and
+switches the currently enabled components to their Cogitator replacements.
+Unused widgets and disabled services stay off. Existing custom clone files,
+repeated widget instances, settings and bar placement are preserved.
+See [suite switching](docs/suite-switching.md) and [architecture](docs/architecture.md).
 
 ## Usage
 
 ```bash
-./tests/test.sh          # 25 read-only checks, must all pass
+./tests/test.sh          # regression checks; uses temporary/generated fixtures
 cogitator status         # ~/.local/bin/cogitator shim, installed on enable
+./scripts/cogitator install   # adds persistent control widget beside the clock; stays disengaged
 ./scripts/cogitator enable    # snapshots, native-installs plugin+theme, queues detached transition
-./scripts/cogitator disable   # disables plugin, restores previous theme + background
-./scripts/cogitator apply     # re-render config.json from cogitator.conf + rescan
+./scripts/cogitator disable   # restores original routes, bar, theme and background
+./scripts/cogitator apply     # deploy working-tree QML + replacement plugins, restart shell
+./scripts/cogitator suite status # detailed suite journal and selected replacements
 ./scripts/cogitator configure # edit ~/.config/cogitator-v2/cogitator.conf
 ./scripts/cogitator uninstall # disable first, then `plugin remove` + `theme remove` (keeps config; --purge removes all)
 ```
 
-Native equivalents (the script is a snapshot/restore wrapper around these):
+Native commands manage individual components. They do not replace the suite's
+snapshot/restore workflow; use `cogitator enable` and `disable` for full switching:
 
 ```bash
 omarchy plugin add https://github.com/Rowdydangerous/omarchy-cogitator-v2 --yes
@@ -45,15 +48,18 @@ omarchy plugin disable cogitator-rite
 ```
 
 Enable/disable queue a transient `cogitator-v2-transition` user unit and
-return immediately — `omarchy theme set` restarts the shell and kills the
-invoking terminal, so never chain commands after them in one invocation.
+return immediately. Theme changes retint/restart terminals and may interrupt
+the invoking terminal or OpenCode. Enable mounts the suite through the config
+watcher; disable finishes with a shell restart. Ordinary panel settings update
+live without restarting Quickshell or redeploying plugin sources.
 Poll with `status`, inspect with
 `journalctl --user -u cogitator-v2-transition --no-pager`.
 An abort message right after enable/disable means your shell died, not the
 transaction; re-check `status` before doing anything.
 
-Prototype scope (locked): prop + bar + burn, green phosphor, Xenon-first
-font stack with clean fallback, no system font change.
+Scope: a stock-based Cogitator twin of the Quickshell widgets and panels,
+green phosphor first, Xenon-first font stack with clean fallback. The console
+and background burn are additional machine surfaces.
 
 ## Global CRT (all windows)
 
@@ -73,7 +79,8 @@ installer stands down with a message instead.
 
 ## Performance
 
-Measured quickshell CPU, settled, i7-1165G7 integrated graphics:
+Earlier console-prototype observations of whole-Quickshell lifetime CPU on an
+i7-1165G7 (not isolated benchmarks of the expanded replacement suite):
 
 | Tier | Cost | Motion |
 |------|------|--------|
@@ -87,11 +94,11 @@ drift cost ~15% alone — cut), stepped carriage motion at ~8fps instead of
 polling, 5s telemetry cadence. Set `ANIMATION_LEVEL` in `cogitator.conf`,
 then `cogitator apply`.
 
-## Stretch goal (pinned, not started)
+## Full shell suite
 
-A full Cogitator twin of every Omarchy shell surface with Mechanicus
-treatment — see `docs/stretch-shell-twin.md`. The Application Cogitator
-launcher is the reference implementation for that effort.
+A full Cogitator twin of Omarchy's shell is the main scope. Each plugin starts
+from stock behavior and is styled individually. The inventory and migration
+boundaries are in [architecture](docs/architecture.md).
 
 ## Settings
 
@@ -99,12 +106,12 @@ launcher is the reference implementation for that effort.
 cogitator configure   # opens ~/.config/cogitator-v2/cogitator.conf in $EDITOR;
                       # if you save changes it applies them automatically,
                       # otherwise the shell is left untouched
-cogitator apply       # re-render + full shell restart (services need it)
+cogitator apply       # source-development deployment + one full shell restart
 cogitator status      # theme, palette, plugin, snapshot in one glance
 ```
 
-Every tunable lives in that one file: palette, CRT intensity, phosphor
-glow, scanlines, flicker, noise, persistence, ghosting, burn-in,
+Supported tunables live in that one file: palette, CRT intensity,
+flicker, noise, persistence, ghosting, burn-in,
 background burn + opacity, text streaming, workspace rites, prop opacity
 and position, animation tier. QML never hardcodes color — all shell
 surfaces follow the active theme file live.
@@ -127,9 +134,9 @@ the native-installable flagship).
 
 ## Terminal rite (opt-in)
 
-`cogitator enable` places `~/.config/cogitator-v2/bash/cogitator.bash` and
-nothing else — it never edits startup files. To take the rite, add this line
-yourself to the interactive Bash startup file of your choice:
+This optional terminal extra is separate from core installation. See
+[extras/bash/README.md](extras/bash/README.md) for manual installation. Once
+installed, activate it in an interactive Bash terminal:
 
 ```bash
 [ -r ~/.config/cogitator-v2/bash/cogitator.bash ] && source ~/.config/cogitator-v2/bash/cogitator.bash
@@ -147,7 +154,8 @@ engaged it toggles the grimdark Command Nexus (stock root routes with
 original icons, generated from stock data), disengaged it falls through to
 the stock menu. Selecting APPLICATIONS opens the Application Cogitator;
 every other rite delegates to the stock `omarchy.menu` at its route, so
-system panels stay stock. Direct IPC also works:
+the shell routes it to the active Cogitator menu replacement. Widgets and
+panels use the stock-based suite replacements. Direct IPC also works:
 
 ```bash
 omarchy-shell cogitator-rite toggleMenu    # root rites
@@ -168,7 +176,20 @@ theme root, so Omarchy's own installers accept it directly:
   curated slug `cogitator-green`.
 * `palettes/` — centralized color definitions (single source of truth)
 * `config/` — single `cogitator.conf` example → `config.json` for QML
-* `vocab/` — microcopy inventory + liturgical replacements
+* `docs/reference/microcopy.md` — microcopy inventory + liturgical replacements
 * `scripts/cogitator` — lifecycle wrapper (snapshot/restore) around the
   native `omarchy plugin` / `omarchy theme` commands
-* `fonts/NOTES.md` — font investigation log
+* `docs/reference/fonts.md` — font investigation log
+* `plugins/` — complete stock-based replacements, deployed by enable/apply
+* `extras/bash/` — manually installed terminal prompt integration
+* `docs/stock-baseline.json` — imported release and original file hashes
+* `shared/frames/` — common menu-style chamfers, outlines and corner flares
+* `shared/voice/` — Mechanicus labels, prompts, statuses and widget catalogue names
+* `shared/icons/` — native industrial bar/state icons, Clipboard data-slate and Clock dial
+* `control/` — persistent Control Sanctum widget and all-settings schema
+
+## Control Sanctum
+
+Run `cogitator install`, then click the sigil immediately left of the clock.
+Engage/disengage and adjust settings with Apply/Revert; the widget stays available
+when the suite is off. See [control widget](docs/control-widget.md).

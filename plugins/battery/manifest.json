@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "cogitator.battery",
+  "name": "Cogitator Battery",
+  "version": "1.0.0",
+  "author": "Omarchy",
+  "description": "Low battery warning service",
+  "kinds": [
+    "service"
+  ],
+  "entryPoints": {
+    "service": "Service.qml"
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.battery"
+  }
+}

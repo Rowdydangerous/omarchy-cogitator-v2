@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "cogitator.nightlight",
+  "name": "Cogitator Night Light",
+  "version": "1.0.0",
+  "author": "Omarchy",
+  "description": "Owns the hyprsunset night light temperature for the bar indicator and CLI.",
+  "kinds": [
+    "service"
+  ],
+  "entryPoints": {
+    "service": "Service.qml"
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.nightlight"
+  }
+}

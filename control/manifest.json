@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "cogitator.control",
+  "name": "Cogitator Control Sanctum",
+  "version": "0.4.0",
+  "author": "Rowdy",
+  "description": "Persistent Cogitator mode switch and settings, available while disengaged",
+  "kinds": ["bar-widget"],
+  "entryPoints": {"barWidget": "Panel.qml"},
+  "barWidget": {"displayName": "Cogitator Control", "defaultSection": "center", "allowMultiple": false, "category": "System"}
+}
