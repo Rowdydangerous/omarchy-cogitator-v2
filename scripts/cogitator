@@ -549,7 +549,7 @@ _unit_enable() {
   selected_palette=$(conf_value PALETTE green)
   if [[ $selected_palette == green ]]; then
     omarchy theme set "$THEME_SLUG"
-    set_background_if_changed "$HOME/.config/omarchy/themes/$THEME_SLUG/backgrounds/cogitator-green-grid.png"
+    set_background_if_changed "$HOME/.config/omarchy/themes/$THEME_SLUG/backgrounds/cogitator-aquila-2560x1600.png"
   else
     COGITATOR_FOREGROUND=1 cmd_palette "$selected_palette"
   fi
@@ -715,9 +715,13 @@ cmd_palette() {
     if [[ "$src" == */themes/* ]]; then cp -a "$src/." "$dst/"; else cp -a "$src/colors.toml" "$src/shell.toml" "$src/icons.theme" "$src/backgrounds" "$dst/"; fi
     printf "%s\n" "0.3.0" > "$dst/.cogitator-v2-installed"
     omarchy theme set "$slug"
+    default_bg="$dst/backgrounds/$slug-grid.png"
+    if [[ $slug == cogitator-green ]]; then
+      default_bg="$dst/backgrounds/cogitator-aquila-2560x1600.png"
+    fi
     current_bg=$(readlink -f "$HOME/.local/state/omarchy/current/background" 2>/dev/null || true)
-    if [[ ! -f $current_bg ]] || ! cmp -s "$current_bg" "$dst/backgrounds/$slug-grid.png"; then
-      omarchy theme bg set "$dst/backgrounds/$slug-grid.png"
+    if [[ ! -f $current_bg ]] || ! cmp -s "$current_bg" "$default_bg"; then
+      omarchy theme bg set "$default_bg"
     fi
   ' _ "$slug" "$src"
   printf 'Palette %s queued. Shell surfaces follow the theme file live.\n' "$name"

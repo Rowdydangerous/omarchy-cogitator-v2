@@ -2,9 +2,9 @@
 
 **A 40K cogitator that happens to run Linux.** Green-phosphor displays, machine-spirit communiques, industrial frames, and Mechanicus-styled widgets for Omarchy 4.x / Quickshell.
 
-[![Cogitator desktop with phosphor grid, background telemetry and the Auspex console](docs/screenshots/desktop-behind-windows.png)](docs/screenshots/desktop-behind-windows.png)
+[![Cogitator desktop with green-phosphor Aquila wallpaper, industrial bar icons and the Auspex console](docs/screenshots/desktop-aquila.png)](docs/screenshots/desktop-aquila.png)
 
-*The phosphor desktop: background burn, a persistent Auspex console, and live machine telemetry behind your windows. Click any screenshot for the full-size image.*
+*The phosphor desktop: Aquila wallpaper, industrial bar icons, and a persistent Auspex console with live machine telemetry. Click any screenshot for the full-size image.*
 
 - **Command Nexus & Application Cogitator** — keyboard-driven commands and application search.
 - **A complete shell suite** — stock-based widgets with shared chamfered frames, native industrial icons, and Mechanicus vocabulary.
@@ -192,7 +192,9 @@ Keep full-resolution wallpapers in the matching theme's folder:
 | Custom | `themes/cogitator-custom/backgrounds/` | Your phosphor hex | Your background hex |
 
 Green lives at the root because the repository itself is its native Omarchy
-theme. Custom theme files are generated when you select the custom palette.
+theme. The Aquila wallpaper is the default when enabling Cogitator Green or
+switching to the green palette; the plain grid remains available as an alternative.
+Custom theme files are generated when you select the custom palette.
 Previews belong in **`docs/wallpaper-previews/<palette>/`**, with a folder for
 each of `green`, `amber`, `red`, `industrial`, and `custom`. Omarchy does not
 use these as thumbnails; a preview in `backgrounds/` becomes a duplicate
