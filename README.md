@@ -1,8 +1,48 @@
 # Omarchy Cogitator v2 — Imperial Cogitator Shell
 
-Fresh start. Old `omarchy-cogitator/` is archived and untouched.
+**A 40K cogitator that happens to run Linux.** Green-phosphor displays, machine-spirit communiques, industrial frames, and Mechanicus-styled widgets for Omarchy 4.x / Quickshell.
 
-Goal: **a 40K Cogitator that happens to run Linux** — cinematic green-phosphor machine interface on Omarchy 4.x / Quickshell, fully reversible from user-space only.
+[![Cogitator desktop with phosphor grid, background telemetry and the Auspex console](docs/screenshots/desktop-behind-windows.png)](docs/screenshots/desktop-behind-windows.png)
+
+*The phosphor desktop: background burn, a persistent Auspex console, and live machine telemetry behind your windows. Click any screenshot for the full-size image.*
+
+- **Command Nexus & Application Cogitator** — keyboard-driven commands and application search.
+- **A complete shell suite** — stock-based widgets with shared chamfered frames, native industrial icons, and Mechanicus vocabulary.
+- **Control Sanctum** — a persistent widget beside the clock for mode switching, palettes, and settings.
+- **Reversible engagement** — restore your previous theme, widget selection, and bar layout when you disengage.
+
+[Usage](#usage) · [Control widget](docs/control-widget.md) · [Settings](#settings) · [Palettes](#palettes) · [Wallpapers](#make-your-own-background) · [Architecture](docs/architecture.md)
+
+## A closer look
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>Application Cogitator</h3>
+      <a href="docs/screenshots/showcase/application-cogitator.png"><img src="docs/screenshots/showcase/application-cogitator.png" alt="Application search with icons, keyboard selection, scanlines and a chamfered phosphor frame" width="520"></a>
+      <p>Native application search inside a phosphor terminal, with keyboard navigation and recognizable app icons.</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>Command Nexus</h3>
+      <a href="docs/screenshots/showcase/command-nexus.png"><img src="docs/screenshots/showcase/command-nexus.png" alt="Command Nexus filtered to a single matching rite, with a cut corner and three corner brackets" width="520"></a>
+      <p>Type to filter directives; use the keyboard to select and execute a rite.</p>
+      <h3>Machine Herald</h3>
+      <a href="docs/screenshots/showcase/machine-herald.png"><img src="docs/screenshots/showcase/machine-herald.png" alt="Critical notification with a severity tab, bright phosphor fill and dark text" width="520"></a>
+      <p>Notifications share the terminal framing, with high-contrast severity styling for critical alerts.</p>
+    </td>
+  </tr>
+</table>
+
+<details>
+<summary><strong>Amber palette in action</strong></summary>
+
+[![Amber Cogitator palette applied to the desktop bar and btop system monitor](docs/screenshots/palette-amber-btop.png)](docs/screenshots/palette-amber-btop.png)
+
+*Amber doctrine with a matching terminal palette. Green, red, industrial, and custom phosphor palettes are also available.*
+
+</details>
+
+*These captures show the project's visual design; labels and bar icons have evolved during development. [Browse all screenshots](docs/screenshots/).*
 
 ## Safety contract
 
@@ -131,6 +171,85 @@ notifications, lock, launcher, prop, and burn all follow because every
 surface reads the theme file. Definitions live in `palettes/*.json`,
 rendered by `palettes/render.py` (green also ships at the repo root as
 the native-installable flagship).
+
+## Make your own background
+
+The wallpaper renderer turns your artwork into a static phosphor image with
+bloom, scanlines, grain, and a chamfered frame. It requires **Pillow and NumPy**.
+On the development Omarchy machine, use `/usr/bin/python3`; the mise `python`
+environment does not have those libraries.
+
+### Theme folders
+
+Keep full-resolution wallpapers in the matching theme's folder:
+
+| Theme | Wallpaper folder | `--phosphor` | `--background` |
+| --- | --- | --- | --- |
+| Green | `backgrounds/` | `'#4fd06a'` | `'#030704'` |
+| Amber | `themes/cogitator-amber/backgrounds/` | `'#e8a33d'` | `'#060402'` |
+| Red | `themes/cogitator-red/backgrounds/` | `'#e03a30'` | `'#070202'` |
+| Industrial | `themes/cogitator-industrial/backgrounds/` | `'#e8dcc0'` | `'#0b0b09'` |
+| Custom | `themes/cogitator-custom/backgrounds/` | Your phosphor hex | Your background hex |
+
+Green lives at the root because the repository itself is its native Omarchy
+theme. Custom theme files are generated when you select the custom palette.
+Previews belong in **`docs/wallpaper-previews/<palette>/`**, with a folder for
+each of `green`, `amber`, `red`, `industrial`, and `custom`. Omarchy does not
+use these as thumbnails; a preview in `backgrounds/` becomes a duplicate
+wallpaper choice.
+
+### Render an image
+
+Run this from any directory, substituting your source image and a **new `.png`
+filename** for the output:
+
+```bash
+REPO="$HOME/Projects/omarchy-cogitator-v2"
+/usr/bin/python3 "$REPO/scripts/render-wallpaper.py" \
+  "$HOME/Downloads/Cog_background/mechSkull3.jpg" \
+  "$REPO/backgrounds/my-mech-skull.png" \
+  --preview-dir "$REPO/docs/wallpaper-previews/green" \
+  --mode image \
+  --title "IMPERIAL ARCHIVE  //  MECHANICUS"
+```
+
+- `--mode image` preserves the complete composition. Add `--invert` for dark
+  artwork on a pale background.
+- `--mode gold`, `--mode green`, or `--mode saturation` extracts a colored
+  emblem from a neutral background.
+- `--gamma 1.6` suppresses faint details; `--brightness 1.3` boosts intensity.
+- `--size 2560x1600` sets resolution (also the default).
+- `--no-grid` avoids adding another grid to artwork that already has one.
+- For another palette, change the output and preview folders and add the two
+  color arguments from the table above. Coloring is explicit, not inferred
+  from the destination folder.
+
+The script preserves your source and refuses to overwrite existing outputs.
+Output and preview directories must exist; the second positional argument is
+a filename, not a directory. See [the full guide](docs/wallpapers.md) or run
+`/usr/bin/python3 "$REPO/scripts/render-wallpaper.py" --help` for all controls.
+
+### Make it available in Omarchy
+
+Adding images to the repository does not update an already-installed theme.
+For Green, copy the full-resolution PNGs to Omarchy's user-background folder:
+
+```bash
+mkdir -p "$HOME/.config/omarchy/backgrounds/cogitator-green"
+cp -n "$REPO/backgrounds/"*.png \
+  "$HOME/.config/omarchy/backgrounds/cogitator-green/"
+```
+
+For another palette, use its wallpaper folder from the table and the matching
+destination `~/.config/omarchy/backgrounds/cogitator-<palette>/`. Reopen the
+background selector while that theme is active. These user-background copies
+also survive theme reinstalls.
+
+To apply one file directly after reviewing its preview:
+
+```bash
+omarchy theme bg set "$REPO/backgrounds/my-mech-skull.png"
+```
 
 ## Terminal rite (opt-in)
 
