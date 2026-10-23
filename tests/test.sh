@@ -36,7 +36,7 @@ check "palette JSON" python3 -c 'import json,sys; p=json.load(open(sys.argv[1]))
 check "render reproducible" bash -c '"$1/palettes/render.py" green amber red industrial --check' _ "$ROOT"
 check "palette JSONs" bash -c 'for p in amber red industrial; do python3 -c "import json,sys; p=json.load(open(sys.argv[1])); assert all(k in p for k in [\"background\",\"surface\",\"inactive\",\"dim\",\"normal\",\"active\",\"highlight\",\"warning\",\"critical\"])" "$1/palettes/$p.json" || exit 1; done' _ "$ROOT"
 check "palette rejects unknown" bash -c '"$1/scripts/cogitator" palette bogus 2>&1 | grep -q usage' _ "$ROOT"
-check "custom render" bash -c '"$1/palettes/render.py" custom --phosphor "#7CFF6B" && python3 -c "import tomllib; tomllib.load(open(\"$1/themes/cogitator-custom/colors.toml\",\"rb\"))" _ "$1"; status=$?; rm -rf "$1/themes/cogitator-custom"; exit $status' _ "$ROOT"
+check "custom render" bash -c 'work=$(mktemp -d); trap '\''rm -rf "$work"'\'' EXIT; mkdir -p "$work/palettes"; cp "$1/palettes/render.py" "$work/palettes/"; python3 "$work/palettes/render.py" custom --phosphor "#7CFF6B" && python3 -c '\''import tomllib,sys; tomllib.load(open(sys.argv[1],"rb"))'\'' "$work/themes/cogitator-custom/colors.toml"' _ "$ROOT"
 check "colors TOML" python3 -c 'import tomllib,sys; tomllib.load(open(sys.argv[1],"rb"))' "$ROOT/colors.toml"
 check "shell TOML" python3 -c 'import tomllib,sys; tomllib.load(open(sys.argv[1],"rb"))' "$ROOT/shell.toml"
 check "manifest JSON" python3 -c 'import json,sys; m=json.load(open(sys.argv[1])); assert m["id"]=="cogitator-rite" and "service" in m["kinds"]' "$ROOT/manifest.json"

@@ -1,19 +1,11 @@
 #!/bin/bash
-# SUPER+SPACE router for Cogitator v2. While the rite is engaged (snapshot
-# present) it toggles the Cogitator command menu (whose APPLICATIONS rite
-# opens the Application Cogitator); otherwise it falls through to the stock
-# Omarchy menu. COGITATOR_SNAPSHOT overrides the journal path (used by
-# tests to exercise both branches without touching live state).
+# SUPER+SPACE uses the native menu lifecycle. While engaged the shell resolves
+# omarchy.menu to cogitator.menu, retaining global app/command/provider search
+# and the user's JSONC extensions. When disengaged it resolves to stock.
 set -euo pipefail
 
 # Hyprland exec dispatch does not inherit the session environment that
 # terminals enjoy; omarchy-shell refuses to run without OMARCHY_PATH.
 export OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
 
-snapshot="${COGITATOR_SNAPSHOT:-${XDG_STATE_HOME:-$HOME/.local/state}/cogitator-v2/snapshot.json}"
-
-if [[ -f $snapshot ]]; then
-  exec omarchy-shell cogitator-rite toggleMenu
-else
-  exec omarchy-menu toggle
-fi
+exec omarchy-menu toggle

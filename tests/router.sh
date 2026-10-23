@@ -15,10 +15,11 @@ export PATH="$fake/bin:$PATH"
 export XDG_STATE_HOME="$fake/state"
 router="$ROOT/scripts/cogitator-menu"
 
-# Engaged branch: snapshot present -> console toggle.
+# Engaged: native lifecycle resolves the themed menu, including global search.
 printf '{"version":"0.2.0"}\n' > "$fake/state/cogitator-v2/snapshot.json"
 "$router"
-grep -q "shell:cogitator-rite toggleMenu" "$fake/calls"
+grep -q "menu:toggle" "$fake/calls"
+! grep -q "cogitator-rite toggleMenu" "$fake/calls"
 
 # Disengaged branch: no snapshot -> stock menu.
 rm "$fake/state/cogitator-v2/snapshot.json" "$fake/calls"

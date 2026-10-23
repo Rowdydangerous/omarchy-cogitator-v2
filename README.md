@@ -270,16 +270,16 @@ hook entirely.
 
 ## Command menu (SUPER+SPACE while engaged)
 
-`cogitator enable` routes SUPER+SPACE through `scripts/cogitator-menu`:
-engaged it toggles the grimdark Command Nexus (stock root routes with
-original icons, generated from stock data), disengaged it falls through to
-the stock menu. Selecting APPLICATIONS opens the Application Cogitator;
-every other rite delegates to the stock `omarchy.menu` at its route, so
-the shell routes it to the active Cogitator menu replacement. Widgets and
-panels use the stock-based suite replacements. Direct IPC also works:
+`cogitator enable` routes SUPER+SPACE through `scripts/cogitator-menu`, using
+the native `omarchy.menu` lifecycle. While engaged, the shell resolves it to
+the themed stock-based Cogitator menu; while disengaged, it opens the original
+menu. Typing searches applications and nested commands globally: `FOOT` and
+`SCREENSHOT` do not require opening a submenu first. User JSONC extensions,
+providers, conditions, and action behavior remain native. The standalone
+Application Cogitator is still available through direct IPC:
 
 ```bash
-omarchy-shell cogitator-rite toggleMenu    # root rites
+omarchy-shell cogitator-rite toggleMenu    # themed native root menu
 omarchy-shell cogitator-rite openLauncher  # straight to applications
 ```
 

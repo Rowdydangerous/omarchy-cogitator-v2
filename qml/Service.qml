@@ -86,6 +86,10 @@ Item {
     }
 
     function applyThemeColors(raw) {
+        // A read during the directory swap may briefly see no file/content.
+        // Retain the last complete palette until the next successful reload.
+        if (themeColor(raw, "background", "") === "")
+            return
         phosphor = themeColor(raw, "accent", "#4fd06a")
         bright = themeColor(raw, "light_foreground", "#7dff9a")
         pale = themeColor(raw, "bright_foreground", "#d2ffd9")
@@ -373,11 +377,22 @@ Item {
     }
 
     FileView {
+        id: themeColorsFile
         path: root.themeColorsPath
         watchChanges: true
         printErrors: false
         onLoaded: root.applyThemeColors(text())
         onFileChanged: reload()
+    }
+
+    // Theme selection replaces the containing directory, not just this file.
+    // A file-only watch can remain attached to the removed inode. Reopen the
+    // path periodically as well so the Node cannot retain an old palette.
+    Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: themeColorsFile.reload()
     }
 
     Process {
@@ -441,6 +456,12 @@ Item {
     IpcHandler {
         target: "cogitator-rite"
 
+        function paletteStatus(): string {
+            return JSON.stringify({phosphor: String(root.phosphor),
+                bright: String(root.bright), dim: String(root.dim),
+                background: String(root.abyss)})
+        }
+
         function openLauncher(): string {
             root.launcherOpened = true
             return "ok"
@@ -457,17 +478,20 @@ Item {
         }
 
         function openMenu(): string {
-            root.menuOpened = true
+            root.summonStockMenu("root")
             return "ok"
         }
 
         function closeMenu(): string {
             root.menuOpened = false
+            Quickshell.execDetached(["omarchy-menu", "close"])
             return "ok"
         }
 
         function toggleMenu(): string {
-            root.menuOpened = !root.menuOpened
+            root.launcherOpened = false
+            root.menuOpened = false
+            Quickshell.execDetached(["omarchy-menu", "toggle"])
             return "ok"
         }
     }

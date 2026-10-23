@@ -13,6 +13,24 @@ API = runpy.run_path(str(ROOT / "scripts/control-backend.py"))
 
 
 class TransitionTests(unittest.TestCase):
+    def test_disabled_effects_are_successful_noops_under_errexit(self):
+        with tempfile.TemporaryDirectory() as work:
+            work = Path(work)
+            config = work / ".config/hypr/looknfeel.lua"
+            config.parent.mkdir(parents=True)
+            config.write_text("-- user configuration\n")
+            script = '''source "$1/scripts/cogitator" --help >/dev/null
+conf_value() { printf false; }
+hyprctl() { echo unexpected-reload; return 1; }
+ensure_crt_snippet
+ensure_window_chamfer
+echo effects-disabled-ok
+'''
+            env = dict(__import__("os").environ, HOME=str(work))
+            result = subprocess.check_output(["bash", "-c", script, "_", str(ROOT)], env=env, text=True)
+            self.assertEqual(result.strip(), "effects-disabled-ok")
+            self.assertEqual(config.read_text(), "-- user configuration\n")
+
     def test_enable_selects_suite_without_separate_core_enable_or_quit(self):
         with tempfile.TemporaryDirectory() as work:
             work = Path(work)

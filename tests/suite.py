@@ -184,6 +184,35 @@ class LifecycleTests(unittest.TestCase):
         self.assertFalse(self.suite.config.exists())
         self.assertEqual(self.defaults.read_bytes(), defaults)
 
+    def test_disable_removes_legacy_coordinator_but_keeps_control(self):
+        before = copy.deepcopy(CONFIG)
+        before["plugins"].extend([{"id": "cogitator-rite"}, {"id": "cogitator.control"}])
+        self.suite.config.parent.mkdir(parents=True)
+        self.suite.config.write_text(json.dumps(before))
+        journal = self.suite.prepare(True)
+        self.suite.enable()
+        # An unrelated engaged edit must survive the coordinator cleanup too.
+        live = json.loads(self.suite.config.read_text())
+        live["idle"]["lock"] = 999
+        self.suite.config.write_text(json.dumps(live))
+        self.suite.disable()
+        restored = json.loads(self.suite.config.read_text())
+        self.assertNotIn("cogitator-rite", [module.entry_id(e) for e in restored["plugins"]])
+        self.assertIn({"id": "cogitator.control"}, restored["plugins"])
+        self.assertEqual(restored["idle"]["lock"], 999)
+        # Historical baseline remains in the recovery journal, never discarded.
+        self.assertIn({"id": "cogitator-rite"}, journal["before"]["plugins"])
+
+    def test_disable_removes_legacy_coordinator_without_other_edits(self):
+        before = copy.deepcopy(CONFIG)
+        before["plugins"].append("cogitator-rite")
+        self.suite.config.parent.mkdir(parents=True)
+        self.suite.config.write_text(json.dumps(before))
+        self.suite.prepare(True)
+        self.suite.enable()
+        self.suite.disable()
+        self.assertEqual(json.loads(self.suite.config.read_text()), CONFIG)
+
     def test_foreign_collision_preserved_and_no_switch(self):
         target = self.suite.plugins / "cogitator.clock"
         target.mkdir(parents=True)

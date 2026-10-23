@@ -382,6 +382,13 @@ class Suite:
             expected = copy.deepcopy(journal["before"])
             expected.setdefault("plugins", []).append({"id": "cogitator-rite"})
             restored = rollback_config(journal["before"], expected, current)
+        # A legacy/native install may already have registered the coordinator
+        # before the engagement baseline was captured. Restoring that entry
+        # would keep the desktop Node and workspace OSD alive after disable.
+        # The independent cogitator.control widget is deliberately retained.
+        if any(entry_id(e) == "cogitator-rite" for e in restored.get("plugins", [])):
+            restored["plugins"] = [e for e in restored["plugins"]
+                                   if entry_id(e) != "cogitator-rite"]
         if restored == journal["before"]:
             if journal["originalBytes"] is None:
                 self.config.unlink(missing_ok=True)

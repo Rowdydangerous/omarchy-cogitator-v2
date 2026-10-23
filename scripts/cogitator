@@ -262,7 +262,7 @@ ensure_crt_snippet() {
     hyprctl reload >/dev/null
     return
   fi
-  [[ $want == true ]] || return
+  [[ $want == true ]] || return 0
   if grep -rh --exclude="*.bak.*" "screen_shader" "$HOME/.config/hypr/" 2>/dev/null | grep -v "cogitator-v2-crt" | grep -q "screen_shader"; then
     printf 'Foreign screen_shader found; leaving Hyprland config alone.\n' >&2
     return
@@ -327,7 +327,7 @@ ensure_window_chamfer() {
     fi
     return
   fi
-  [[ $want == true ]] || return
+  [[ $want == true ]] || return 0
   cp -a -- "$HYPR_LUA" "$HYPR_LUA.bak.$(date +%Y%m%d-%H%M%S)"
   cat >> "$HYPR_LUA" <<EOF
 
@@ -639,6 +639,12 @@ cmd_enable() {
 # hand-modified clones are reported and left alone.
 repair_menus_to_stock() {
   local kind src clone_id clone_dir removed=0
+  # Recover a legacy/native coordinator left active without a journal. This
+  # stops both the desktop Node and CHANNEL OSD; control stays installed.
+  if [[ -f $PLUGIN_DST/$MARKER ]] && plugin_enabled; then
+    omarchy plugin disable "$PLUGIN_ID"
+    removed=1
+  fi
   for kind in notifications menu; do
     if [[ $kind == notifications ]]; then src="$HERALD_SOURCE"; else src="$MENU_SOURCE"; fi
     clone_id=$(find_clone "$src")
