@@ -299,6 +299,8 @@ def worker(action, payload):
         command = [str(ROOT / "scripts/cogitator"), action]
         if action == "apply":
             command = [str(ROOT / "scripts/cogitator"), "settings-apply"] + payload.get("changed", [])
+        elif action == "update":
+            command = ["python3", str(ROOT / "scripts/update-source.py")]
         subprocess.run(command, env=env, check=True)
         operation.update(phase="completed", message="Rite completed")
     except Exception as error:
@@ -310,7 +312,7 @@ def worker(action, payload):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["install", "uninstall", "status", "save", "engage", "disengage", "worker", "config-value", "logs"])
+    parser.add_argument("action", choices=["install", "uninstall", "status", "save", "engage", "disengage", "update", "worker", "config-value", "logs"])
     parser.add_argument("arguments", nargs="*")
     args = parser.parse_args()
     if args.action == "install":
@@ -327,6 +329,8 @@ def main():
         print(parse_conf(CONF.read_text()).get(key, fallback))
     elif args.action == "worker":
         worker(args.arguments[0], json.loads(args.arguments[1]))
+    elif args.action == "update":
+        print(json.dumps(queue("update")))
     else:
         result = queue("apply", json.loads(args.arguments[0])) if args.action == "save" else queue("enable" if args.action == "engage" else "disable")
         print(json.dumps(result))

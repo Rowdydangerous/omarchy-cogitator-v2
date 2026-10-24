@@ -1,5 +1,5 @@
 [
-  {"key":"PALETTE","group":"Appearance","label":"Phosphor doctrine — palette","type":"choice","default":"green","choices":["green","amber","red","industrial","custom"]},
+  {"key":"PALETTE","group":"Appearance","label":"Phosphor doctrine — palette","type":"choice","default":"green","choices":["green","amber","red","industrial","custom"],"choiceLabels":{"green":"Imperium","amber":"Ryza","red":"Holy Mars","industrial":"Metalica","custom":"Custom"}},
   {"key":"CUSTOM_PHOSPHOR","group":"Appearance","label":"Custom phosphor color","type":"color","default":""},
   {"key":"CRT_GLOBAL","group":"Appearance","label":"Global CRT — all windows","type":"boolean","default":true},
   {"key":"CRT_ENABLED","group":"Appearance","label":"Local CRT — console and launcher","type":"boolean","default":true},

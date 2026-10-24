@@ -13,6 +13,33 @@ API = runpy.run_path(str(ROOT / "scripts/control-backend.py"))
 
 
 class TransitionTests(unittest.TestCase):
+    def test_exact_native_github_coordinator_is_recognized_without_marker(self):
+        with tempfile.TemporaryDirectory() as work:
+            work = Path(work)
+            (work / ".config/omarchy/plugins/cogitator-rite/.git").mkdir(parents=True)
+            script = '''source "$1/scripts/cogitator" --help >/dev/null
+git() { printf https://github.com/Rowdydangerous/omarchy-cogitator-v2.git; }
+owned_by_us "$PLUGIN_DST"
+echo native-recognized
+git() { printf https://example.invalid/foreign.git; }
+if owned_by_us "$PLUGIN_DST"; then exit 1; fi
+echo foreign-preserved
+'''
+            env = dict(__import__("os").environ, HOME=str(work))
+            result = subprocess.check_output(["bash", "-c", script, "_", str(ROOT)], env=env, text=True)
+            self.assertEqual(result.splitlines(), ["native-recognized", "foreign-preserved"])
+
+    def test_update_worker_runs_updater_without_requeueing_itself(self):
+        globals_ = API["worker"].__globals__
+        with tempfile.TemporaryDirectory() as work:
+            operation = Path(work) / "operation.json"
+            with patch.dict(globals_, {"OPERATION": operation}), patch("subprocess.run") as run:
+                API["worker"]("update", {})
+                self.assertEqual(run.call_count, 1)
+                self.assertEqual(Path(run.call_args.args[0][1]).name, "update-source.py")
+                self.assertEqual(run.call_args.kwargs["env"]["COGITATOR_FOREGROUND"], "1")
+                self.assertEqual(json.loads(operation.read_text())["phase"], "completed")
+
     def test_disabled_effects_are_successful_noops_under_errexit(self):
         with tempfile.TemporaryDirectory() as work:
             work = Path(work)
@@ -52,6 +79,10 @@ _unit_enable
             self.assertIn("suite:enable", result)
             self.assertNotIn("native:plugin enable", result)
             self.assertNotIn("native:restart shell", result)
+            (work / ".config/omarchy/plugins/cogitator-rite/.cogitator-runtime.json").write_text("{}")
+            result = subprocess.check_output(["bash", "-c", script, "_", str(ROOT)], env=env, text=True)
+            self.assertIn("suite:enable", result)
+            self.assertNotIn("native:plugin update", result)
 
     def test_ui_worker_uses_live_settings_command(self):
         globals_ = API["worker"].__globals__

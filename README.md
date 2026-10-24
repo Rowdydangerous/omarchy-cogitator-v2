@@ -11,7 +11,7 @@
 - **Control Sanctum** — a persistent widget beside the clock for mode switching, palettes, and settings.
 - **Reversible engagement** — restore your previous theme, widget selection, and bar layout when you disengage.
 
-[Usage](#usage) · [Control widget](docs/control-widget.md) · [Settings](#settings) · [Palettes](#palettes) · [Wallpapers](#make-your-own-background) · [Architecture](docs/architecture.md)
+[Usage](#usage) · [Updating](#updating) · [Control widget](docs/control-widget.md) · [Settings](#settings) · [Palettes](#palettes) · [Wallpapers](#make-your-own-background) · [Architecture](docs/architecture.md)
 
 ## A closer look
 
@@ -34,11 +34,11 @@
 </table>
 
 <details>
-<summary><strong>Amber palette in action</strong></summary>
+<summary><strong>Ryza (amber) palette in action</strong></summary>
 
 [![Amber Cogitator palette applied to the desktop bar and btop system monitor](docs/screenshots/palette-amber-btop.png)](docs/screenshots/palette-amber-btop.png)
 
-*Amber doctrine with a matching terminal palette. Green, red, industrial, and custom phosphor palettes are also available.*
+*Ryza doctrine with a matching amber terminal palette. Imperium, Holy Mars, Metalica, and custom phosphor palettes are also available.*
 
 </details>
 
@@ -72,6 +72,7 @@ cogitator status         # ~/.local/bin/cogitator shim, installed on enable
 ./scripts/cogitator enable    # snapshots, native-installs plugin+theme, queues detached transition
 ./scripts/cogitator disable   # restores original routes, bar, theme and background
 ./scripts/cogitator apply     # deploy working-tree QML + replacement plugins, restart shell
+cogitator update             # download GitHub main and deploy, without editing runtime Git clones
 ./scripts/cogitator suite status # detailed suite journal and selected replacements
 ./scripts/cogitator configure # edit ~/.config/cogitator-v2/cogitator.conf
 ./scripts/cogitator uninstall # disable first, then `plugin remove` + `theme remove` (keeps config; --purge removes all)
@@ -100,6 +101,32 @@ transaction; re-check `status` before doing anything.
 Scope: a stock-based Cogitator twin of the Quickshell widgets and panels,
 green phosphor first, Xenon-first font stack with clean fallback. The console
 and background burn are additional machine surfaces.
+
+## Updating
+
+Run **`cogitator update`**, or click **Update from GitHub** on Control Sanctum's
+Overview page. Updates run in the background; the control widget shows completion
+or failure, and logs are available through:
+
+```bash
+journalctl --user -u cogitator-v2-transition -n 60 --no-pager
+```
+
+The updater maintains a dedicated source checkout at
+`~/.local/share/cogitator-v2/source/` (or under `XDG_DATA_HOME`). It does not pull
+Git changes into the generated runtime plugins or edit your original project
+clone. Active installations redeploy the suite and restart the shell once;
+disengaged installations update the controller and stay disengaged. Settings,
+the selected palette/wallpaper, and restore journals are retained. Theme assets
+are downloaded, but the active theme is not reapplied; reselect its palette to
+apply theme-file changes. Edited or foreign runtime files cause a refusal rather
+than being reset or overwritten.
+
+**Already installed an older version without this command?** You can bootstrap
+the updater from a fresh source checkout; removal is not normally needed. See
+[updating and reinstalling](docs/updating.md) for the one-time migration, manual
+Git instructions, and safe reinstall steps. Do not remove only `cogitator-rite`
+while its replacement suite is engaged.
 
 ## Global CRT (all windows)
 
@@ -158,11 +185,23 @@ surfaces follow the active theme file live.
 
 ## Palettes
 
+| Display name | Internal ID | Appearance |
+| --- | --- | --- |
+| **Imperium** | `green` | Green phosphor |
+| **Ryza** | `amber` | Warm amber CRT |
+| **Holy Mars** | `red` | Red emergency terminal |
+| **Metalica** | `industrial` | Gunmetal, aged cream, brass |
+| **Custom** | `custom` | Your own phosphor color |
+
+The controller uses the display names; configuration values, CLI arguments,
+theme IDs, and folder names keep their existing IDs for compatibility. The
+display-name mapping lives in `control/settings-schema.json` (`PALETTE.choiceLabels`).
+
 ```bash
-cogitator palette amber       # warm amber CRT
-cogitator palette red         # damage-control emergency terminal
-cogitator palette industrial  # gunmetal, aged cream, brass
-cogitator palette green       # back to phosphor green
+cogitator palette amber       # Ryza
+cogitator palette red         # Holy Mars
+cogitator palette industrial  # Metalica
+cogitator palette green       # Imperium
 ```
 
 Custom phosphor: set `CUSTOM_PHOSPHOR="#7CFF6B"` in the conf, then
@@ -185,10 +224,10 @@ Keep full-resolution wallpapers in the matching theme's folder:
 
 | Theme | Wallpaper folder | `--phosphor` | `--background` |
 | --- | --- | --- | --- |
-| Green | `backgrounds/` | `'#4fd06a'` | `'#030704'` |
-| Amber | `themes/cogitator-amber/backgrounds/` | `'#e8a33d'` | `'#060402'` |
-| Red | `themes/cogitator-red/backgrounds/` | `'#e03a30'` | `'#070202'` |
-| Industrial | `themes/cogitator-industrial/backgrounds/` | `'#e8dcc0'` | `'#0b0b09'` |
+| Imperium (green) | `backgrounds/` | `'#4fd06a'` | `'#030704'` |
+| Ryza (amber) | `themes/cogitator-amber/backgrounds/` | `'#e8a33d'` | `'#060402'` |
+| Holy Mars (red) | `themes/cogitator-red/backgrounds/` | `'#e03a30'` | `'#070202'` |
+| Metalica (industrial) | `themes/cogitator-industrial/backgrounds/` | `'#e8dcc0'` | `'#0b0b09'` |
 | Custom | `themes/cogitator-custom/backgrounds/` | Your phosphor hex | Your background hex |
 
 Green lives at the root because the repository itself is its native Omarchy

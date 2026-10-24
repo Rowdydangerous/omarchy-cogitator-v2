@@ -174,6 +174,32 @@ def theme_menu(raw):
     if (root.dmenuActive || row.appId) return row.detail;
     return String(row.detail || "").split(" › ").map(CogitatorVoice.say).join(" › ");
   }
+
+  // Read-only diagnostic: compare the native app library with menu indexing.
+  function appSearchStatus(payloadJson) {
+    var payload = ({});
+    try { payload = JSON.parse(payloadJson || "{}"); } catch (e) {}
+    var query = String(payload.query || "");
+    var library = root.appLibrary ? root.appLibrary.sortedEntries(query) : [];
+    var indexed = [];
+    var apps = 0;
+    for (var i = 0; i < root.itemOrder.length; i++) {
+      var entry = root.item(root.itemOrder[i]);
+      if (!entry || entry.kind !== "app") continue;
+      apps++;
+      if (root.matchesQuery(entry, query)) indexed.push({id: entry.appId, name: entry.label});
+    }
+    var nativeEntries = DesktopEntries.applications.values;
+    return JSON.stringify({hasShell: !!root.shell, hasLibrary: !!root.appLibrary,
+      nativeCount: nativeEntries.length,
+      nativeMatches: nativeEntries.filter(function(entry) {
+        return String(entry.name).toLowerCase().indexOf(query.toLowerCase()) !== -1;
+      }).map(function(entry) { return {id: entry.id, name: entry.name}; }),
+      activeMenu: root.activeMenu, filter: root.filterText,
+      appsLoaded: !!root.providersLoaded["apps"], indexedCount: apps,
+      library: library.map(function(row) { return {id: row.entry.id, name: row.entry.name}; }),
+      indexed: indexed});
+  }
 '''
     raw = raw.replace("  function depthFor(id) {", helpers + "\n  function depthFor(id) {", 1)
     raw = raw.replace("return MenuModel.matchesQuery(entry, query, root.isVisible(entry))",

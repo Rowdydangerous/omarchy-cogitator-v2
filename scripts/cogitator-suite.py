@@ -236,8 +236,7 @@ class Suite:
         self.save(journal)
         return journal
 
-    def install(self, journal):
-        self.plugins.mkdir(parents=True, exist_ok=True)
+    def preflight(self):
         # Preflight all collisions before installing anything.
         for plugin in self.baselines:
             target = self.plugins / plugin["replacementId"]
@@ -247,6 +246,10 @@ class Suite:
                 receipt = target / RECEIPT
                 if not receipt.is_file() or json.loads(receipt.read_text()).get("files") != file_hashes(target):
                     raise RuntimeError(f"Existing plugin is foreign or locally edited: {target}; preserved")
+
+    def install(self, journal):
+        self.preflight()
+        self.plugins.mkdir(parents=True, exist_ok=True)
         batch = Path(tempfile.mkdtemp(prefix=".cogitator-stage-", dir=self.plugins))
         pending = []
         try:
@@ -266,6 +269,7 @@ class Suite:
                 if plugin["sourceId"] == "omarchy.weather":
                     runpy.run_path(str(ROOT / "scripts/layout-style.py"))["weather_layout"](stage / "Panel.qml")
                 runpy.run_path(str(ROOT / "scripts/voice-style.py"))["apply_voice"](stage, self.root)
+                runpy.run_path(str(ROOT / "scripts/menu-style.py"))["apply_menu"](stage)
                 runpy.run_path(str(ROOT / "scripts/icon-style.py"))["apply_icons"](stage, self.root)
                 self.run(["omarchy", "plugin", "validate", str(stage)])
                 candidate_hashes = file_hashes(stage)

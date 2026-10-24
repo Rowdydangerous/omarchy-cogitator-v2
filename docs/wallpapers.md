@@ -11,10 +11,10 @@ already exist. Original source inputs remain separate from rendered wallpapers.
 
 | Palette | Full-resolution wallpapers | Review previews |
 | --- | --- | --- |
-| Green | `backgrounds/` | `docs/wallpaper-previews/green/` |
-| Amber | `themes/cogitator-amber/backgrounds/` | `docs/wallpaper-previews/amber/` |
-| Red | `themes/cogitator-red/backgrounds/` | `docs/wallpaper-previews/red/` |
-| Industrial | `themes/cogitator-industrial/backgrounds/` | `docs/wallpaper-previews/industrial/` |
+| Imperium (green) | `backgrounds/` | `docs/wallpaper-previews/green/` |
+| Ryza (amber) | `themes/cogitator-amber/backgrounds/` | `docs/wallpaper-previews/amber/` |
+| Holy Mars (red) | `themes/cogitator-red/backgrounds/` | `docs/wallpaper-previews/red/` |
+| Metalica (industrial) | `themes/cogitator-industrial/backgrounds/` | `docs/wallpaper-previews/industrial/` |
 | Custom | `themes/cogitator-custom/backgrounds/` | `docs/wallpaper-previews/custom/` |
 
 Green's root location preserves native theme installation. Custom theme files

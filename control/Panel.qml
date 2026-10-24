@@ -29,6 +29,14 @@ Ui.Panel {
     implicitHeight: button.implicitHeight
 
     function refresh() { if (!query.running) query.running = true }
+    function choiceLabel(field, value) {
+        return field.choiceLabels && field.choiceLabels[value] ? field.choiceLabels[value] : String(value)
+    }
+    function paletteLabel(value) {
+        for (var i = 0; i < fields.length; i++)
+            if (fields[i].key === "PALETTE") return choiceLabel(fields[i], value)
+        return String(value)
+    }
     function setValue(key, value) {
         var next = JSON.parse(JSON.stringify(draft))
         next[key] = value
@@ -191,6 +199,11 @@ Ui.Panel {
                             enabled: !root.busy && !root.dirty
                             onClicked: root.invoke(root.engaged ? "disengage" : "engage")
                         }
+                        Controls.Button {
+                            text: "Update from GitHub"
+                            enabled: !root.busy && !root.dirty
+                            onClicked: root.invoke("update")
+                        }
                         Text {
                             width: parent.width; wrapMode: Text.WordWrap
                             text: "Theme changes restart terminals. The control widget remains available when Cogitator is disengaged."
@@ -198,7 +211,7 @@ Ui.Panel {
                         }
                         Text {
                             width: parent.width; wrapMode: Text.WordWrap
-                            text: "Phosphor doctrine: " + String(root.saved.PALETTE || "green").toUpperCase() + "\nSuite: " + String(root.reported.suite || "inactive")
+                            text: "Phosphor doctrine: " + root.paletteLabel(root.saved.PALETTE || "green").toUpperCase() + "\nSuite: " + String(root.reported.suite || "inactive")
                             color: Color.foreground; font.family: Style.font.family; font.pixelSize: 13
                         }
                         Text {
@@ -258,10 +271,14 @@ Ui.Panel {
         Controls.ComboBox {
             visible: row.field.type === "choice"
             width: 220
-            model: row.field.choices || []
-            currentIndex: model.indexOf(String(root.draft[row.field.key]))
+            model: (row.field.choices || []).map(function(value) {
+                return {value: value, label: root.choiceLabel(row.field, value)}
+            })
+            textRole: "label"
+            valueRole: "value"
+            currentIndex: (row.field.choices || []).indexOf(String(root.draft[row.field.key]))
             enabled: !root.busy
-            onActivated: function(index) { root.setValue(row.field.key, model[index]) }
+            onActivated: function(index) { root.setValue(row.field.key, model[index].value) }
         }
         Row {
             visible: row.field.key === "PALETTE"
@@ -274,7 +291,11 @@ Ui.Panel {
                     width: 28; height: 20; color: modelData
                     border.width: root.draft.PALETTE === ["green", "amber", "red", "industrial"][index] ? 3 : 1
                     border.color: Color.foreground
+                    Controls.ToolTip.visible: swatchMouse.containsMouse
+                    Controls.ToolTip.text: root.paletteLabel(["green", "amber", "red", "industrial"][index])
                     MouseArea {
+                        id: swatchMouse
+                        hoverEnabled: true
                         anchors.fill: parent; cursorShape: Qt.PointingHandCursor; enabled: !root.busy
                         onClicked: root.setValue("PALETTE", ["green", "amber", "red", "industrial"][parent.index])
                     }

@@ -63,7 +63,12 @@ owned_by_us() {
   local dir="$1"
   [[ -f $dir/$MARKER ]] && return 0
   [[ -d $dir/.git ]] || return 1
-  [[ $(git -C "$dir" config --get remote.origin.url 2>/dev/null) == "$REPO_URL" ]]
+  local origin
+  origin=$(git -C "$dir" config --get remote.origin.url 2>/dev/null) || return 1
+  [[ $origin == "$REPO_URL" ]] && return 0
+  # Native GitHub installations start without our wrapper's marker. Recognize
+  # only the exact official coordinator checkout, never an arbitrary clone.
+  [[ $dir == "$PLUGIN_DST" && ( $origin == "https://github.com/Rowdydangerous/omarchy-cogitator-v2.git" || $origin == "https://github.com/Rowdydangerous/omarchy-cogitator-v2" ) ]]
 }
 
 stamp_owned_install() {
@@ -530,7 +535,11 @@ _unit_enable() {
       # Native update may refuse local changes; preserve them instead of
       # clearing the checkout. Working-tree QML deploys use checked receipts.
       stamp_owned_install "$plugindir"
-      omarchy plugin update "$PLUGIN_ID" --yes
+      # Managed QML is staged from SOURCE_DIR below, not pulled into the
+      # runtime checkout where it would invalidate our deployment receipt.
+      if [[ ! -f $plugindir/.cogitator-runtime.json ]]; then
+        omarchy plugin update "$PLUGIN_ID" --yes
+      fi
     elif [[ -d $plugindir/.git ]]; then
       fail "plugin dir is a foreign git checkout; remove it manually"
     else
@@ -842,12 +851,13 @@ case "${1:-}" in
     if plugin_enabled || [[ $(current_theme) == *cogitator* ]]; then cmd_disable; else cmd_enable; fi
     ;;
   apply) cmd_apply ;;
+  update) python3 "$SOURCE_DIR/scripts/control-backend.py" update ;;
   settings-apply) shift; cmd_settings_apply "$@" ;;
   configure) cmd_configure ;;
   palette) cmd_palette "${2:-}" ;;
   uninstall) cmd_uninstall "${2:-}" ;;
   -h|--help|help)
-    printf 'Usage: cogitator <install|status|suite status|enable|disable|toggle|apply|configure|palette|uninstall>\nNative equivalents: omarchy plugin add|update|remove %s, omarchy theme install|set|remove\n' "$PLUGIN_ID"
+    printf 'Usage: cogitator <install|status|suite status|enable|disable|toggle|apply|update|configure|palette|uninstall>\nNative equivalents: omarchy plugin add|update|remove %s, omarchy theme install|set|remove\n' "$PLUGIN_ID"
     ;;
-  *) printf 'Usage: cogitator <status|enable|disable|toggle|apply|configure|palette|uninstall>\n' >&2; exit 1 ;;
+  *) printf 'Usage: cogitator <status|enable|disable|toggle|apply|update|configure|palette|uninstall>\n' >&2; exit 1 ;;
 esac

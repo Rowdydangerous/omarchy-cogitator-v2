@@ -67,3 +67,31 @@ vocabulary rather than the limited custom root overlay. The standalone
 Application Cogitator remains available by `openLauncher` IPC. Router fixtures
 cover both engaged and disengaged states. Live keyboard search should be
 confirmed on the reporting machine before closing #3.
+
+### Follow-up: Aether, Actual Budget, and Basecamp missing
+
+Live diagnosis found the scoped menu API had a shell handle but **no appLibrary**.
+Consequently the menu indexed zero applications even though Quickshell's native
+DesktopEntries enumerated all three applications (93 raw entries in total).
+Searching could still match static menu commands, giving the impression that
+only some apps were indexed.
+
+`scripts/menu-style.py` now stages a fallback to the host's native
+`qs.services.AppLibrary`, instantiated only when the injected handle is absent.
+This reuses native hidden-entry rules, indexing, icons, launch feedback, and
+removal semantics without changing the stock source baseline or the installed
+desktop files. When a handle is supplied, the fallback stays unloaded.
+
+After local deployment the menu indexes 76 visible applications; read-only
+`appSearchStatus` calls confirm that all three named applications appear in
+both the app library and menu search index. Example:
+
+```bash
+omarchy-shell shell call omarchy.menu appSearchStatus '{"query":"actual budget"}'
+```
+
+This diagnostic requires the menu to have been loaded/opened. It does not
+launch applications or change the search filter. `tests/menu.py` exercises the
+actual staged library binding in a separate offscreen Quickshell process with
+fixture desktop entries, verifying visible apps, NoDisplay/configured hides,
+and reuse of a supplied handle. Final keyboard confirmation remains advisable.

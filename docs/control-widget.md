@@ -23,13 +23,18 @@ on a failed controller operation.
 ## Pages
 
 * **Overview**: Engage/Disengage, current palette, transition status and failure
-  details. Switching mode restarts terminals as part of Omarchy theme changes.
+  details, plus **Update from GitHub** (the same worker as `cogitator update`).
+  Switching mode restarts terminals as part of Omarchy theme changes.
 * **Appearance**: palette swatches, custom hex/RGB picker, local/global CRT,
   intensity and application-window chamfers.
 * **Surfaces**: console placement/opacity, background burn, workspace rites and
   communique streaming.
 * **Motion**: Minimal/Normal/Full, flicker, grain, sweep persistence/ghosting,
   edge falloff and SIGMA-IX watermark.
+
+Palette choices use the display names **Imperium** (`green`), **Ryza** (`amber`),
+**Holy Mars** (`red`), and **Metalica** (`industrial`). Names are centralized in
+`control/settings-schema.json`; saved IDs and theme paths are unchanged.
 
 All 21 supported settings are exposed. Reserved settings are not presented.
 Old out-of-range hand-edited values are displayed at their effective renderer

@@ -15,6 +15,19 @@ API = runpy.run_path(str(ROOT / "scripts/control-backend.py"))
 
 
 class SettingsTests(unittest.TestCase):
+    def test_palette_names_are_presentation_only(self):
+        field = next(field for field in API["SCHEMA"] if field["key"] == "PALETTE")
+        self.assertEqual(field["choiceLabels"], {"green": "Imperium", "amber": "Ryza",
+                         "red": "Holy Mars", "industrial": "Metalica", "custom": "Custom"})
+        self.assertEqual(set(field["choices"]), set(field["choiceLabels"]))
+        for identity, label in field["choiceLabels"].items():
+            values = {"PALETTE": identity, "CUSTOM_PHOSPHOR": "#abc"}
+            self.assertEqual(API["validate"](values)["PALETTE"], identity)
+            self.assertIn(f'PALETTE="{identity}"', API["write_settings"]("", values))
+            if label != identity:
+                with self.assertRaises(ValueError):
+                    API["validate"]({"PALETTE": label})
+
     def test_all_supported_example_settings_are_exposed(self):
         example = API["parse_conf"]((ROOT / "config/cogitator.conf.example").read_text())
         self.assertEqual(set(example), {field["key"] for field in API["SCHEMA"]})
