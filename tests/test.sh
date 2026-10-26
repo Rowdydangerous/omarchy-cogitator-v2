@@ -45,6 +45,7 @@ check "manifest JSON" python3 -c 'import json,sys; m=json.load(open(sys.argv[1])
 check "manifest contract" omarchy plugin validate "$ROOT"
 check "native plugin layout" bash -c 'test -f "$1/manifest.json" && test -f "$1/qml/Service.qml"' _ "$ROOT"
 check "native theme layout" bash -c 'test -f "$1/colors.toml" && test -f "$1/shell.toml" && test -s "$1/backgrounds/cogitator-green-grid.png" && test -s "$1/icons.theme"' _ "$ROOT"
+check "opaque palette wallpapers" python3 "$ROOT/tests/wallpapers.py"
 check "QML syntax" qmllint -I /usr/share/omarchy/shell "$ROOT/qml/Service.qml" "$ROOT/qml/prop/Prop.qml" "$ROOT/qml/burn/Burn.qml" "$ROOT/qml/fx/Crt.qml"
 check "status read-only" bash -c '"$1/scripts/cogitator" status | grep -q THEME' _ "$ROOT"
 check "config example parses" python3 -c '
