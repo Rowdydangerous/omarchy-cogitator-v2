@@ -529,6 +529,7 @@ restore_herald() {
 # Runs INSIDE the detached unit: native installs, theme set, enable.
 _unit_enable() {
   set -euo pipefail
+  python3 "$SOURCE_DIR/scripts/palette-background.py" remember
   local plugindir="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
   if omarchy-shell shell listPlugins 2>/dev/null | jq -e --arg id "$PLUGIN_ID" 'any(.[]; .id == $id)' >/dev/null 2>&1; then
     if [[ -d $plugindir/.git ]] && owned_by_us "$plugindir"; then
@@ -558,7 +559,9 @@ _unit_enable() {
   selected_palette=$(conf_value PALETTE green)
   if [[ $selected_palette == green ]]; then
     omarchy theme set "$THEME_SLUG"
-    set_background_if_changed "$HOME/.config/omarchy/themes/$THEME_SLUG/backgrounds/cogitator-aquila-2560x1600.png"
+    local background
+    background=$(python3 "$SOURCE_DIR/scripts/palette-background.py" select green "$THEME_DST")
+    set_background_if_changed "$background"
   else
     COGITATOR_FOREGROUND=1 cmd_palette "$selected_palette"
   fi
@@ -573,6 +576,7 @@ _unit_enable() {
 # Runs INSIDE the detached unit: disable plugin, restore theme, clear snapshot.
 _unit_disable() {
   set -euo pipefail
+  python3 "$SOURCE_DIR/scripts/palette-background.py" remember
   local plugin_dst="$1" theme_dst="$2" previous="$3" previous_bg="$4" snapshot="$5" herald_clone="${6:-}" herald_backup="${7:-}" menu_clone="${8:-}" menu_backup="${9:-}"
   local suite_restore=false
   [[ -f $STATE_DIR/suite.json ]] && suite_restore=true
@@ -724,21 +728,19 @@ cmd_palette() {
   prepare_config
   queue_transition bash -c '
     set -euo pipefail
-    slug="$1"; src="$2"; dst="$HOME/.config/omarchy/themes/$slug"
+    slug="$1"; src="$2"; project="$3"; dst="$HOME/.config/omarchy/themes/$slug"
+    python3 "$project/scripts/palette-background.py" remember
     rm -rf "$dst"
     mkdir -p "$dst"
     if [[ "$src" == */themes/* ]]; then cp -a "$src/." "$dst/"; else cp -a "$src/colors.toml" "$src/shell.toml" "$src/icons.theme" "$src/backgrounds" "$dst/"; fi
     printf "%s\n" "0.3.0" > "$dst/.cogitator-v2-installed"
     omarchy theme set "$slug"
-    default_bg="$dst/backgrounds/$slug-grid.png"
-    if [[ $slug == cogitator-green ]]; then
-      default_bg="$dst/backgrounds/cogitator-aquila-2560x1600.png"
-    fi
+    default_bg=$(python3 "$project/scripts/palette-background.py" select "${slug#cogitator-}" "$dst")
     current_bg=$(readlink -f "$HOME/.local/state/omarchy/current/background" 2>/dev/null || true)
     if [[ ! -f $current_bg ]] || ! cmp -s "$current_bg" "$default_bg"; then
       omarchy theme bg set "$default_bg"
     fi
-  ' _ "$slug" "$src"
+  ' _ "$slug" "$src" "$SOURCE_DIR"
   printf 'Palette %s queued. Shell surfaces follow the theme file live.\n' "$name"
 }
 

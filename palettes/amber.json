@@ -1,5 +1,6 @@
 {
   "name": "amber-phosphor",
+  "defaultWallpaper": "mechSkull3.png",
   "description": "Warm amber CRT. All theme files derive from here.",
   "background": "#060402",
   "surface": "#120c05",

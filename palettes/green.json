@@ -1,5 +1,6 @@
 {
   "name": "green-phosphor",
+  "defaultWallpaper": "cogitator-aquila-2560x1600.png",
   "description": "Monochrome green CRT. All QML + theme files derive from here.",
   "background": "#030704",
   "surface": "#0a140c",

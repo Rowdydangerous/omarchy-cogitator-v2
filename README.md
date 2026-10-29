@@ -185,17 +185,20 @@ surfaces follow the active theme file live.
 
 ## Palettes
 
-| Display name | Internal ID | Appearance |
-| --- | --- | --- |
-| **Imperium** | `green` | Green phosphor |
-| **Ryza** | `amber` | Warm amber CRT |
-| **Holy Mars** | `red` | Red emergency terminal |
-| **Metalica** | `industrial` | Gunmetal, aged cream, brass |
-| **Custom** | `custom` | Your own phosphor color |
+| Display name | Internal ID | Appearance | Default wallpaper |
+| --- | --- | --- | --- |
+| **Imperium** | `green` | Green phosphor | Aquila |
+| **Ryza** | `amber` | Warm amber CRT | mechSkull3 |
+| **Holy Mars** | `red` | Red emergency terminal | mechSkull1 |
+| **Metalica** | `industrial` | Gunmetal, aged cream, brass | mechSkull2 |
+| **Custom** | `custom` | Your own phosphor color | Generated grid |
 
 The controller uses the display names; configuration values, CLI arguments,
 theme IDs, and folder names keep their existing IDs for compatibility. The
 display-name mapping lives in `control/settings-schema.json` (`PALETTE.choiceLabels`).
+Default wallpaper filenames live in `palettes/*.json` (`defaultWallpaper`). These
+are first-use defaults: each palette independently remembers the user's chosen
+background afterward, including choices made through Omarchy's background selector.
 
 ```bash
 cogitator palette amber       # Ryza
@@ -231,8 +234,8 @@ Keep full-resolution wallpapers in the matching theme's folder:
 | Custom | `themes/cogitator-custom/backgrounds/` | Your phosphor hex | Your background hex |
 
 Green lives at the root because the repository itself is its native Omarchy
-theme. The Aquila wallpaper is the default when enabling Cogitator Green or
-switching to the green palette; the plain grid remains available as an alternative.
+theme. The Aquila wallpaper is the first-use green default; the plain grid
+remains available as an alternative.
 Custom theme files are generated when you select the custom palette.
 Previews belong in **`docs/wallpaper-previews/<palette>/`**, with a folder for
 each of `green`, `amber`, `red`, `industrial`, and `custom`. Omarchy does not
@@ -241,18 +244,23 @@ wallpaper choice.
 
 ### Render an image
 
-Run this from any directory, substituting your source image and a **new `.png`
-filename** for the output:
+Run this from any directory, substituting your source image. By default it
+generates **all four palette variants** and makes them available to Omarchy:
 
 ```bash
 REPO="$HOME/Projects/omarchy-cogitator-v2"
 /usr/bin/python3 "$REPO/scripts/render-wallpaper.py" \
   "$HOME/Downloads/Cog_background/mechSkull3.jpg" \
-  "$REPO/backgrounds/my-mech-skull.png" \
-  --preview-dir "$REPO/docs/wallpaper-previews/green" \
   --mode image \
   --title "IMPERIAL ARCHIVE  //  MECHANICUS"
 ```
+
+Full-resolution images go into
+`~/.config/omarchy/backgrounds/cogitator-{green,amber,red,industrial}/` with the
+same filename, such as `cogitator-mechSkull3-2560x1600.png`. Previews are kept
+separately under `~/.cache/cogitator-v2/wallpaper-previews/<palette>/`.
+Directories are created automatically; originals and existing outputs are never
+overwritten. The palette colors come directly from `palettes/*.json`.
 
 - `--mode image` preserves the complete composition. Add `--invert` for dark
   artwork on a pale background.
@@ -261,36 +269,35 @@ REPO="$HOME/Projects/omarchy-cogitator-v2"
 - `--gamma 1.6` suppresses faint details; `--brightness 1.3` boosts intensity.
 - `--size 2560x1600` sets resolution (also the default).
 - `--no-grid` avoids adding another grid to artwork that already has one.
-- For another palette, change the output and preview folders and add the two
-  color arguments from the table above. Coloring is explicit, not inferred
-  from the destination folder.
+- `--palette amber` generates only Ryza. Add an output filename for a single
+  exact destination; custom `--phosphor`/`--background` colors require this
+  single-palette mode.
 
 The script preserves your source and refuses to overwrite existing outputs.
-Output and preview directories must exist; the second positional argument is
-a filename, not a directory. See [the full guide](docs/wallpapers.md) or run
+The optional second positional argument is a PNG base path: in default all-mode,
+it writes `parent/cogitator-<palette>/filename.png`; with a single `--palette`,
+it writes that exact file. See [the full guide](docs/wallpapers.md) or run
 `/usr/bin/python3 "$REPO/scripts/render-wallpaper.py" --help` for all controls.
 
 ### Make it available in Omarchy
 
-Adding images to the repository does not update an already-installed theme.
-For Green, copy the full-resolution PNGs to Omarchy's user-background folder:
+The default four-palette output is already in Omarchy's user-background folders.
+Reopen the background selector, or select a variant directly:
 
 ```bash
-mkdir -p "$HOME/.config/omarchy/backgrounds/cogitator-green"
-cp -n "$REPO/backgrounds/"*.png \
-  "$HOME/.config/omarchy/backgrounds/cogitator-green/"
+omarchy theme bg set "$HOME/.config/omarchy/backgrounds/cogitator-green/cogitator-mechSkull3-2560x1600.png"
 ```
 
-For another palette, use its wallpaper folder from the table and the matching
-destination `~/.config/omarchy/backgrounds/cogitator-<palette>/`. Reopen the
-background selector while that theme is active. These user-background copies
-also survive theme reinstalls.
+Choose whatever background you want for each palette. Changes through Cogitator's
+controller or `cogitator palette` remember the background of the palette being
+left and restore the destination palette's own selection. First use gets its
+packaged default; selecting an image for Ryza never changes Holy Mars's choice.
+This includes the custom palette. Saved copies survive theme reinstalls or a
+source image being moved. Generation itself does not change any selection or
+automatically link the four images.
 
-To apply one file directly after reviewing its preview:
-
-```bash
-omarchy theme bg set "$REPO/backgrounds/my-mech-skull.png"
-```
+Adding images only to the repository's theme folders does not update installed
+themes. Copy those into the corresponding user-background folders if needed.
 
 ## Terminal rite (opt-in)
 

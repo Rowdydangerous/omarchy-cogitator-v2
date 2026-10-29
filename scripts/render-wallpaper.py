@@ -1,10 +1,16 @@
 #!/usr/bin/python3
 """Render an image as a static Cogitator wallpaper (Pillow + NumPy)."""
 import argparse
+import copy
+import json
+import os
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
+
+ROOT = Path(__file__).resolve().parents[1]
+PALETTES = ("green", "amber", "red", "industrial")
 
 
 def dimensions(value):
@@ -122,17 +128,20 @@ def render(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path)
-    parser.add_argument("output", type=Path, help="new PNG output path (parent must exist)")
+    parser.add_argument("output", nargs="?", type=Path,
+                        help="PNG base path; all mode writes parent/cogitator-<palette>/filename.png")
+    parser.add_argument("--palette", choices=("all", *PALETTES), default="all",
+                        help="generate all four palettes by default; choose one for a single PNG")
     parser.add_argument("--preview-dir", type=Path,
-                        help="existing directory for the preview (default: beside output)")
+                        help="preview root (default: user cache; all mode uses palette subfolders)")
     parser.add_argument("--mode", choices=("image", "gold", "green", "saturation"), default="image",
                         help="full-image luminance or foreground color extraction (default: image)")
     parser.add_argument("--invert", action="store_true", help="use for dark artwork on a light background")
     parser.add_argument("--gamma", type=positive, default=1, help=">1 suppresses faint details")
     parser.add_argument("--brightness", type=positive, default=1)
     parser.add_argument("--size", type=dimensions, default=(2560, 1600))
-    parser.add_argument("--phosphor", type=color, default=color("4fd06a"))
-    parser.add_argument("--background", type=color, default=color("030704"))
+    parser.add_argument("--phosphor", type=color, help="custom color; requires a single --palette")
+    parser.add_argument("--background", type=color, help="custom color; requires a single --palette")
     parser.add_argument("--title", default="IMPERIAL ARCHIVE  //  IMAGE RECORD")
     parser.add_argument("--caption", default="LOCAL COGITATOR  /  ARCHIVE RECORD")
     parser.add_argument("--motto", default="+++ THE MACHINE ENDURES +++")
@@ -141,30 +150,48 @@ def main():
     parser.add_argument("--no-grid", action="store_true")
     parser.add_argument("--no-frame", action="store_true")
     args = parser.parse_args()
-    if args.output.is_dir():
+    if args.palette == "all" and (args.phosphor is not None or args.background is not None):
+        parser.error("custom colors require a single --palette, e.g. --palette green")
+    if args.output is not None and args.output.is_dir():
         parser.error("output is a directory; provide a filename such as "
                      f"{args.output / 'cogitator-wallpaper.png'}")
-    preview = args.output.with_name(args.output.stem + "-preview.png")
-    if args.preview_dir is not None:
-        preview = args.preview_dir / preview.name
-    for path in (args.output, preview):
-        if path.resolve() == args.source.resolve() or path.exists():
-            parser.error(f"refusing to overwrite: {path}")
-        if not path.parent.is_dir():
-            parser.error(f"output directory does not exist: {path.parent}")
-    if args.output.suffix.lower() != ".png":
+    config = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+    default_name = f"cogitator-{args.source.stem}-{args.size[0]}x{args.size[1]}.png"
+    output = args.output or config / "omarchy/backgrounds" / default_name
+    if output.suffix.lower() != ".png":
         parser.error("output must have a .png extension")
+    preview_root = args.preview_dir or Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "cogitator-v2/wallpaper-previews"
+    jobs = []
+    for palette in PALETTES if args.palette == "all" else (args.palette,):
+        job = copy.copy(args)
+        definition = json.loads((ROOT / "palettes" / f"{palette}.json").read_text())
+        job.phosphor = args.phosphor if args.phosphor is not None else color(definition["normal"])
+        job.background = args.background if args.background is not None else color(definition["background"])
+        job.output = output.parent / f"cogitator-{palette}" / output.name if args.palette == "all" or args.output is None else output
+        preview = preview_root / palette / (output.stem + "-preview.png") if args.palette == "all" or args.preview_dir is None else preview_root / (output.stem + "-preview.png")
+        jobs.append((palette, job, preview))
+    # Check the entire family first, so a collision in the fourth palette does
+    # not write the other three. Sources and previously generated files stay safe.
+    targets = [path for _, job, preview in jobs for path in (job.output, preview)]
+    if len({path.resolve() for path in targets}) != len(targets):
+        parser.error("wallpaper and preview paths overlap")
+    for path in targets:
+        if path.resolve() == args.source.resolve() or path.exists() or path.is_symlink():
+            parser.error(f"refusing to overwrite: {path}")
     try:
-        art = render(args)
-        # Exclusive creation also guards against another invocation taking the path.
-        with args.output.open("xb") as output:
-            art.save(output, format="PNG", optimize=True)
-        art.thumbnail((1280, 800), Image.Resampling.LANCZOS)
-        with preview.open("xb") as output:
-            art.save(output, format="PNG", optimize=True)
+        for palette, job, preview in jobs:
+            art = render(job)
+            job.output.parent.mkdir(parents=True, exist_ok=True)
+            preview.parent.mkdir(parents=True, exist_ok=True)
+            # Exclusive creation also guards against a concurrent renderer.
+            with job.output.open("xb") as handle:
+                art.save(handle, format="PNG", optimize=True)
+            art.thumbnail((1280, 800), Image.Resampling.LANCZOS)
+            with preview.open("xb") as handle:
+                art.save(handle, format="PNG", optimize=True)
+            print(f"{palette}: {job.output}\nPreview: {preview}")
     except (OSError, ValueError) as error:
         parser.exit(1, f"render failed: {error}\n")
-    print(f"Wallpaper: {args.output}\nPreview: {preview}")
 
 
 if __name__ == "__main__":

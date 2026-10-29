@@ -1,5 +1,6 @@
 {
   "name": "emergency",
+  "defaultWallpaper": "mechSkull1.png",
   "description": "Dim red damage-control terminal. Critical runs white-hot, as alarm phosphor should.",
   "background": "#070202",
   "surface": "#160808",

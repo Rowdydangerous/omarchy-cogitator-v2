@@ -1,5 +1,6 @@
 {
   "name": "industrial",
+  "defaultWallpaper": "mechSkull2.png",
   "description": "Physical Imperial machinery: gunmetal, aged cream, brass, muted red.",
   "background": "#0b0b09",
   "surface": "#1a1a16",
