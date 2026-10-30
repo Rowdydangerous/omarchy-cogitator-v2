@@ -10,6 +10,8 @@ import "prop"
 import "burn"
 import "launcher"
 import "menu"
+import "prop/Auspex.js" as Auspex
+import "prop/Spirit.js" as Spirit
 
 Item {
     id: root
@@ -24,6 +26,7 @@ Item {
     property real burnOpacity: 0.08
     property string animationLevel: "full" // full | normal | minimal
     property bool textStreaming: true
+    property int streamCharInterval: 70
     property bool workspaceRites: true
     property bool crtEnabled: true
     property bool crtGlobal: true
@@ -41,6 +44,28 @@ Item {
     property int cpuPercent: 0
     property string memText: "-- / --"
     property int memPercent: 0
+    property bool cpuValid: false
+    property bool memValid: false
+    property var previousCpu: null
+    property var cpuHistory: []
+    property var memoryHistory: []
+    property string diskText: "--"
+    property int diskPercent: 0
+    property bool diskValid: false
+    property real uptimeSeconds: 0
+    property double clockMs: Date.now()
+    property double lastStatsAt: 0
+    readonly property bool statsFresh: lastStatsAt > 0 && clockMs - lastStatsAt < 15000
+    readonly property string uptimeText: lastStatsAt ? Auspex.duration(uptimeSeconds + Math.max(0, clockMs - lastStatsAt) / 1000) : "--"
+    readonly property string sampleAgeText: lastStatsAt ? Math.max(0, Math.floor((clockMs - lastStatsAt) / 1000)) + "s AGO" : "WAITING"
+    property bool observing: false
+    property bool cpuBusy: false
+    property bool memoryBusy: false
+    property bool diskBusy: false
+    property bool pollFailed: false
+    property string powerSource: ""
+    property string lastVoxState: ""
+    property var batteryObservation: null
     property string powerText: "EXTERNAL SUPPLY"
     property bool powerLow: false
     property bool powerCritical: false
@@ -235,7 +260,7 @@ Item {
         refreshChannel()
         if (before === channelText || channelText === "--")
             return
-        currentRite = "CHANNEL " + channelText + " SYNCHRONIZED"
+        reportEvent("workspace.selected", {channel: channelText})
         if (workspaceRites)
             osdRite("+++ CHANNEL " + channelText + " +++", "◈")
     }
@@ -250,42 +275,126 @@ Item {
         })])
     }
 
-    // Rotating rite corpus (shuffle bag, no immediate repeats).
-    readonly property var liturgy: [
-        "PRAISING THE MACHINE GOD",
-        "EXAMINING THE LATENT MACHINE SPIRIT",
-        "COMMUNING WITH THE MACHINE SPIRIT",
-        "COMMENCING THE LITANY OF COMPUTATION",
-        "SUBMITTING A SACRED QUERY",
-        "TRANSMITTING THE LITANY",
-        "AWAITING THE OMNISSIAH'S REVELATION",
-        "REQUESTING DIVINE COMPUTATION",
-        "INVOKING THE RITE OF CALCULATION",
-        "CONSULTING THE HIGHER COGITATOR",
-        "STIRRING THE COGITATOR BANKS",
-        "ATTUNING THE MACHINE SPIRIT",
-        "INTERPRETING THE MACHINE'S OMENS",
-        "CONSULTING THE ANCIENT DATA-VAULTS",
-        "INSCRIBING THE SACRED DATA-SLATE",
-        "PERFORMING AUSPEX UPON THE NOOSPHERE"
-    ]
-    property var riteOrder: []
+    // Session-local, bounded observation ledger. No fake health checks, logs
+    // written to disk, or notification spam. Messages finish before advancing.
+    property var events: []
+    property var pendingRites: []
     property int riteCursor: 0
-    property string currentRite: "AWAITING THE OMNISSIAH'S REVELATION"
+    property var messageCatalog: null
+    property var voiceCounters: ({})
+    property var deferredEvents: []
+    property double lastSpiritEventAt: 0
+    property string currentRiteKind: "event"
+    property string currentRite: ""
+    property string displayedRite: ""
+    property string currentRiteLevel: "normal"
+    property bool streamPaused: false
+    readonly property bool typingRite: textStreaming && animate && displayedRite.length < currentRite.length
+
+    function loadSpirit(raw) {
+        var catalog
+        try { catalog = JSON.parse(raw) } catch (e) { console.warn("Invalid spirit message JSON; previous catalog retained"); return }
+        if (!Spirit.validCatalog(catalog)) { console.warn("Invalid spirit message catalog; previous catalog retained"); return }
+        messageCatalog = catalog
+        var waiting = deferredEvents
+        deferredEvents = []
+        for (var i = 0; i < waiting.length; i++) reportEvent(waiting[i].id, waiting[i].values)
+    }
+
+    function reportEvent(id, values) {
+        if (!observing) return
+        if (!messageCatalog) { deferredEvents = deferredEvents.concat([{id: id, values: values || {}}]).slice(-8); return }
+        var sequence = voiceCounters[id] || 0
+        var entry = Spirit.message(messageCatalog, id, values || {}, sequence)
+        if (!entry) { console.warn("Unknown spirit event: " + id); return }
+        if (powerCritical && entry.level === "normal") entry.voice = entry.message
+        voiceCounters[id] = sequence + 1
+        postEvent(entry.message, entry.level, entry.voice, id)
+    }
+
+    function postEvent(message, level, voice, id) {
+        if (!observing) return
+        var now = Date.now()
+        if (events.length && events[0].message === message && now - events[0].stamp < 30000) return
+        var entry = {id: id || "", message: message, voice: voice || message,
+                     kind: "event", level: level || "normal", stamp: now,
+                     time: Qt.formatTime(new Date(now), "HH:mm:ss")}
+        events = [entry].concat(events).slice(0, 32)
+        lastSpiritEventAt = now
+        pendingRites = Spirit.enqueue(pendingRites, entry)
+        if (entry.level === "critical" && currentRiteLevel !== "critical"
+            || entry.level === "warning" && currentRiteKind === "idle") riteHold.stop()
+        if (!riteHold.running && !streamPaused) advanceRite()
+    }
+
+    function advanceRite() {
+        if (!propEnabled || streamPaused || !pendingRites.length) return
+        var next = pendingRites[0]
+        pendingRites = pendingRites.slice(1)
+        currentRiteLevel = next.level
+        currentRiteKind = next.kind || "event"
+        currentRite = next.voice || next.message
+        displayedRite = textStreaming && animate ? "" : currentRite
+        riteHold.restart()
+    }
+
+    onTextStreamingChanged: if (!textStreaming) displayedRite = currentRite
+    onAnimateChanged: if (!animate) displayedRite = currentRite
+    onPropEnabledChanged: {
+        if (!observing) return
+        if (!propEnabled) {
+            previousCpu = null
+            cpuValid = false
+            riteHold.stop()
+        } else if (typingRite) riteHold.restart()
+        else advanceRite()
+    }
+    onStreamPausedChanged: {
+        if (streamPaused) riteHold.stop()
+        else if (typingRite) riteHold.restart()
+        else advanceRite()
+    }
+    onStatsFreshChanged: {
+        if (propEnabled && lastStatsAt > 0 && !statsFresh) reportEvent("telemetry.stale")
+    }
+    onNetTextChanged: reportEvent(netOk ? "network.up" : "network.down", {state: netText})
+    onRelayTextChanged: reportEvent(relayText === "DORMANT" || relayText === "NO RELAY" ? "relay.quiet" : "relay.changed", {state: relayText})
+    onVoxTextChanged: {
+        var state = voxText === "MUTED" ? "muted" : (voxText === "NO OUTPUT" ? "missing" : "active")
+        if (observing && lastVoxState && state !== lastVoxState)
+            reportEvent("audio." + state)
+        lastVoxState = state
+    }
 
     function nextRite() {
-        if (riteCursor >= riteOrder.length) {
-            riteOrder = root.liturgy.slice()
-            for (var i = riteOrder.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1))
-                var tmp = riteOrder[i]
-                riteOrder[i] = riteOrder[j]
-                riteOrder[j] = tmp
-            }
-            riteCursor = 0
-        }
-        currentRite = riteOrder[riteCursor]
-        riteCursor++
+        if (!messageCatalog || riteHold.running || !Spirit.canIdle({fresh: statsFresh,
+            cpuValid: cpuValid, cpu: cpuPercent, warning: powerLow || cpuBusy || memoryBusy || diskBusy || !netOk || pollFailed,
+            pending: pendingRites.length, typing: typingRite, paused: streamPaused, lastEvent: lastSpiritEventAt}, Date.now())) return
+        var line = messageCatalog.idle[riteCursor++ % messageCatalog.idle.length]
+        // Personality is not an observed event: never put idle liturgy in the log.
+        pendingRites = [{voice: line, level: "normal", kind: "idle"}]
+        advanceRite()
+    }
+
+    function updatePressure(metric, value) {
+        var property = metric + "Busy"
+        var transition = Spirit.pressure(root[property], metric, value)
+        root[property] = transition.active
+        if (transition.event) reportEvent(transition.event, {percent: value, usage: diskText})
+    }
+
+    function inspect(action) {
+        var command = Auspex.actionCommand(action)
+        if (!command.length || actionProc.running) return
+        actionProc.command = command
+        actionProc.running = true
+    }
+
+    function inspectionHint(action) { return Auspex.actionHint(action) }
+
+    function statsFailure() {
+        if (!pollFailed) reportEvent("telemetry.failed")
+        pollFailed = true
     }
 
     function applyConfig(obj) {
@@ -305,6 +414,8 @@ Item {
             animationLevel = obj.animationLevel
         if (typeof obj.textStreaming === "boolean")
             textStreaming = obj.textStreaming
+        if (typeof obj.streamCharInterval === "number")
+            streamCharInterval = Math.round(Math.min(200, Math.max(20, obj.streamCharInterval)))
         if (typeof obj.workspaceRites === "boolean")
             workspaceRites = obj.workspaceRites
         if (typeof obj.crtEnabled === "boolean")
@@ -328,41 +439,81 @@ Item {
     }
 
     function refreshPower() {
+        var wasLow = powerLow
+        var wasCritical = powerCritical
+        var before = powerSource
+        powerSource = UPower.onBattery ? "BATTERY" : "EXTERNAL SUPPLY"
         var d = UPower.displayDevice
+        var milestone = {event: ""}
+        var pct = null
         if (!d || !d.isPresent) {
-            powerText = "EXTERNAL SUPPLY"
+            batteryObservation = null
+            powerText = UPower.onBattery ? "BATTERY / NO CHARGE DATA" : "EXTERNAL SUPPLY"
             powerLow = false
             powerCritical = false
-            return
+        } else {
+            pct = Math.round(d.percentage * 100)
+            if (!isFinite(pct) || pct < 0 || pct > 100) {
+                batteryObservation = null
+                powerText = "BATTERY / CHARGE UNAVAILABLE"
+                return
+            }
+            milestone = Spirit.batteryStep(batteryObservation, pct, UPower.onBattery)
+            batteryObservation = milestone.state
+            var flow = UPower.onBattery ? "DRAIN" : "INTAKE"
+            powerText = String(pct).padStart(3, "0") + "% " + flow
+            powerLow = UPower.onBattery && pct <= 20
+            powerCritical = UPower.onBattery && pct <= 10
         }
-        var pct = Math.round((d.percentage || 0) * 100)
-        var flow = UPower.onBattery ? "DRAIN" : "INTAKE"
-        powerText = String(pct).padStart(3, "0") + "% " + flow
-        powerLow = pct <= 20
-        powerCritical = pct <= 10
+        if (before && before !== powerSource) reportEvent(UPower.onBattery ? "power.battery" : "power.external", {status: powerText})
+        if (!wasCritical && powerCritical) reportEvent("battery.critical", {percent: pct})
+        else if (!wasLow && powerLow) reportEvent("battery.low", {percent: pct})
+        else if (wasLow && !powerLow && before === powerSource) reportEvent("battery.recovered")
+        else if (milestone.event && !powerLow) reportEvent(milestone.event, {percent: pct, boundary: milestone.boundary})
     }
 
     function parseStats(raw) {
-        var lines = String(raw || "").split("\n")
-        for (var i = 0; i < lines.length; i++) {
-            var parts = lines[i].split("\t")
-            if (parts.length < 2)
-                continue
-            if (parts[0] === "cpu") {
-                var cpu = parseInt(parts[1], 10)
-                if (isFinite(cpu))
-                    cpuPercent = Math.min(100, Math.max(0, cpu))
-            } else if (parts[0] === "memory") {
-                memText = parts[1].trim()
-                var m = memText.match(/([0-9.]+)GB\s*\/\s*([0-9.]+)GB/)
-                if (m)
-                    memPercent = Math.round(100 * parseFloat(m[1]) / parseFloat(m[2]))
-            }
+        var data
+        try { data = JSON.parse(raw) } catch (e) { statsFailure(); return }
+        if (!data || (!data.cpu && !data.memory)) { statsFailure(); return }
+        var now = Date.now()
+        var cpu = Auspex.cpuUsage(previousCpu, data.cpu)
+        previousCpu = data.cpu
+        cpuValid = cpu !== null && isFinite(cpu)
+        if (cpuValid) {
+            cpuPercent = cpu
+            cpuHistory = Auspex.appendSample(cpuHistory, cpu, now)
+            updatePressure("cpu", cpu)
         }
+        memValid = !!data.memory && isFinite(data.memory.percent)
+        if (memValid) {
+            memPercent = Math.max(0, Math.min(100, data.memory.percent))
+            memText = data.memory.text
+            memoryHistory = Auspex.appendSample(memoryHistory, memPercent, now)
+            updatePressure("memory", memPercent)
+        }
+        diskValid = !!data.disk && isFinite(data.disk.percent)
+        if (diskValid) {
+            diskPercent = data.disk.percent
+            diskText = diskPercent + "% USED / " + data.disk.freeGiB + " GiB FREE"
+            updatePressure("disk", diskPercent)
+        }
+        if (isFinite(data.uptime) && data.uptime !== null) uptimeSeconds = data.uptime
+        if (pollFailed) reportEvent("telemetry.restored")
+        pollFailed = false
+        lastStatsAt = now
     }
 
     readonly property string home: Quickshell.env("HOME")
     readonly property string configJsonPath: home + "/.config/cogitator-v2/config.json"
+
+    FileView {
+        path: Qt.resolvedUrl("prop/spirit-messages.json")
+        watchChanges: true
+        printErrors: true
+        onLoaded: root.loadSpirit(text())
+        onFileChanged: reload()
+    }
 
     FileView {
         path: root.configJsonPath
@@ -397,16 +548,38 @@ Item {
 
     Process {
         id: statsProc
-        command: ["omarchy-system-stats"]
+        command: ["python3", decodeURIComponent(Qt.resolvedUrl("prop/stats.py").toString().replace(/^file:\/\//, ""))]
+        onExited: function(exitCode) { if (exitCode !== 0) root.statsFailure() }
         stdout: StdioCollector {
             waitForEnd: true
             onStreamFinished: root.parseStats(text)
         }
     }
 
+    Process {
+        id: actionProc
+        onExited: function(exitCode) { if (exitCode !== 0) root.reportEvent("inspection.failed") }
+        stdout: StdioCollector {
+            onStreamFinished: if (text.trim() === "unknown") root.reportEvent("inspection.unavailable")
+        }
+    }
+
+    Timer {
+        id: riteHold
+        interval: Math.max(7000, root.currentRite.length * root.streamCharInterval + 3500)
+        running: false
+        onTriggered: root.advanceRite()
+    }
+    Timer {
+        interval: root.streamCharInterval
+        running: root.propEnabled && root.typingRite && !root.streamPaused
+        repeat: true
+        onTriggered: root.displayedRite = root.currentRite.substring(0, root.displayedRite.length + 1)
+    }
+
     Timer {
         interval: 5000
-        running: true
+        running: root.propEnabled
         repeat: true
         triggeredOnStart: true
         onTriggered: if (!statsProc.running) statsProc.running = true
@@ -419,15 +592,15 @@ Item {
         triggeredOnStart: true
         onTriggered: {
             var now = new Date()
+            root.clockMs = now.getTime()
             root.timeText = Qt.formatTime(now, "HH:mm:ss")
             root.dateText = Qt.formatDate(now, "yyyy-MM-dd")
-            root.refreshPower()
         }
     }
 
     Timer {
-        interval: 7000
-        running: root.textStreaming && root.animate
+        interval: 45000
+        running: root.textStreaming && root.propEnabled
         repeat: true
         onTriggered: root.nextRite()
     }
@@ -435,6 +608,12 @@ Item {
     Connections {
         target: UPower
         function onOnBatteryChanged() { root.refreshPower() }
+    }
+
+    Connections {
+        target: UPower.displayDevice
+        function onPercentageChanged() { root.refreshPower() }
+        function onIsPresentChanged() { root.refreshPower() }
     }
 
     Connections {
@@ -448,13 +627,28 @@ Item {
     }
 
     Component.onCompleted: {
-        root.nextRite()
         root.refreshPower()
         root.refreshChannel()
+        root.observing = true
+        root.reportEvent("session.open")
+        if (root.powerCritical && root.batteryObservation)
+            root.reportEvent("battery.critical", {percent: root.batteryObservation.percent})
+        else if (root.powerLow && root.batteryObservation)
+            root.reportEvent("battery.low", {percent: root.batteryObservation.percent})
     }
 
     IpcHandler {
         target: "cogitator-rite"
+
+        function auspexStatus(): string {
+            return JSON.stringify({fresh: root.statsFresh, cpuValid: root.cpuValid,
+                cpu: root.cpuPercent, memory: root.memText, disk: root.diskText,
+                uptime: root.uptimeText, cpuSamples: root.cpuHistory.length,
+                memorySamples: root.memoryHistory.length, events: root.events.length,
+                pending: root.pendingRites.length, typingInterval: root.streamCharInterval,
+                paused: root.streamPaused, catalogReady: !!root.messageCatalog,
+                kind: root.currentRiteKind, typed: root.displayedRite, message: root.currentRite})
+        }
 
         function paletteStatus(): string {
             return JSON.stringify({phosphor: String(root.phosphor),

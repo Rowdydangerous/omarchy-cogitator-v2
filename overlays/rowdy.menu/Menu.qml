@@ -769,12 +769,13 @@ Item {
     if (row.kind === "menu" || row.kind === "link") {
       root.setActiveMenu(row.target || row.itemId, true, fromPointer)
     } else if (row.kind === "app") {
-      // Cogitator: application execution belongs to the Application
-      // Cogitator console. Hand off instead of launching inline.
+      // Search results are launchable directly, just like the native menu.
+      var appId = row.appId
+      var label = row.label
       applySerial = requestSerial
       opened = false
       filterText = ""
-      Quickshell.execDetached(["omarchy-shell", "cogitator-rite", "openLauncher"])
+      if (root.appLibrary) root.appLibrary.launch(appId, label)
     } else {
       root.applySelected(row.itemId, row.action)
     }

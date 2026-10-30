@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "idle": [
+    "EXAMINING THE LATENT MACHINE SPIRIT",
+    "PRAISING THE MACHINE GOD",
+    "COMMUNING WITH THE MACHINE SPIRIT",
+    "AWAITING THE OMNISSIAH'S REVELATION",
+    "CONSULTING THE ANCIENT DATA-VAULTS",
+    "CONTEMPLATING THE SANCTITY OF THE UNPRESSED KEY",
+    "ATTUNING THE MACHINE SPIRIT",
+    "INSCRIBING THE SACRED DATA-SLATE"
+  ],
+  "events": {
+    "session.open": {"level":"normal", "log":"AUSPEX SESSION OPEN / OBSERVATION STARTED", "voice":["THE COGITATOR STIRS. THE LONG WATCH BEGINS."]},
+    "workspace.selected": {"level":"normal", "log":"CHANNEL {channel} / WORKSPACE SELECTED", "voice":["ATTUNING TO CHANNEL {channel}.", "ANOTHER CHANNEL. ANOTHER SACRED TASK. / {channel}"]},
+    "network.up": {"level":"normal", "log":"NOOSPHERIC LINK / {state}", "voice":["A THREAD OF THE NOOSPHERE ANSWERS. / {state}"]},
+    "network.down": {"level":"warning", "log":"NOOSPHERIC LINK / {state}", "voice":["THE NOOSPHERIC LINK IS LOST. LOCAL COGITATION CONTINUES."]},
+    "relay.quiet": {"level":"normal", "log":"AUXILIARY RELAY / {state}", "voice":["THE AUXILIARY RELAYS REST. THE COGITATOR KEEPS WATCH."]},
+    "relay.changed": {"level":"normal", "log":"AUXILIARY RELAY / {state}", "voice":["ATTENDING TO THE AUXILIARY MACHINE LINKS. / {state}"]},
+    "audio.muted": {"level":"normal", "log":"VOX ARRAY / OUTPUT MUTED", "voice":["THE VOX FALLS SILENT. THOUGHT CONTINUES."]},
+    "audio.active": {"level":"normal", "log":"VOX ARRAY / OUTPUT ACTIVE", "voice":["THE VOX SPEAKS AGAIN."]},
+    "audio.missing": {"level":"warning", "log":"VOX ARRAY / NO OUTPUT", "voice":["THE VOX AWAITS A VESSEL. NO OUTPUT DEVICE IS AVAILABLE."]},
+    "power.external": {"level":"normal", "log":"POWER SOURCE / EXTERNAL SUPPLY", "voice":["THE SACRED CURRENT FLOWS ONCE MORE."]},
+    "power.battery": {"level":"normal", "log":"POWER SOURCE / BATTERY / {status}", "voice":["DRAWING UPON THE POWER RESERVE. / {status}"]},
+    "battery.drain": {"level":"normal", "log":"POWER RESERVE / PASSED {boundary}% / NOW {percent}%", "voice":["THE RESERVE YIELDS ANOTHER TITHE. / {percent}% REMAINS.", "THE SACRED CURRENT MUST BE HUSBANDED. / {percent}% REMAINS."]},
+    "battery.charge": {"level":"normal", "log":"POWER RESERVE / REACHED {boundary}% / NOW {percent}%", "voice":["THE POWER RESERVE IS REPLENISHED TO {percent}%."]},
+    "battery.low": {"level":"warning", "log":"POWER RESERVE LOW / {percent}%", "voice":["POWER RESERVE LOW / {percent}%. RESTORE EXTERNAL SUPPLY."]},
+    "battery.critical": {"level":"critical", "log":"POWER RESERVE CRITICAL / {percent}%", "voice":["POWER RESERVE CRITICAL / {percent}%. CONNECT POWER NOW."]},
+    "battery.recovered": {"level":"normal", "log":"POWER RESERVE / LOW-POWER CONDITION CLEARED", "voice":["THE POWER RESERVE RECOVERS. THE WATCH CONTINUES."]},
+    "cpu.high": {"level":"warning", "log":"LOGIC ENGINE / HIGH LOAD {percent}%", "voice":["THE LOGIC ENGINES LABOUR. / {percent}% LOAD."]},
+    "cpu.clear": {"level":"normal", "log":"LOGIC ENGINE / LOAD SUBSIDED TO {percent}%", "voice":["THE LOGIC ENGINES RETURN TO CONTEMPLATION. / {percent}% LOAD."]},
+    "memory.high": {"level":"warning", "log":"MEMORY VAULT / PRESSURE {percent}%", "voice":["THE MEMORY VAULT GROWS CROWDED. / {percent}% IN USE."]},
+    "memory.clear": {"level":"normal", "log":"MEMORY VAULT / PRESSURE SUBSIDED", "voice":["ROOM RETURNS TO THE MEMORY VAULT."]},
+    "disk.high": {"level":"warning", "log":"HOME DATA VAULT / {usage}", "voice":["THE DATA VAULT APPROACHES CAPACITY. / {usage}"]},
+    "disk.clear": {"level":"normal", "log":"HOME DATA VAULT / SPACE PRESSURE CLEARED", "voice":["SPACE RETURNS TO THE DATA VAULT. THE ARCHIVE ENDURES."]},
+    "telemetry.stale": {"level":"warning", "log":"TELEMETRY / LAST SAMPLE IS STALE", "voice":["THE AUSPEX READING HAS GROWN STALE. AWAITING FRESH OBSERVATION."]},
+    "telemetry.failed": {"level":"warning", "log":"TELEMETRY / SAMPLE UNAVAILABLE", "voice":["THE AUSPEX RETURNS NO READING. THIS IS NOT A CLEAN BILL OF HEALTH."]},
+    "telemetry.restored": {"level":"normal", "log":"TELEMETRY / SAMPLING RESTORED", "voice":["THE AUSPEX SEES AGAIN."]},
+    "inspection.failed": {"level":"warning", "log":"INSPECTION / REQUEST FAILED", "voice":["THE REQUEST DID NOT COMPLETE. CONSULT THE LOCAL LOGS."]},
+    "inspection.unavailable": {"level":"warning", "log":"INSPECTION / CONTROL UNAVAILABLE", "voice":["THE REQUESTED CONTROL IS NOT AVAILABLE."]}
+  }
+}

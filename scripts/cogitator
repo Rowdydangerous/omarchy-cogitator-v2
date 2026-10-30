@@ -182,6 +182,7 @@ config = {
     "burnOpacity": number(raw.get("BACKGROUND_BURN_OPACITY", "0.08"), 0.08, 0.0, 0.3),
     "animationLevel": raw.get("ANIMATION_LEVEL", "full").lower(),
     "textStreaming": boolean(raw.get("TEXT_STREAMING", "true"), True),
+    "streamCharInterval": int(number(raw.get("STREAM_CHAR_INTERVAL", "70"), 70, 20, 200)),
     "workspaceRites": boolean(raw.get("WORKSPACE_RITES", "true"), True),
     "crtEnabled": boolean(raw.get("CRT_ENABLED", "true"), True),
     "crtGlobal": boolean(raw.get("CRT_GLOBAL", "true"), True),

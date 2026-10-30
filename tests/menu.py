@@ -15,6 +15,81 @@ HOST = Path("/usr/share/omarchy/shell")
 
 
 class MenuTests(unittest.TestCase):
+    @unittest.skipUnless(shutil.which("quickshell"), "requires Quickshell")
+    def test_app_result_activation_launches_selected_id_without_launcher_handoff(self):
+        source = (ROOT / "overlays/rowdy.menu/Menu.qml").read_text()
+        activation = "  function activateIndex" + source.split("  function activateIndex", 1)[1].split("  function requestDeleteSelected", 1)[0]
+        with tempfile.TemporaryDirectory() as work:
+            work = Path(work)
+            # A regression must not accidentally send openLauncher IPC to the
+            # real desktop from this isolated activation test.
+            binary = work / "bin/omarchy-shell"
+            binary.parent.mkdir()
+            binary.write_text("#!/bin/sh\nexit 0\n")
+            binary.chmod(0o755)
+            qml = '''import QtQuick
+import Quickshell
+ShellRoot {
+  id: root
+  property bool deleteConfirmOpen: false
+  property bool dmenuActive: false
+  property string mode: "select"
+  property string filterText: "actual"
+  property bool opened: true
+  property int applySerial: 0
+  property int requestSerial: 17
+  property var launches: []
+  property var selections: []
+  property var routes: []
+  property var actions: []
+  property QtObject appLibrary: QtObject {
+    function launch(id, label) { root.launches = root.launches.concat([{id: id, label: label}]); }
+  }
+  function applyDmenuSelection(value) { selections = selections.concat([value]); }
+  function setActiveMenu(id) { routes = routes.concat([id]); }
+  function applySelected(id, action) { actions = actions.concat([{id: id, action: action}]); }
+  ListModel { id: displayModel }
+''' + activation + '''
+  Timer {
+    interval: 50; running: true
+    onTriggered: {
+      displayModel.append({kind: "app", appId: "actual-budget", label: "Actual Budget", itemId: "apps.actual-budget", detail: ""});
+      root.activateIndex(0, false);
+      var closed = !root.opened && root.filterText === "" && root.applySerial === 17;
+      root.activateIndex(0, true);
+      root.activateIndex(-1, false);
+      root.activateIndex(99, false);
+      displayModel.clear();
+      displayModel.append({kind: "menu", target: "apps", itemId: "apps"});
+      root.activateIndex(0, false);
+      displayModel.clear();
+      displayModel.append({kind: "action", itemId: "trigger.capture.screenshot", action: "native-screenshot"});
+      root.activateIndex(0, false);
+      displayModel.clear();
+      displayModel.append({kind: "dmenu", label: "Keep raw", detail: "stable-id"});
+      root.dmenuActive = true;
+      root.activateIndex(0, false);
+      console.log("ACTIVATION_TEST " + JSON.stringify({launches: root.launches,
+        closed: closed, routes: root.routes, actions: root.actions, selections: root.selections}));
+      Qt.quit();
+    }
+  }
+}
+'''
+            (work / "shell.qml").write_text(qml)
+            env = dict(os.environ, QT_QPA_PLATFORM="offscreen", PATH=str(binary.parent) + ":" + os.environ["PATH"])
+            result = subprocess.run(["quickshell", "-p", str(work / "shell.qml"), "--no-color"],
+                                    env=env, capture_output=True, text=True, timeout=15)
+            output = result.stdout + result.stderr
+            self.assertEqual(result.returncode, 0, output)
+            line = next(line.split("ACTIVATION_TEST ", 1)[1] for line in output.splitlines() if "ACTIVATION_TEST " in line)
+            record = json.loads(line)
+            self.assertEqual(record["launches"], [{"id": "actual-budget", "label": "Actual Budget"}] * 2)
+            self.assertTrue(record["closed"])
+            self.assertEqual(record["routes"], ["apps"])
+            self.assertEqual(record["actions"], [{"id": "trigger.capture.screenshot", "action": "native-screenshot"}])
+            self.assertEqual(record["selections"], ["Keep raw\tstable-id"])
+
     def test_stock_baseline_is_untouched_and_adapter_checks_its_anchor(self):
         original = (ROOT / "plugins/menu/Menu.qml").read_text()
         with tempfile.TemporaryDirectory() as work:

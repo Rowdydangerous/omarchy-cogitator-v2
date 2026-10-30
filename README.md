@@ -13,6 +13,10 @@
 
 [Usage](#usage) · [Updating](#updating) · [Control widget](docs/control-widget.md) · [Settings](#settings) · [Palettes](#palettes) · [Wallpapers](#make-your-own-background) · [Architecture](docs/architecture.md)
 
+**Interactive Auspex:** click telemetry to inspect your machine, follow measured
+CPU/memory history, and read a slower, event-driven machine-spirit stream with
+Hold/Resume. [Console controls and observation details](docs/auspex-console.md).
+
 ## A closer look
 
 <table>

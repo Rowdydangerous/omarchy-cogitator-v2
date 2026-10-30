@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls as Controls
 import Quickshell
 import Quickshell.Wayland
 import "../fx"
@@ -48,8 +49,6 @@ Item {
                 anchors.leftMargin: 12
                 width: 320
 
-                property string displayedRite: root.service.currentRite
-
                 Rectangle {
                     anchors.fill: parent
                     color: Qt.rgba(root.abyss.r, root.abyss.g, root.abyss.b, root.service.propOpacity)
@@ -70,7 +69,7 @@ Item {
                 // echoes trail behind it.
                 Rectangle {
                     id: sweep
-                    visible: root.service.crtEnabled && root.service.animate
+                    visible: window.visible && root.service.crtEnabled && root.service.animate
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.leftMargin: 8
@@ -118,73 +117,142 @@ Item {
                     font.letterSpacing: 2
                 }
 
-                Column {
+                Flickable {
+                    id: viewport
                     anchors.fill: parent
                     anchors.margins: 16
-                    spacing: 8
-
-                    Text {
-                        text: "COGITATOR NODE // " + root.service.dateText
-                        color: root.phosphor
-                        font.family: root.mono
-                        font.pixelSize: 11
-                        font.bold: true
-                        font.letterSpacing: 2
+                    clip: true
+                    contentWidth: width
+                    contentHeight: stack.implicitHeight
+                    boundsBehavior: Flickable.StopAtBounds
+                    Controls.ScrollBar.vertical: Controls.ScrollBar {
+                        policy: Controls.ScrollBar.AsNeeded
+                        width: 3
+                        contentItem: Rectangle { implicitWidth: 3; color: root.phosphor; opacity: 0.6 }
                     }
-                    Rectangle { width: parent.width; height: 1; color: root.dim }
+                    // Short displays scroll instead of hiding controls below
+                    // the screen. No keyboard focus or space reservation.
+                    Column {
+                        id: stack
+                        width: viewport.width
+                        spacing: 12
+                        Column {
+                            id: instruments
+                            width: parent.width
+                            spacing: 8
+                            Text {
+                                text: "AUSPEX // " + root.service.dateText
+                                color: root.phosphor
+                                font.family: root.mono
+                                font.pixelSize: 12
+                                font.bold: true
+                                font.letterSpacing: 2
+                            }
+                            Text {
+                                text: "COGITATOR NODE / CHANNEL " + root.service.channelText
+                                color: root.dim; font.family: root.mono; font.pixelSize: 9
+                            }
+                            Rectangle { width: parent.width; height: 1; color: root.dim }
+                            Column {
+                                width: parent.width
+                                TelemetryRow { label: "LOGIC ENGINE"; value: root.service.cpuValid && root.service.statsFresh ? root.service.cpuPercent + "%" : "--"; alert: root.service.cpuBusy; action: "processes" }
+                                TelemetryRow { label: "MEMORY VAULT"; value: root.service.memValid && root.service.statsFresh ? root.service.memText : "--"; alert: root.service.memoryBusy; action: "processes" }
+                                TelemetryRow { label: "HOME VAULT"; value: root.service.diskValid && root.service.statsFresh ? root.service.diskText : "--"; alert: root.service.diskBusy; action: "files"; smallValue: true }
+                                TelemetryRow { label: "POWER"; value: root.service.powerText; alert: root.service.powerLow; critical: root.service.powerCritical; action: "power" }
+                                TelemetryRow { label: "CHRONO"; value: root.service.timeText; action: "clock" }
+                                TelemetryRow { label: "CHANNEL"; value: root.service.channelText; action: "channels" }
+                                TelemetryRow { label: "NET LINK"; value: root.service.netText; alert: !root.service.netOk; action: "network" }
+                                TelemetryRow { label: "VOX ARRAY"; value: root.service.voxText; alert: root.service.voxText === "MUTED"; action: "audio" }
+                                TelemetryRow { label: "RELAY"; value: root.service.relayText; action: "bluetooth" }
+                            }
+                            Rectangle { width: parent.width; height: 1; color: root.dim }
+                            Row {
+                                width: parent.width; spacing: 8
+                                Text {
+                                    width: parent.width - 58
+                                    text: "MACHINE COMMUNIQUE"
+                                    color: root.dim; font.family: root.mono; font.pixelSize: 9; font.bold: true
+                                }
+                                ConsoleAction {
+                                    width: 50; height: 20
+                                    label: root.service.streamPaused ? "RESUME" : "HOLD"
+                                    onTriggered: root.service.streamPaused = !root.service.streamPaused
+                                }
+                            }
+                            Item {
+                                width: parent.width; height: 68
+                                Text {
+                                    width: parent.width
+                                    text: root.service.displayedRite + (root.service.typingRite && !root.service.streamPaused ? "_" : "")
+                                    color: root.service.currentRiteLevel === "critical" ? root.crit : (root.service.currentRiteLevel === "warning" ? root.warn : root.pale)
+                                    font.family: root.mono; font.pixelSize: 12; font.bold: true
+                                    wrapMode: Text.Wrap
+                                }
+                            }
+                            Rectangle { width: parent.width; height: 1; color: root.dim }
+                            Trend { width: parent.width; title: "LOGIC LOAD"; samples: root.service.cpuHistory; fresh: root.service.statsFresh && root.service.cpuValid; ink: root.phosphor; muted: root.dim }
+                            Trend { width: parent.width; title: "MEMORY LOAD"; samples: root.service.memoryHistory; fresh: root.service.statsFresh && root.service.memValid; ink: root.bright; muted: root.dim }
+                        }
 
-                    TelemetryRow { label: "LOGIC ENGINE"; value: root.service.cpuPercent + "%"; alert: root.service.cpuPercent >= 90 }
-                    TelemetryRow { label: "MEMORY VAULT"; value: root.service.memText; alert: root.service.memPercent >= 90 }
-                    TelemetryRow {
-                        label: "POWER"
-                        value: root.service.powerText
-                        alert: root.service.powerLow
-                        critical: root.service.powerCritical
-                    }
-                    TelemetryRow { label: "CHRONO"; value: root.service.timeText }
-                    TelemetryRow { label: "CHANNEL"; value: root.service.channelText }
-                    TelemetryRow { label: "NET LINK"; value: root.service.netText; alert: !root.service.netOk; critical: !root.service.netOk }
-                    TelemetryRow { label: "VOX ARRAY"; value: root.service.voxText; alert: root.service.voxText === "MUTED" }
-                    TelemetryRow { label: "RELAY"; value: root.service.relayText }
+                        Item {
+                            id: ledger
+                            width: parent.width
+                            height: Math.max(120, viewport.height - instruments.implicitHeight - footer.implicitHeight - 24)
+                            Rectangle { width: parent.width; height: 1; color: root.dim }
+                            Text {
+                                y: 9
+                                text: "OBSERVATION LOG / " + root.service.events.length + " RECORDS"
+                                color: root.dim; font.family: root.mono; font.pixelSize: 9; font.bold: true
+                            }
+                            // Quiet register lines fill unused ledger space,
+                            // without pretending there are unobserved events.
+                            Repeater {
+                                model: Math.max(0, Math.floor((ledger.height - 32) / 36))
+                                Rectangle { y: 32 + index * 36; width: ledger.width; height: 1; color: root.dim; opacity: 0.18 }
+                            }
+                            ListView {
+                                anchors { left: parent.left; right: parent.right; top: parent.top; bottom: parent.bottom; topMargin: 30 }
+                                clip: true
+                                model: root.service.events
+                                spacing: 7
+                                boundsBehavior: Flickable.StopAtBounds
+                                delegate: Column {
+                                    required property var modelData
+                                    width: ListView.view.width
+                                    spacing: 3
+                                    Text { text: modelData.time; color: root.dim; font.family: root.mono; font.pixelSize: 8 }
+                                    Text {
+                                        width: parent.width
+                                        text: modelData.message
+                                        color: modelData.level === "critical" ? root.crit : (modelData.level === "warning" ? root.warn : root.phosphor)
+                                        font.family: root.mono; font.pixelSize: 9; wrapMode: Text.Wrap
+                                    }
+                                }
+                            }
+                        }
 
-                    Rectangle { width: parent.width; height: 1; color: root.dim }
-
-                    Text {
-                        text: "MACHINE COMMUNIQUE"
-                        color: root.dim
-                        font.family: root.mono
-                        font.pixelSize: 9
-                        font.bold: true
-                        font.letterSpacing: 2
-                    }
-                    Text {
-                        width: parent.width
-                        text: frame.displayedRite + (streamTimer.running ? "_" : "")
-                        color: root.pale
-                        font.family: root.mono
-                        font.pixelSize: 12
-                        font.bold: true
-                        wrapMode: Text.Wrap
-                    }
-
-                    Item { width: 1; height: 4 }
-
-                    Text {
-                        text: "AUSPEX SWEEP ........ COMPLETE"
-                        color: root.dim
-                        font.family: root.mono
-                        font.pixelSize: 9
-                    }
-                    Text {
-                        text: "ACCESS .............. SANCTIFIED"
-                        color: root.dim
-                        font.family: root.mono
-                        font.pixelSize: 9
+                        Column {
+                            id: footer
+                            width: parent.width; spacing: 8
+                            Rectangle { width: parent.width; height: 1; color: root.dim }
+                            Row {
+                                width: parent.width; spacing: 6
+                                ConsoleAction { width: (parent.width - 12) / 3; label: "PROCESSES"; onTriggered: root.service.inspect("processes") }
+                                ConsoleAction { width: (parent.width - 12) / 3; label: "FILES"; onTriggered: root.service.inspect("files") }
+                                ConsoleAction { width: (parent.width - 12) / 3; label: "CONTROL"; onTriggered: root.service.inspect("control") }
+                            }
+                            Text {
+                                text: "UPTIME " + root.service.uptimeText + " / SAMPLE " + root.service.sampleAgeText
+                                color: root.service.statsFresh ? root.dim : root.warn
+                                font.family: root.mono; font.pixelSize: 8
+                            }
+                            Text { text: "CLICK READOUTS TO INSPECT"; color: root.dim; font.family: root.mono; font.pixelSize: 8; font.letterSpacing: 1 }
+                        }
                     }
                 }
 
                 Crt {
-                    visible: root.service.crtEnabled
+                    visible: window.visible && root.service.crtEnabled
                     intensity: root.service.crtIntensity
                     animated: root.service.animate
                     fullMotion: root.service.animationLevel === "full"
@@ -195,38 +263,24 @@ Item {
                     soft: root.service.crtGlobal ? 0.35 : 1.0
                 }
 
-                Timer {
-                    id: streamTimer
-                    interval: 18
-                    repeat: true
-                    running: frame.visible && root.service.textStreaming && root.service.animate
-                        && frame.displayedRite.length < root.service.currentRite.length
-                    onTriggered: frame.displayedRite = root.service.currentRite.substring(0, frame.displayedRite.length + 1)
-                }
-
-                Connections {
-                    target: root.service
-                    function onCurrentRiteChanged() {
-                        if (root.service.textStreaming && root.service.animate)
-                            frame.displayedRite = ""
-                        else
-                            frame.displayedRite = root.service.currentRite
-                    }
-                }
             }
 
             component TelemetryRow: Item {
+                id: row
                 required property string label
                 required property string value
                 property bool alert: false
                 property bool critical: false
+                property string action: ""
+                property bool smallValue: false
                 width: parent.width
-                height: 20
+                height: 25
+                Rectangle { anchors.fill: parent; color: root.phosphor; opacity: rowMouse.containsMouse ? 0.09 : 0 }
                 Text {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
                     text: parent.label
-                    color: root.dim
+                    color: rowMouse.containsMouse ? root.phosphor : root.dim
                     font.family: root.mono
                     font.pixelSize: 9
                     font.bold: true
@@ -238,8 +292,35 @@ Item {
                     text: parent.value
                     color: parent.critical ? root.crit : (parent.alert ? root.warn : root.bright)
                     font.family: root.mono
-                    font.pixelSize: 11
+                    font.pixelSize: row.smallValue ? 9 : 11
                     font.bold: true
+                }
+                Controls.ToolTip.visible: rowMouse.containsMouse
+                Controls.ToolTip.text: root.service.inspectionHint(row.action)
+                MouseArea {
+                    id: rowMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: root.service.inspect(row.action)
+                }
+            }
+
+            component ConsoleAction: Rectangle {
+                required property string label
+                signal triggered()
+                height: 24
+                color: Qt.rgba(root.phosphor.r, root.phosphor.g, root.phosphor.b, actionMouse.containsMouse ? 0.18 : 0.05)
+                border.color: root.dim
+                Text {
+                    anchors.centerIn: parent
+                    text: parent.label
+                    color: root.phosphor; font.family: root.mono; font.pixelSize: 8; font.bold: true
+                }
+                MouseArea {
+                    id: actionMouse
+                    anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                    onClicked: parent.triggered()
                 }
             }
         }

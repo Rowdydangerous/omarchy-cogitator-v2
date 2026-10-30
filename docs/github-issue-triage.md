@@ -95,3 +95,16 @@ launch applications or change the search filter. `tests/menu.py` exercises the
 actual staged library binding in a separate offscreen Quickshell process with
 fixture desktop entries, verifying visible apps, NoDisplay/configured hides,
 and reuse of a supplied handle. Final keyboard confirmation remains advisable.
+
+### Follow-up: Enter opened another launcher instead of the selected app
+
+The legacy `overlays/rowdy.menu/Menu.qml` override still intercepted app-result
+activation and called `cogitator-rite openLauncher` without the selected ID.
+Restored native inline activation: capture the selected desktop ID/name, close
+the menu, and call `appLibrary.launch(id, label)`. The separate Apps-submenu
+handoff is unchanged; selecting an actual app search result launches directly.
+
+An isolated offscreen Quickshell regression test executes the actual overlay
+activation function with a recording app-library stub. It verifies keyboard and
+pointer app activation, menu dismissal, invalid-index handling, submenu/action
+routing, and untouched dmenu return values. No real apps are launched by tests.

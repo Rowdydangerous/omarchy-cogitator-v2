@@ -84,6 +84,10 @@ ANIMATION_LEVEL="full"
 # TEXT_STREAMING: communiques type themselves out character by character.
 TEXT_STREAMING=true
 
+# STREAM_CHAR_INTERVAL: milliseconds per character, 20-200. Larger is slower.
+# Reduced motion or TEXT_STREAMING=false shows each observation immediately.
+STREAM_CHAR_INTERVAL=70
+
 # WORKSPACE_RITES: switching workspace fires a "+++ CHANNEL 0N +++" OSD
 # and a "CHANNEL 0N SYNCHRONIZED" communique in the prop.
 WORKSPACE_RITES=true
