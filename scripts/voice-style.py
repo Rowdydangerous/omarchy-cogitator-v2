@@ -202,9 +202,25 @@ def theme_menu(raw):
   }
 '''
     raw = raw.replace("  function depthFor(id) {", helpers + "\n  function depthFor(id) {", 1)
-    raw = raw.replace("return MenuModel.matchesQuery(entry, query, root.isVisible(entry))",
-                      "return MenuModel.matchesQuery(entry, query, root.isVisible(entry))\n"
-                      "      || (root.isVisible(entry) && root.descriptionTextMatches(query, root.riteLabel(entry)))", 1)
+    # Search has to match what the row actually shows. The voiced label is
+    # display-only, so the stock matcher never sees "Rites of Maintenance" and
+    # "maint" finds nothing until the operator spells the whole word. Keep the
+    # stock haystack and add the voiced label with substring terms.
+    matcher = (
+        "if (!entry || entry.id === \"root\" || !root.isVisible(entry)) return false\n"
+        "    var terms = String(query || \"\").toLowerCase().trim().split(/\\s+/)\n"
+        "    var nameText = root.nameSearchText(entry)\n"
+        "    var voicedText = root.riteLabel(entry).toLowerCase()\n"
+        "    var descriptionText = String(entry.description || \"\").toLowerCase()\n"
+        "    for (var i = 0; i < terms.length; i++) {\n"
+        "      if (!terms[i]) continue\n"
+        "      if (nameText.indexOf(terms[i]) >= 0) continue\n"
+        "      if (voicedText.indexOf(terms[i]) >= 0) continue\n"
+        "      if (root.termInSearchWords(terms[i], descriptionText)) continue\n"
+        "      return false\n"
+        "    }\n"
+        "    return true")
+    raw = raw.replace("return MenuModel.matchesQuery(entry, query, root.isVisible(entry))", matcher, 1)
     raw = raw.replace("text: row.label.toUpperCase()", "text: root.riteLabel(row).toUpperCase()", 1)
     raw = raw.replace("text: row.detail", "text: root.riteDetail(row)", 1)
     raw = re.sub(r'text: \(root\.filterText \|\| \(root\.dmenuActive[^\n]+\.toUpperCase\(\)',
