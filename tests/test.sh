@@ -34,6 +34,8 @@ check "chamfer frames" bash -c 'grep -q "card.width - root.chamfer\|card.width -
 check "unified 560 width" bash -c 'grep -q "Math.min(560" "$1/qml/menu/Menu.qml" "$1/qml/launcher/Launcher.qml"' _ "$ROOT"
 check "clone lifecycle wiring" bash -c 'grep -q "ensure_menu_overlay" "$1/scripts/cogitator" && grep -q "restore_menu_overlay" "$1/scripts/cogitator" && grep -q "menuClone" "$1/scripts/cogitator"' _ "$ROOT"
 check "global CRT lifecycle" "$ROOT/tests/crt.sh"
+check "CRT auto watcher syntax" python3 -c 'import sys; compile(open(sys.argv[1]).read(), sys.argv[1], "exec")' "$ROOT/scripts/crt-auto.py"
+check "CRT auto unit wiring" bash -c 'grep -q "ExecStart=/usr/bin/python3 %h/.config/cogitator-v2/crt-auto.py" "$1/systemd/cogitator-crt-auto.service" && grep -q "WantedBy=graphical-session.target" "$1/systemd/cogitator-crt-auto.service"' _ "$ROOT"
 check "window chamfer" "$ROOT/tests/window-chamfer.sh"
 check "configure no-change" bash -c 'EDITOR=true "$1/scripts/cogitator" configure | grep -q "No changes"' _ "$ROOT"
 check "palette JSON" python3 -c 'import json,sys; p=json.load(open(sys.argv[1])); assert all(k in p for k in ["background","surface","inactive","dim","normal","active","highlight","warning","critical"])' "$ROOT/palettes/green.json"
@@ -58,7 +60,7 @@ for line in open(sys.argv[1]):
         continue
     k, _, v = line.partition("=")
     raw[k.strip()] = v.strip().strip("\"")
-for key in ["PALETTE","CRT_ENABLED","CRT_GLOBAL","CRT_INTENSITY","WINDOW_CHAMFER","WINDOW_CORNER","FLICKER","NOISE","PERSISTENCE","GHOSTING","SCREEN_BURN","BRIGHTNESS_FALLOFF","BACKGROUND_BURN","BACKGROUND_BURN_OPACITY","TEXT_STREAMING","WORKSPACE_RITES","COGITATOR_PROP","ANIMATION_LEVEL"]:
+for key in ["PALETTE","CRT_ENABLED","CRT_GLOBAL","CRT_INTENSITY","CRT_AUTO_VIDEO","CRT_AUTO_VIDEO_CLASSES","WINDOW_CHAMFER","WINDOW_CORNER","FLICKER","NOISE","PERSISTENCE","GHOSTING","SCREEN_BURN","BRIGHTNESS_FALLOFF","BACKGROUND_BURN","BACKGROUND_BURN_OPACITY","TEXT_STREAMING","WORKSPACE_RITES","COGITATOR_PROP","ANIMATION_LEVEL"]:
     assert key in raw, key
 ' "$ROOT/config/cogitator.conf.example"
 check "no system writes" bash -c '! grep -R "/usr/share/omarchy" "$1/scripts" "$1/qml" "$1/palettes" --include="*.py" --include="*.qml" --include="*.js" --include="cogitator*" --exclude="*.pyc" | grep -v "Never edit" | grep -v "OMARCHY_PATH:-" | grep -v "OMARCHY_PATH=os.environ.get" | grep -v "self.defaults = Path(defaults" | grep -v "source = Path"' _ "$ROOT"
