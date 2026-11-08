@@ -79,6 +79,11 @@ def validate(values):
             import re
             if value and not re.fullmatch(r"#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?", str(value)):
                 raise ValueError("Custom phosphor must be #RGB or #RRGGBB")
+        elif kind == "text":
+            if not isinstance(value, str):
+                raise ValueError(f"{key}: expected text")
+            if len(value) > 500:
+                raise ValueError(f"{key}: too long")
         result[key] = value
     if result["PALETTE"] == "custom" and not result["CUSTOM_PHOSPHOR"]:
         raise ValueError("Choose a custom phosphor color before selecting the custom palette")
@@ -111,6 +116,8 @@ def settings(raw):
             import re
             if value and not re.fullmatch(r"#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?", str(value)):
                 value = ""
+        elif field["type"] == "text":
+            value = str(value)
         effective[key] = value
     return effective
 
