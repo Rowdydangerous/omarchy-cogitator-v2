@@ -37,6 +37,10 @@ readonly STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 readonly CONFIG_DIR="$CONFIG_HOME/cogitator-v2"
 readonly CONF_FILE="$CONFIG_DIR/cogitator.conf"
 readonly CONFIG_JSON="$CONFIG_DIR/config.json"
+readonly CRT_AUTO_SCRIPT="$CONFIG_DIR/crt-auto.py"
+readonly CRT_AUTO_UNIT="cogitator-crt-auto.service"
+readonly SYSTEMD_USER_DIR="$CONFIG_HOME/systemd/user"
+readonly CRT_AUTO_UNIT_FILE="$SYSTEMD_USER_DIR/$CRT_AUTO_UNIT"
 readonly STATE_DIR="$STATE_HOME/cogitator-v2"
 readonly SNAPSHOT="$STATE_DIR/snapshot.json"
 readonly BACKUP_ROOT="$STATE_DIR/backups"
@@ -186,6 +190,7 @@ config = {
     "workspaceRites": boolean(raw.get("WORKSPACE_RITES", "true"), True),
     "crtEnabled": boolean(raw.get("CRT_ENABLED", "true"), True),
     "crtGlobal": boolean(raw.get("CRT_GLOBAL", "true"), True),
+    "crtAutoVideo": boolean(raw.get("CRT_AUTO_VIDEO", "false"), False),
     "windowChamfer": boolean(raw.get("WINDOW_CHAMFER", "true"), True),
     "windowCorner": int(number(raw.get("WINDOW_CORNER", "14"), 14, 0, 40)),
     "crtIntensity": number(raw.get("CRT_INTENSITY", "0.25"), 0.25, 0.0, 1.0),
@@ -235,6 +240,39 @@ set_conf() {
     END { if (!replaced) print key "=\"" value "\"" }
   ' "$CONF_FILE" > "$CONF_FILE.tmp"
   mv "$CONF_FILE.tmp" "$CONF_FILE"
+}
+
+crt_auto_enabled() {
+  case "$(conf_value CRT_AUTO_VIDEO false | tr '[:upper:]' '[:lower:]')" in
+    1|true|yes|on) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+# Install/refresh the fullscreen-video watcher unit. Only runs while the suite
+# is engaged and CRT_AUTO_VIDEO is on; the watcher itself also respects
+# CRT_GLOBAL=false so a manual CRT shutdown is never overridden.
+ensure_crt_auto_service() {
+  if ! crt_auto_enabled; then
+    remove_crt_auto_service
+    return 0
+  fi
+  [[ -f $SOURCE_DIR/systemd/$CRT_AUTO_UNIT ]] || return 0
+  mkdir -p "$SYSTEMD_USER_DIR"
+  install -m 0755 "$SOURCE_DIR/scripts/crt-auto.py" "$CRT_AUTO_SCRIPT"
+  install -m 0644 "$SOURCE_DIR/systemd/$CRT_AUTO_UNIT" "$CRT_AUTO_UNIT_FILE"
+  systemctl --user daemon-reload >/dev/null 2>&1 || true
+  systemctl --user enable "$CRT_AUTO_UNIT" >/dev/null 2>&1 || true
+  systemctl --user restart "$CRT_AUTO_UNIT" >/dev/null 2>&1 || true
+}
+
+remove_crt_auto_service() {
+  if [[ -f $CRT_AUTO_UNIT_FILE ]] || systemctl --user is-active --quiet "$CRT_AUTO_UNIT" 2>/dev/null; then
+    # SIGTERM makes the watcher restore any suspended shader before exit.
+    systemctl --user disable --now "$CRT_AUTO_UNIT" >/dev/null 2>&1 || true
+    rm -f "$CRT_AUTO_UNIT_FILE"
+    systemctl --user daemon-reload >/dev/null 2>&1 || true
+  fi
 }
 
 render_crt_frag() {
@@ -370,6 +408,7 @@ prepare_config() {
   mkdir -p "$CONFIG_DIR" "$HOME/.local/bin"
   [[ -f $CONF_FILE ]] || install -m 0644 "$SOURCE_DIR/config/cogitator.conf.example" "$CONF_FILE"
   install -m 0755 "$SOURCE_DIR/scripts/cogitator-menu" "$CONFIG_DIR/cogitator-menu"
+  install -m 0755 "$SOURCE_DIR/scripts/crt-auto.py" "$CRT_AUTO_SCRIPT"
   # Convenience on PATH; points at this repo, removed on uninstall.
   ln -sf "$SOURCE_DIR/scripts/cogitator" "$HOME/.local/bin/cogitator"
   render_config_json
@@ -572,6 +611,7 @@ _unit_enable() {
   # These newly selected services mount from the config watcher. Do not issue
   # quit while their asynchronous QML/IPC objects are still being incubated.
   # Source-development reloads are handled separately by `cogitator apply`.
+  ensure_crt_auto_service
 }
 
 # Runs INSIDE the detached unit: disable plugin, restore theme, clear snapshot.
@@ -597,6 +637,7 @@ _unit_disable() {
     python3 "$SOURCE_DIR/scripts/cogitator-suite.py" disable
   fi
   remove_crt_snippet || true
+  remove_crt_auto_service || true
   remove_window_chamfer || true
   omarchy theme set "$previous"
   if [[ -n $previous_bg ]]; then set_background_if_changed "$previous_bg" || true; fi
@@ -644,6 +685,7 @@ cmd_enable() {
   install_keybinding
   ensure_crt_snippet
   ensure_window_chamfer
+  ensure_crt_auto_service
   queue_transition bash -c 'source "$0/scripts/cogitator" --unit-enable' "$SOURCE_DIR"
   printf 'Transition queued. Theme/plugin apply in background; check `cogitator status`.\nDisable any time: cogitator disable\n'
 }
@@ -753,6 +795,7 @@ cmd_apply() {
   fi
   ensure_crt_snippet
   ensure_window_chamfer
+  ensure_crt_auto_service
   python3 "$SOURCE_DIR/scripts/cogitator-suite.py" refresh
   python3 "$SOURCE_DIR/scripts/control-backend.py" install
   omarchy restart shell
@@ -767,16 +810,18 @@ cmd_settings_apply() {
     printf 'Settings saved for the next engagement.\n'
     return
   fi
-  local key crt=false corners=false
-  if (( $# == 0 )); then crt=true; corners=true; fi
+  local key crt=false corners=false auto=false
+  if (( $# == 0 )); then crt=true; corners=true; auto=true; fi
   for key in "$@"; do
     case "$key" in
       CRT_GLOBAL|CRT_INTENSITY) crt=true ;;
+      CRT_AUTO_VIDEO) auto=true ;;
       WINDOW_CHAMFER|WINDOW_CORNER) corners=true ;;
     esac
   done
   if $crt; then render_crt_frag; ensure_crt_snippet; fi
   if $corners; then ensure_window_chamfer; fi
+  if $auto; then ensure_crt_auto_service; fi
   printf 'Settings applied live; shell kept running.\n'
 }
 
@@ -829,8 +874,10 @@ cmd_uninstall() {
     rm -f "$HOME/.local/bin/cogitator"
   fi
   remove_crt_snippet || true
+  remove_crt_auto_service || true
   remove_window_chamfer || true
   remove_keybinding
+  rm -f "$CRT_AUTO_SCRIPT"
   if [[ ${1:-} == --purge ]]; then
     rm -rf "$CONFIG_DIR" "$STATE_DIR"
     printf 'Configuration purged.\n'

@@ -31,6 +31,16 @@ CRT_ENABLED=true
 # scanlines soften automatically so the two never double up.
 CRT_GLOBAL=true
 
+# CRT_AUTO_VIDEO: while a video is fullscreen, lift the compositor shader
+# so playback is unprocessed, then restore it when you leave fullscreen.
+# Runtime only — your CRT_GLOBAL preference is untouched.
+CRT_AUTO_VIDEO=false
+
+# CRT_AUTO_VIDEO_CLASSES: comma-separated Hyprland window classes treated
+# as video when fullscreen. Empty uses a built-in player/browser list;
+# "*" suspends for any fullscreen window.
+CRT_AUTO_VIDEO_CLASSES=""
+
 # FLICKER: whole-frame breathing flicker strength, 0.0-0.3. 0.05 is a
 # whisper; 0.0 disables. Full animation tier only.
 FLICKER=0.05

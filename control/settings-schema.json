@@ -4,6 +4,8 @@
   {"key":"CRT_GLOBAL","group":"Appearance","label":"Global CRT — all windows","type":"boolean","default":true},
   {"key":"CRT_ENABLED","group":"Appearance","label":"Local CRT — console and launcher","type":"boolean","default":true},
   {"key":"CRT_INTENSITY","group":"Appearance","label":"CRT intensity","type":"number","default":0.25,"min":0,"max":1,"step":0.01},
+  {"key":"CRT_AUTO_VIDEO","group":"Appearance","label":"CRT off during fullscreen video","type":"boolean","default":false},
+  {"key":"CRT_AUTO_VIDEO_CLASSES","group":"Appearance","label":"Fullscreen video classes — comma separated, * for all","type":"text","default":""},
   {"key":"WINDOW_CHAMFER","group":"Appearance","label":"Application window chamfers","type":"boolean","default":true},
   {"key":"WINDOW_CORNER","group":"Appearance","label":"Application corner cut — pixels","type":"number","default":14,"min":0,"max":40,"step":1},
   {"key":"COGITATOR_PROP","group":"Surfaces","label":"Auspex console","type":"boolean","default":true},
