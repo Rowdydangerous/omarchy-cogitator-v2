@@ -20,8 +20,14 @@ function duration(seconds) {
 }
 
 function actionCommand(action) {
-    if (action === "processes") return ["omarchy-launch-or-focus-tui", "btop"];
-    if (action === "files") return ["omarchy-launch-nautilus"];
+    // Quickshell captures a Process's stdout/stderr with pipes. Launchers that
+    // detach (setsid, xdg-open, GUI forks) outlive the short-lived parent, and
+    // Quickshell closes the pipes as soon as that parent exits — the detached
+    // child then dies on SIGPIPE before it can map a window. Redirect stdio and
+    // detach so no descendant keeps the pipe open, and so the Process can exit
+    // promptly instead of blocking the next console action.
+    if (action === "processes") return ["bash", "-c", "exec omarchy-launch-or-focus-tui btop >/dev/null 2>&1"];
+    if (action === "files") return ["bash", "-c", "setsid -f xdg-open \"$HOME\" </dev/null >/dev/null 2>&1"];
     if (action === "control") return ["omarchy-shell", "cogitator.control", "open"];
     if (action === "channels") return ["omarchy-shell", "cogitator.control", "page", "Surfaces"];
     var targets = {network: "omarchy.network", audio: "omarchy.audio", power: "omarchy.power",

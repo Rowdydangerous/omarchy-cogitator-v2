@@ -293,7 +293,10 @@ ShellRoot {
       root.applyConfig({streamCharInterval: 20});
       root.inspect("network");
       verify(actionProc.command.join(" ") === "omarchy-shell shell summon omarchy.network {}", "native network controls");
-      verify(Auspex.actionCommand("processes").join(" ") === "omarchy-launch-or-focus-tui btop", "process action");
+      verify(Auspex.actionCommand("processes").join(" ") ===
+        "bash -c exec omarchy-launch-or-focus-tui btop >/dev/null 2>&1", "process action");
+      verify(Auspex.actionCommand("files").join(" ") ===
+        "bash -c setsid -f xdg-open \\"$HOME\\" </dev/null >/dev/null 2>&1", "files action uses the default file manager");
       verify(Auspex.actionCommand("arbitrary-command").length === 0, "actions are allowlisted");
       typingCheck.start();
     } catch (e) { done(String(e)); }
