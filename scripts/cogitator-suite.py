@@ -20,6 +20,17 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPT = ".cogitator-suite.json"
 
+# Themed system widgets that belong to the engaged bar even when the base
+# layout omits their stock counterparts. They are added only to the applied
+# config; restore returns to the captured base, so they disappear again on
+# disengage.
+ENGAGED_BAR_EXTRAS = {
+    # The refreshed bar clone tracks the current stock bar, so the engaged-only
+    # widgets hang off the clock in centerEnd where the stock bar puts them.
+    "centerEnd": ("cogitator.bluetooth", "cogitator.microphone",
+                  "cogitator.monitor", "cogitator.weather"),
+}
+
 
 def entry_id(entry):
     return entry.get("id", "") if isinstance(entry, dict) else entry
@@ -63,6 +74,24 @@ def plan_config(config, catalog, baselines, with_rite=False):
     if bar.get("centerAnchor") in mapping:
         bar["centerAnchor"] = mapping[bar["centerAnchor"]]
     result["plugins"] = [remap_entry(e, mapping) for e in result.get("plugins", [])]
+    available = {p["id"] for p in catalog}
+    available.update(p.get("clonedFrom") for p in catalog if p.get("clonedFrom"))
+    extra_sources = set()
+    for section, identities in ENGAGED_BAR_EXTRAS.items():
+        entries = bar.setdefault("layout", {}).setdefault(section, [])
+        present_ids = {entry_id(e) for e in entries}
+        for identity in identities:
+            source = next((b["sourceId"] for b in baselines
+                           if b["replacementId"] == identity), None)
+            # The suite disables the stock originals as part of routing, so
+            # their presence in disabledPlugins must not suppress the themed
+            # replacement the engaged layout deliberately adds.
+            if identity in present_ids or source not in available:
+                continue
+            entries.append({"id": identity})
+            present_ids.add(identity)
+            if source:
+                extra_sources.add(source)
     present = {entry_id(e) for e in result["plugins"]}
     present.update(entry_id(e) for entries in bar.get("layout", {}).values() for e in entries)
     for plugin in selected:
@@ -73,8 +102,14 @@ def plan_config(config, catalog, baselines, with_rite=False):
     for original in mapping:
         if original not in disabled:
             disabled.append(original)
+    for original in extra_sources:
+        if original not in disabled:
+            disabled.append(original)
     # Existing disabled suite IDs from an earlier cycle must not mask selection.
-    result["disabledPlugins"] = [p for p in disabled if p not in mapping.values()]
+    extra_ids = {identity for identities in ENGAGED_BAR_EXTRAS.values()
+                 for identity in identities}
+    result["disabledPlugins"] = [p for p in disabled
+                                 if p not in mapping.values() and p not in extra_ids]
     if with_rite:
         result["disabledPlugins"] = [p for p in result["disabledPlugins"] if p != "cogitator-rite"]
         if "cogitator-rite" not in present:
@@ -317,6 +352,11 @@ class Suite:
         journal["phase"] = "switching"
         self.save(journal)
         atomic_write(self.config, json_bytes(journal["applied"]), journal["originalMode"])
+        # The pre-switch rescan registers the suite sources against the
+        # disengaged layout. Switch first, then rescan again so retained
+        # widgets such as cogitator.control are rebuilt against the engaged
+        # layout instead of being left unregistered and invisible.
+        self.run(["omarchy-shell", "shell", "rescanPlugins"])
         journal["phase"] = "active"
         self.save(journal)
         print(f"Suite active: {len(journal['selected'])} replacements; original clones preserved.")
