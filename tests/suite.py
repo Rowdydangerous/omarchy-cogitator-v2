@@ -124,11 +124,13 @@ class RoutingTests(unittest.TestCase):
         catalog = CATALOG + [metadata("omarchy." + slug, ["bar-widget"]) for slug in extras]
         config = copy.deepcopy(CONFIG)
         after, mapping, _ = module.plan_config(config, catalog, baselines)
-        expected = [module.remap_entry(e, mapping)["id"]
-                    for e in CONFIG["bar"]["layout"]["right"]]
-        expected += ["cogitator." + slug for slug in extras]
+        expected_right = [module.remap_entry(e, mapping)["id"]
+                          for e in CONFIG["bar"]["layout"]["right"]]
         self.assertEqual(
-            [e["id"] for e in after["bar"]["layout"]["right"]], expected)
+            [e["id"] for e in after["bar"]["layout"]["right"]], expected_right)
+        self.assertEqual(
+            [e["id"] for e in after["bar"]["layout"]["centerEnd"]],
+            ["cogitator." + slug for slug in extras])
         self.assertEqual(config, CONFIG)
         self.assertEqual(module.rollback_config(config, after, after), config)
 
@@ -144,7 +146,7 @@ class RoutingTests(unittest.TestCase):
         config["disabledPlugins"] += ["omarchy." + slug for slug in extras]
         after, _, _ = module.plan_config(config, catalog, baselines)
         self.assertEqual(
-            [e["id"] for e in after["bar"]["layout"]["right"]][-len(extras):],
+            [e["id"] for e in after["bar"]["layout"]["centerEnd"]][-len(extras):],
             ["cogitator." + slug for slug in extras])
 
 

@@ -25,10 +25,10 @@ RECEIPT = ".cogitator-suite.json"
 # config; restore returns to the captured base, so they disappear again on
 # disengage.
 ENGAGED_BAR_EXTRAS = {
-    # The Cogitator bar clone tracks an older stock bar without centerEnd, so
-    # the engaged-only widgets live in the right section it does render.
-    "right": ("cogitator.bluetooth", "cogitator.microphone",
-              "cogitator.monitor", "cogitator.weather"),
+    # The refreshed bar clone tracks the current stock bar, so the engaged-only
+    # widgets hang off the clock in centerEnd where the stock bar puts them.
+    "centerEnd": ("cogitator.bluetooth", "cogitator.microphone",
+                  "cogitator.monitor", "cogitator.weather"),
 }
 
 
