@@ -12,7 +12,7 @@
   ],
   "events": {
     "session.open": {"level":"normal", "log":"AUSPEX SESSION OPEN / OBSERVATION STARTED", "voice":["THE COGITATOR STIRS. THE LONG WATCH BEGINS."]},
-    "workspace.selected": {"level":"normal", "log":"CHANNEL {channel} / WORKSPACE SELECTED", "voice":["ATTUNING TO CHANNEL {channel}.", "ANOTHER CHANNEL. ANOTHER SACRED TASK. / {channel}"]},
+    "workspace.selected": {"level":"normal", "log":"CHANNEL {channel} / WORKSPACE SELECTED", "voice":["ATTUNING TO CHANNEL {channel}.", "FOCUS TO CHANNEL / {channel}"]},
     "network.up": {"level":"normal", "log":"NOOSPHERIC LINK / {state}", "voice":["A THREAD OF THE NOOSPHERE ANSWERS. / {state}"]},
     "network.down": {"level":"warning", "log":"NOOSPHERIC LINK / {state}", "voice":["THE NOOSPHERIC LINK IS LOST. LOCAL COGITATION CONTINUES."]},
     "relay.quiet": {"level":"normal", "log":"AUXILIARY RELAY / {state}", "voice":["THE AUXILIARY RELAYS REST. THE COGITATOR KEEPS WATCH."]},

@@ -88,6 +88,10 @@ def translate_source(raw, lexicon, domain=""):
             wrap = True
         if domain == "agents" and "window.title" in expression:
             wrap = True
+        if domain == "agents" and "root.dayLabel(" in expression:
+            # Daily chart labels have a compact fixed column. Keep native
+            # "Today" rather than expanding it to the calendar's "Current Cycle".
+            wrap = False
         if re.fullmatch(r'(?:root|dropbox|tailscale)\.(?:error|lastError)', expression):
             translated = f'CogitatorVoice.issue({translated})'
         elif wrap:
