@@ -1,4 +1,4 @@
-# Omarchy Cogitator — Imperial Cogitator Shell
+# omarchy-cogitator — Imperial Cogitator Shell
 
 **A 40K cogitator that happens to run Linux.** Green-phosphor displays, machine-spirit communiques, industrial frames, and Mechanicus-styled widgets for Omarchy 4.x / Quickshell.
 
@@ -102,6 +102,51 @@ Unused widgets and disabled services stay off. Existing custom clone files,
 repeated widget instances, settings and bar placement are preserved.
 See [suite switching](docs/suite-switching.md) and [architecture](docs/architecture.md).
 
+## Installation
+
+For the **complete reversible suite**, use the project wrapper:
+
+```bash
+git clone https://github.com/Rowdydangerous/omarchy-cogitator-v2.git omarchy-cogitator
+cd omarchy-cogitator
+./scripts/cogitator install
+./scripts/cogitator enable
+```
+
+`install` adds Control Sanctum without engaging the suite. `enable` explicitly
+opts into the theme and replacement widgets, after recording restoration data.
+Theme transitions run in the background and may restart terminals; check
+`cogitator status` afterward. Keep the source checkout available.
+
+The marketplace/native plugin install adds the **coordinator service only**.
+It does not run repository scripts or automatically install the 37-plugin suite;
+use the wrapper above for the full experience shown in the screenshots.
+
+To restore your previous desktop, run `cogitator disable`. To remove Cogitator
+afterward, run `cogitator uninstall`; configuration and recovery backups are
+retained unless you explicitly request `--purge`.
+
+The project is named **omarchy-cogitator**. The GitHub repository URL and
+existing `cogitator-v2` configuration/state paths retain their historical names
+for compatibility; they are not a separate product or edition.
+
+### Requirements
+
+- Omarchy 4.x with the Quickshell-based native shell and Hyprland; this is not
+  a standalone theme for other desktop environments.
+- Bash, Git, Python 3, `jq`, standard GNU command-line tools, and user systemd
+  services, as provided by Omarchy. Runtime telemetry uses Python's standard library.
+- Stock Omarchy services and applications for their corresponding widgets and
+  actions (for example NetworkManager, PipeWire, UPower, `btop`, and Files).
+  Existing disabled widgets/services remain disabled.
+- Optional: Monaspace Xenon Frozen for the intended typography; fallback
+  monospace fonts are supported. Wallpaper generation additionally requires
+  Python **Pillow** and **NumPy**; using the packaged wallpapers does not.
+
+Plugins run unsandboxed with your user account's permissions. The suite does
+not require root; review the scripts before engaging it. No marketplace
+approval should be treated as a security audit.
+
 ## Usage
 
 ```bash
@@ -140,6 +185,12 @@ transaction; re-check `status` before doing anything.
 Scope: a stock-based Cogitator twin of the Quickshell widgets and panels,
 green phosphor first, Xenon-first font stack with clean fallback. The console
 and background burn are additional machine surfaces.
+
+## License and attribution
+
+Original Cogitator software is [MIT-licensed](LICENSE). Omarchy-derived code
+retains its upstream MIT attribution. Third-party artwork and trademarks are
+not relicensed under MIT; see [third-party notices](THIRD_PARTY_NOTICES.md).
 
 ## Updating
 
@@ -287,7 +338,7 @@ Run this from any directory, substituting your source image. By default it
 generates **all four palette variants** and makes them available to Omarchy:
 
 ```bash
-REPO="$HOME/Projects/omarchy-cogitator-v2"
+REPO="$HOME/Projects/omarchy-cogitator"
 /usr/bin/python3 "$REPO/scripts/render-wallpaper.py" \
   "$HOME/Downloads/Cog_background/mechSkull3.jpg" \
   --mode image \

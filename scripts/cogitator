@@ -1,5 +1,5 @@
 #!/bin/bash
-# cogitator-v2 — lifecycle wrapper around NATIVE Omarchy installs.
+# omarchy-cogitator — lifecycle wrapper around NATIVE Omarchy installs.
 #
 # This repo root is simultaneously:
 #   * a plugin root (manifest.json + qml/) for `omarchy plugin add <url>`

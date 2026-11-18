@@ -1,10 +1,11 @@
 {
   "schemaVersion": 1,
   "id": "cogitator-rite",
-  "name": "Cogitator Rite",
+  "name": "omarchy-cogitator",
   "version": "0.3.0",
-  "author": "cogitator-v2",
-  "description": "Persistent green-phosphor prop piece + background burn. User-space only.",
+  "author": "Rowdydangerous",
+  "license": "MIT",
+  "description": "Mechanicus-styled Auspex console, application search and four palettes, with an opt-in reversible shell suite and Control Sanctum.",
   "kinds": ["service"],
   "entryPoints": {
     "service": "qml/Service.qml"
