@@ -55,6 +55,15 @@ with tempfile.TemporaryDirectory() as work:
     for relative in ("menu/Menu.qml", "launcher/Launcher.qml", "prop/Prop.qml"):
         assert "CogitatorFrames.FrameSurface" in (core / relative).read_text()
         subprocess.run(["qmllint", "-I", "/usr/share/omarchy/shell", str(core / relative)], check=True)
+    prop = (core / "prop/Prop.qml").read_text()
+    tooltip = prop.split("id: inspectionTip", 1)[1].split("\n                MouseArea", 1)[0]
+    assert "Controls.ToolTip.text:" not in prop
+    assert "text: root.service.inspectionHint(row.action)" in tooltip
+    assert "width: Math.min(row.width, 280)" in tooltip
+    assert "textFormat: Text.PlainText" in tooltip and "wrapMode: Text.Wrap" in tooltip
+    assert "color: root.pale" in tooltip and "font.family: root.mono" in tooltip
+    assert "background: CogitatorFrames.FrameSurface" in tooltip
+    assert "color: root.abyss" in tooltip and "outlineColor: root.phosphor" in tooltip
 shared = ROOT / "shared/frames"
 for file in shared.glob("*.qml"):
     subprocess.run(["qmllint", "-I", "/usr/share/omarchy/shell", str(file)], check=True)

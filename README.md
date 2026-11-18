@@ -1,14 +1,16 @@
-# Omarchy Cogitator v2 — Imperial Cogitator Shell
+# Omarchy Cogitator — Imperial Cogitator Shell
 
 **A 40K cogitator that happens to run Linux.** Green-phosphor displays, machine-spirit communiques, industrial frames, and Mechanicus-styled widgets for Omarchy 4.x / Quickshell.
 
-[![Cogitator desktop with green-phosphor Aquila wallpaper, industrial bar icons and the Auspex console](docs/screenshots/desktop-aquila.png)](docs/screenshots/desktop-aquila.png)
+[![Imperium desktop with Aquila wallpaper, industrial bar icons and the interactive Auspex console](docs/screenshots/current/imperium.webp)](docs/screenshots/current/imperium.webp)
 
-*The phosphor desktop: Aquila wallpaper, industrial bar icons, and a persistent Auspex console with live machine telemetry. Click any screenshot for the full-size image.*
+*Imperium: Aquila wallpaper, industrial bar icons, and a persistent Auspex console with live telemetry. Fresh captures from November 17, 2026; click any image to inspect it.*
 
 - **Command Nexus & Application Cogitator** — keyboard-driven commands and application search.
 - **A complete shell suite** — stock-based widgets with shared chamfered frames, native industrial icons, and Mechanicus vocabulary.
 - **Control Sanctum** — a persistent widget beside the clock for mode switching, palettes, and settings.
+- **Interactive Auspex** — clickable readouts, measured CPU/memory histories, a factual observation log, and event-driven machine-spirit commentary with Hold/Resume.
+- **Four palettes** — Imperium, Ryza, Holy Mars, and Metalica, each remembering its own wallpaper.
 - **Reversible engagement** — restore your previous theme, widget selection, and bar layout when you disengage.
 
 [Usage](#usage) · [Updating](#updating) · [Control widget](docs/control-widget.md) · [Settings](#settings) · [Palettes](#palettes) · [Wallpapers](#make-your-own-background) · [Architecture](docs/architecture.md)
@@ -17,36 +19,69 @@
 CPU/memory history, and read a slower, event-driven machine-spirit stream with
 Hold/Resume. [Console controls and observation details](docs/auspex-console.md).
 
+## Four palettes, one shell
+
+<table>
+  <tr>
+    <td width="50%"><strong>Imperium</strong> · green phosphor<br><a href="docs/screenshots/current/imperium.webp"><img src="docs/screenshots/current/imperium.webp" alt="Imperium green desktop with Aquila wallpaper and live Auspex console" width="520"></a></td>
+    <td width="50%"><strong>Ryza</strong> · amber CRT<br><a href="docs/screenshots/current/ryza.webp"><img src="docs/screenshots/current/ryza.webp" alt="Ryza amber desktop with cog-and-skull wallpaper and matching telemetry" width="520"></a></td>
+  </tr>
+  <tr>
+    <td><strong>Holy Mars</strong> · red terminal<br><a href="docs/screenshots/current/holy-mars.webp"><img src="docs/screenshots/current/holy-mars.webp" alt="Holy Mars red desktop with Mechanicus skull wallpaper and red Auspex console" width="520"></a></td>
+    <td><strong>Metalica</strong> · aged cream and brass<br><a href="docs/screenshots/current/metalica.webp"><img src="docs/screenshots/current/metalica.webp" alt="Metalica desktop with cream Mechanicus artwork, brass accents and matching console" width="520"></a></td>
+  </tr>
+</table>
+
+Wallpaper choices are independent of palette selection. These captures use a
+lighter CRT intensity for readability; both the CRT strength and artwork are configurable.
+
 ## A closer look
 
 <table>
   <tr>
     <td width="50%" valign="top">
-      <h3>Application Cogitator</h3>
-      <a href="docs/screenshots/showcase/application-cogitator.png"><img src="docs/screenshots/showcase/application-cogitator.png" alt="Application search with icons, keyboard selection, scanlines and a chamfered phosphor frame" width="520"></a>
-      <p>Native application search inside a phosphor terminal, with keyboard navigation and recognizable app icons.</p>
+      <h3>Global application & command search</h3>
+      <a href="docs/screenshots/current/application-search.webp"><img src="docs/screenshots/current/application-search.webp" alt="Firefox search showing an application result and matching native menu commands" width="520"></a>
+      <p>Super+Space searches applications and native menu commands together. App results launch directly, with keyboard navigation and recognizable icons.</p>
+      <h3>Machine Herald</h3>
+      <a href="docs/screenshots/current/machine-herald.webp"><img src="docs/screenshots/current/machine-herald.webp" alt="A demonstration notification with an advisory severity tab and chamfered frame" width="520"></a>
+      <p>Notifications share the shell's palette and terminal framing.</p>
     </td>
     <td width="50%" valign="top">
       <h3>Command Nexus</h3>
-      <a href="docs/screenshots/showcase/command-nexus.png"><img src="docs/screenshots/showcase/command-nexus.png" alt="Command Nexus filtered to a single matching rite, with a cut corner and three corner brackets" width="520"></a>
+      <a href="docs/screenshots/current/command-nexus.webp"><img src="docs/screenshots/current/command-nexus.webp" alt="Current Command Nexus with application, configuration, installation and maintenance routes" width="360"></a>
       <p>Type to filter directives; use the keyboard to select and execute a rite.</p>
-      <h3>Machine Herald</h3>
-      <a href="docs/screenshots/showcase/machine-herald.png"><img src="docs/screenshots/showcase/machine-herald.png" alt="Critical notification with a severity tab, bright phosphor fill and dark text" width="520"></a>
-      <p>Notifications share the terminal framing, with high-contrast severity styling for critical alerts.</p>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <h3>Interactive Auspex</h3>
+      <a href="docs/screenshots/current/auspex-tooltip.webp"><img src="docs/screenshots/current/auspex-tooltip.webp" alt="Auspex readouts with a palette-matched tooltip, live history charts, observation log and footer actions" width="280"></a>
+      <p>Inspect processes, files and shell panels from the readouts. Real history charts and a factual event log sit beside restrained machine-spirit commentary.</p>
+    </td>
+    <td valign="top">
+      <h3>Control Sanctum</h3>
+      <a href="docs/screenshots/current/control-appearance.webp"><img src="docs/screenshots/current/control-appearance.webp" alt="Holy Mars Control Sanctum showing palette choices, CRT controls and window chamfers" width="440"></a>
+      <p>Choose palettes, adjust CRT effects, and configure surfaces and motion without hand-editing files. Ordinary settings apply live.</p>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <h3>Noospheric link</h3>
+      <a href="docs/screenshots/current/network.webp"><img src="docs/screenshots/current/network.webp" alt="Widened network panel with stable transfer columns, separate address rows and redacted network details" width="520"></a>
+      <p>Stable transfer columns, separate wrapping IP/gateway rows, DNS choices and Wi-Fi controls. Network identifiers are redacted in this capture.</p>
+    </td>
+    <td valign="top">
+      <h3>Agent telemetry</h3>
+      <a href="docs/screenshots/current/agents.webp"><img src="docs/screenshots/current/agents.webp" alt="Agent panel showing session and weekly allowances, daily usage with a compact Today label, and model totals" width="340"></a>
+      <p>Session and weekly allowances, daily usage, and model totals in the same visual language.</p>
     </td>
   </tr>
 </table>
 
-<details>
-<summary><strong>Ryza (amber) palette in action</strong></summary>
-
-[![Amber Cogitator palette applied to the desktop bar and btop system monitor](docs/screenshots/palette-amber-btop.png)](docs/screenshots/palette-amber-btop.png)
-
-*Ryza doctrine with a matching amber terminal palette. Imperium, Holy Mars, Metalica, and custom phosphor palettes are also available.*
-
-</details>
-
-*These captures show the project's visual design; labels and bar icons have evolved during development. [Browse all screenshots](docs/screenshots/).*
+[Full screenshot gallery](docs/screenshots/current/README.md): standalone launcher,
+surface settings, audio, display, power, and calendar panels, plus all four desktops.
+Older development captures remain in [the screenshot archive](docs/screenshots/).
 
 ## Safety contract
 

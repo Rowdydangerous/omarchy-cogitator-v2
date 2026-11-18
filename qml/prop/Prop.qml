@@ -295,8 +295,27 @@ Item {
                     font.pixelSize: row.smallValue ? 9 : 11
                     font.bold: true
                 }
-                Controls.ToolTip.visible: rowMouse.containsMouse
-                Controls.ToolTip.text: root.service.inspectionHint(row.action)
+                Controls.ToolTip {
+                    id: inspectionTip
+                    visible: rowMouse.containsMouse && window.visible
+                    text: root.service.inspectionHint(row.action)
+                    delay: 400
+                    width: Math.min(row.width, 280)
+                    padding: 14
+                    contentItem: Text {
+                        text: inspectionTip.text
+                        textFormat: Text.PlainText
+                        color: root.pale
+                        font.family: root.mono
+                        font.pixelSize: 10
+                        wrapMode: Text.Wrap
+                    }
+                    background: Rectangle {
+                        color: root.abyss
+                        border.color: root.phosphor
+                        border.width: 1
+                    }
+                }
                 MouseArea {
                     id: rowMouse
                     anchors.fill: parent

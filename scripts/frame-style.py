@@ -111,6 +111,16 @@ def apply_core_frames(stage, root=ROOT):
                     border.width: 1
                 }'''
         styled = styled.replace(inner, "")
+        styled = styled.replace('''                    background: Rectangle {
+                        color: root.abyss
+                        border.color: root.phosphor
+                        border.width: 1
+                    }''', '''                    background: CogitatorFrames.FrameSurface {
+                        color: root.abyss
+                        outlineColor: root.phosphor
+                        cutSize: 12
+                        drawFlares: false
+                    }''', 1)
         if styled != raw:
             file.write_text('import "../frames" as CogitatorFrames\n' + styled)
             changed = True
