@@ -67,6 +67,11 @@ It remains enabled through disengagement. Installing it during an existing
 engagement rebases both sides of that suite journal to include the persistent
 widget; the original pre-rebase journal is retained in recovery storage.
 
+The controller's source manifest is `control/manifest.json.in`; installation
+materializes it as `manifest.json` in the staged plugin. This keeps the public
+repository's root manifest as its sole marketplace entry without changing the
+installed controller's plugin ID or behavior.
+
 `cogitator uninstall` removes the unchanged receipted controller through native
 plugin removal, including its bar reference. Edited installations are preserved.
 Install/config/suite backups are retained under the Cogitator state directory.

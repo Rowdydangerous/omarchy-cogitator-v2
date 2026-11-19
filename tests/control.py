@@ -110,6 +110,13 @@ class PlacementTests(unittest.TestCase):
 
 
 class PackagingTests(unittest.TestCase):
+    def test_marketplace_discovers_only_root_plugin(self):
+        # Match the marketplace's root/one-directory-deep discovery rule.
+        manifests = sorted(str(path.relative_to(ROOT)) for path in ROOT.rglob("manifest.json")
+                           if len(path.relative_to(ROOT).parts) <= 2)
+        self.assertEqual(manifests, ["manifest.json"])
+        self.assertTrue((ROOT / "control/manifest.json.in").is_file())
+
     def test_control_icon_uses_native_vectors_without_effect_layer(self):
         source = (ROOT / "control/Panel.qml").read_text()
         emblem = (ROOT / "control/CogSkull.qml").read_text()
@@ -125,6 +132,7 @@ class PackagingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as work:
             stage = Path(work) / "control"
             shutil.copytree(ROOT / "control", stage)
+            (stage / "manifest.json.in").rename(stage / "manifest.json")
             shutil.copytree(ROOT / "shared/frames", stage / "frames")
             subprocess.run(["omarchy", "plugin", "validate", str(stage)], check=True, stdout=subprocess.DEVNULL)
             # Quickshell uses Qt 6; /usr/bin/qmllint here is the older Qt 5
@@ -151,6 +159,10 @@ class PackagingTests(unittest.TestCase):
                  patch("subprocess.run"), patch("subprocess.check_output", side_effect=check_output):
                 API["install_control"]()
             rebased = json.loads(suite.journal.read_text())
+            installed = suite.plugins / API["CONTROL"]
+            self.assertTrue((installed / "manifest.json").is_file())
+            self.assertFalse((installed / "manifest.json.in").exists())
+            self.assertEqual(json.loads((installed / "manifest.json").read_text())["id"], "cogitator.control")
             for key in ("before", "applied"):
                 self.assertEqual(rebased[key]["bar"]["layout"]["center"][0]["id"], "cogitator.control")
             self.assertEqual(rebased["before"]["bar"]["layout"]["center"][1]["id"], "omarchy.clock")

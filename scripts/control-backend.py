@@ -178,6 +178,9 @@ def install_control():
     changed_install = False
     try:
         shutil.copytree(ROOT / "control", stage, dirs_exist_ok=True)
+        # The controller is an internal package, not a second marketplace
+        # entry. Materialize its manifest only in the installation stage.
+        (stage / "manifest.json.in").rename(stage / "manifest.json")
         shutil.copy2(ROOT / "scripts/control-backend.py", stage / "backend.py")
         shutil.copytree(ROOT / "shared/frames", stage / "frames")
         atomic_write(stage / "runtime.json", json_bytes({"project": str(ROOT)}))
