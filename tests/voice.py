@@ -85,7 +85,7 @@ assert.equal(issue("daemon returned error 42"), "RITE FAILED — daemon returned
         source = (ROOT / "overlays/rowdy.menu/Menu.qml").read_text()
         changed = voice["theme_menu"](source)
         self.assertIn('text: root.riteLabel(row).toUpperCase()', changed)
-        self.assertIn('root.descriptionTextMatches(query, root.riteLabel(entry))', changed)
+        self.assertIn('var voicedText = root.riteLabel(entry).toLowerCase()', changed)
         self.assertIn('if (root.dmenuActive || row.appId || (entry && entry.appId)) return label', changed)
         self.assertIn('parent.provider !== "powerprofiles"', changed)
         self.assertIn('function ritePrompt()', changed)
@@ -93,6 +93,43 @@ assert.equal(issue("daemon returned error 42"), "RITE FAILED — daemon returned
         for marker in ('root.deleteTarget = { appId: row.appId, label: row.label }',
                        'actionFor: function(value) { return "omarchy-font-set " + Util.shellQuote(value) }'):
             self.assertIn(marker, changed)
+
+    def test_menu_search_matches_partial_voiced_words(self):
+        """Typing part of a voiced word must find the row it is shown as.
+
+        The voiced label is display-only, so the stock matcher only sees the
+        raw "Update" and never "Rites of Maintenance"; "maint" used to find
+        nothing until the whole word was typed.
+        """
+        source = (ROOT / "overlays/rowdy.menu/Menu.qml").read_text()
+        changed = voice["theme_menu"](source)
+        self.assertNotIn("MenuModel.matchesQuery(entry, query, root.isVisible(entry))", changed)
+        start = changed.index("  function matchesQuery(entry, query) {")
+        end = changed.index("  function searchScore(", start)
+        matcher = changed[start:end]
+        script = '''
+const assert = require("assert");
+const root = {
+  isVisible: function() { return true; },
+  nameSearchText: function(entry) { return String(entry.label).toLowerCase(); },
+  riteLabel: function(entry) { return entry.voiced || entry.label; },
+  termInSearchWords: function(term, text) {
+    return String(text).toLowerCase().split(/\\s+/).indexOf(term) !== -1;
+  },
+};
+''' + matcher + '''
+const update = {id: "update", label: "Update", voiced: "Rites of Maintenance", description: "Install system updates"};
+assert.equal(matchesQuery(update, "maint"), true);
+assert.equal(matchesQuery(update, "maintenance"), true);
+assert.equal(matchesQuery(update, "upd"), true);
+assert.equal(matchesQuery(update, "update"), true);
+assert.equal(matchesQuery(update, "rites maint"), true);
+assert.equal(matchesQuery(update, "purge"), false);
+assert.equal(matchesQuery(update, "maint purge"), false);
+assert.equal(matchesQuery({id: "root", label: "Root"}, "root"), false);
+assert.equal(matchesQuery(null, "maint"), false);
+'''
+        subprocess.run(["node", "-e", script], check=True)
 
     def test_full_suite_packaging_and_lint_regressions(self):
         with tempfile.TemporaryDirectory() as work:
