@@ -114,6 +114,41 @@ class RoutingTests(unittest.TestCase):
         _, mapping, _ = module.plan_config(config, catalog, BASELINES)
         self.assertEqual(mapping, {"omarchy.bar": "cogitator.bar"})
 
+    def test_engaged_extras_appear_only_in_applied_layout(self):
+        extras = ("bluetooth", "microphone", "monitor", "weather")
+        baselines = BASELINES + [
+            {"sourceId": "omarchy." + slug, "replacementId": "cogitator." + slug,
+             "path": "plugins/" + slug}
+            for slug in extras
+        ]
+        catalog = CATALOG + [metadata("omarchy." + slug, ["bar-widget"]) for slug in extras]
+        config = copy.deepcopy(CONFIG)
+        after, mapping, _ = module.plan_config(config, catalog, baselines)
+        expected_right = [module.remap_entry(e, mapping)["id"]
+                          for e in CONFIG["bar"]["layout"]["right"]]
+        self.assertEqual(
+            [e["id"] for e in after["bar"]["layout"]["right"]], expected_right)
+        self.assertEqual(
+            [e["id"] for e in after["bar"]["layout"]["centerEnd"]],
+            ["cogitator." + slug for slug in extras])
+        self.assertEqual(config, CONFIG)
+        self.assertEqual(module.rollback_config(config, after, after), config)
+
+    def test_engaged_extras_survive_disabled_stock_sources(self):
+        extras = ("bluetooth", "microphone", "monitor", "weather")
+        baselines = BASELINES + [
+            {"sourceId": "omarchy." + slug, "replacementId": "cogitator." + slug,
+             "path": "plugins/" + slug}
+            for slug in extras
+        ]
+        catalog = CATALOG + [metadata("omarchy." + slug, ["bar-widget"]) for slug in extras]
+        config = copy.deepcopy(CONFIG)
+        config["disabledPlugins"] += ["omarchy." + slug for slug in extras]
+        after, _, _ = module.plan_config(config, catalog, baselines)
+        self.assertEqual(
+            [e["id"] for e in after["bar"]["layout"]["centerEnd"]][-len(extras):],
+            ["cogitator." + slug for slug in extras])
+
 
 class LifecycleTests(unittest.TestCase):
     def setUp(self):
@@ -175,6 +210,23 @@ class LifecycleTests(unittest.TestCase):
         self.suite.disable()
         self.suite.finish()
         self.assertEqual(self.suite.config.read_bytes(), original)
+
+    def test_enable_rescans_after_switching_to_engaged_layout(self):
+        self.suite.config.parent.mkdir(parents=True)
+        self.suite.config.write_text(json.dumps(CONFIG))
+        self.suite.prepare(True)
+        seen = []
+        original_run = self.suite.run
+
+        def run(args):
+            if args[:3] == ["omarchy-shell", "shell", "rescanPlugins"]:
+                live = json.loads(self.suite.config.read_text())
+                seen.append(live.get("bar", {}).get("id"))
+            return original_run(args)
+
+        self.suite.run = run
+        self.suite.enable()
+        self.assertIn("cogitator.bar", seen)
 
     def test_absent_config_returns_to_absent(self):
         defaults = self.defaults.read_bytes()
