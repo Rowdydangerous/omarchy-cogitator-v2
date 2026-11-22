@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import qs.Commons
+import qs.Commons as Commons
 
 // Layer-shell popup attached to a bar widget icon, designed for
 // click-driven AND keyboard-driven panels (e.g. SUPER+CTRL+W summon).
@@ -45,7 +46,7 @@ PanelWindow {
   property int padding: Style.spacing.popupPadding
   property int contentWidth: Style.space(280)
   property int contentHeight: Style.space(200)
-  property var borderSpec: Border.surfaceSpec("popups", "border", Color.popups.border, Math.max(1, Style.space(2)))
+  property var borderSpec: Border.surfaceSpec("popups", "border", Commons.Color.popups.border, Math.max(1, Style.space(2)))
   property bool centerOnBar: false
   property bool open: false
   property int gap: Style.gapsOut  // distance between bar edge and panel
@@ -186,8 +187,17 @@ PanelWindow {
   // parallel axis (along the bar) the anchor item's reported position is
   // still consistent with the bar content origin, so it's accurate for
   // centering the card under the icon.
-  readonly property real barThickness: !bar ? 0
-    : (typeof bar.barSizeFor === "function" && screen ? bar.barSizeFor(screen.name) : bar.barSize)
+  readonly property real barThickness: {
+    if (!bar) return 0
+    var configured = typeof bar.barSizeFor === "function" && screen
+      ? bar.barSizeFor(screen.name) : bar.barSize
+    // Installed widgets receive a facade without barSizeFor(). The native
+    // full-screen bar publishes its actual per-output strip via exclusiveZone.
+    // Legacy bars may use Auto (-1) or no explicit zone: retain their size.
+    var reserved = anchorWindow && typeof anchorWindow.exclusiveZone === "number"
+      ? anchorWindow.exclusiveZone : 0
+    return Math.max(0, configured, reserved)
+  }
   // Keep actual window dimensions for pointer-coordinate mapping only.
   readonly property real barW: anchorWindow ? anchorWindow.width : screenW
   readonly property real barH: anchorWindow ? anchorWindow.height : 0
@@ -382,7 +392,7 @@ PanelWindow {
     y: root.cardOrigin.y
     width: root.contentWidth
     height: root.contentHeight
-    color: Color.popups.background
+    color: Commons.Color.popups.background
     borderSpec: root.borderSpec
     padding: root.padding
     radius: Style.cornerRadius

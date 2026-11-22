@@ -3,6 +3,7 @@ import QtQuick.Controls as Controls
 import Quickshell
 import Quickshell.Io
 import qs.Commons
+import qs.Commons as Commons
 import qs.Ui
 import qs.Ui as Ui
 import "frames" as Frames
@@ -24,7 +25,8 @@ Ui.Panel {
     readonly property bool engaged: reported.engaged === true
     readonly property bool busy: reported.busy === true || action.running
     readonly property bool failed: !!(reported.operation && reported.operation.phase === "failed")
-    readonly property color ink: failed ? Color.yellow : Color.accent
+    readonly property color warningInk: typeof Commons.Color.yellow !== "undefined" ? Commons.Color.yellow : "#e0ad2f"
+    readonly property color ink: failed ? warningInk : Commons.Color.accent
     implicitWidth: button.implicitWidth
     implicitHeight: button.implicitHeight
 
@@ -161,7 +163,7 @@ Ui.Panel {
                 id: header
                 anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top
                 spacing: 10
-                Text { text: "COGITATOR CONTROL SANCTUM"; color: Color.accent; font.family: Style.font.family; font.pixelSize: 18; font.bold: true }
+                Text { text: "COGITATOR CONTROL SANCTUM"; color: Commons.Color.accent; font.family: Style.font.family; font.pixelSize: 18; font.bold: true }
                 Text {
                     text: root.busy ? "+++ TRANSITION IN PROGRESS +++" : (root.engaged ? "MACHINE SPIRIT ENGAGED" : "MACHINE SPIRIT DISENGAGED")
                     color: root.ink; font.family: Style.font.family; font.pixelSize: 12
@@ -178,7 +180,7 @@ Ui.Panel {
                         }
                     }
                 }
-                Rectangle { width: parent.width; height: 1; color: Color.accent; opacity: 0.5 }
+                Rectangle { width: parent.width; height: 1; color: Commons.Color.accent; opacity: 0.5 }
             }
             Controls.ScrollView {
                 anchors.left: parent.left; anchors.right: parent.right
@@ -193,7 +195,7 @@ Ui.Panel {
                     Column {
                         width: parent.width; spacing: 14
                         visible: root.section === "Overview"
-                        Text { text: "MODE DIRECTIVE"; color: Color.accent; font.family: Style.font.family; font.pixelSize: 13 }
+                        Text { text: "MODE DIRECTIVE"; color: Commons.Color.accent; font.family: Style.font.family; font.pixelSize: 13 }
                         Controls.Button {
                             text: root.busy ? "Performing rite…" : (root.engaged ? "Disengage Cogitator" : "Engage Cogitator")
                             enabled: !root.busy && !root.dirty
@@ -207,17 +209,17 @@ Ui.Panel {
                         Text {
                             width: parent.width; wrapMode: Text.WordWrap
                             text: "Theme changes restart terminals. The control widget remains available when Cogitator is disengaged."
-                            color: Color.foreground; font.family: Style.font.family; font.pixelSize: 13
+                            color: Commons.Color.foreground; font.family: Style.font.family; font.pixelSize: 13
                         }
                         Text {
                             width: parent.width; wrapMode: Text.WordWrap
                             text: "Phosphor doctrine: " + root.paletteLabel(root.saved.PALETTE || "green").toUpperCase() + "\nSuite: " + String(root.reported.suite || "inactive")
-                            color: Color.foreground; font.family: Style.font.family; font.pixelSize: 13
+                            color: Commons.Color.foreground; font.family: Style.font.family; font.pixelSize: 13
                         }
                         Text {
                             width: parent.width; wrapMode: Text.WordWrap
                             text: root.reported.operation ? root.reported.operation.message || "" : ""
-                            color: root.failed ? Color.yellow : Color.foreground
+                            color: root.failed ? root.warningInk : Commons.Color.foreground
                             font.family: Style.font.family; font.pixelSize: 13
                         }
                         Controls.Button {
@@ -242,7 +244,7 @@ Ui.Panel {
                 Text {
                     width: parent.width; wrapMode: Text.WordWrap
                     text: root.message || (root.dirty ? "UNSAVED DIRECTIVES" : (root.engaged ? "Configuration synchronized" : "Settings apply on next engagement"))
-                    color: root.dirty || root.failed ? Color.yellow : Color.foreground
+                    color: root.dirty || root.failed ? root.warningInk : Commons.Color.foreground
                     font.family: Style.font.family; font.pixelSize: 12
                 }
                 Row {
@@ -260,7 +262,7 @@ Ui.Panel {
         required property var field
         property bool colorExpanded: false
         spacing: 5
-        Text { text: row.field.label; color: Color.foreground; font.family: Style.font.family; font.pixelSize: 13 }
+        Text { text: row.field.label; color: Commons.Color.foreground; font.family: Style.font.family; font.pixelSize: 13 }
         Controls.CheckBox {
             visible: row.field.type === "boolean"
             text: checked ? "Enabled" : "Disabled"
@@ -290,7 +292,7 @@ Ui.Panel {
                     required property string modelData
                     width: 28; height: 20; color: modelData
                     border.width: root.draft.PALETTE === ["green", "amber", "red", "industrial"][index] ? 3 : 1
-                    border.color: Color.foreground
+                    border.color: Commons.Color.foreground
                     Controls.ToolTip.visible: swatchMouse.containsMouse
                     Controls.ToolTip.text: root.paletteLabel(["green", "amber", "red", "industrial"][index])
                     MouseArea {
@@ -313,7 +315,7 @@ Ui.Panel {
                 enabled: !root.busy
                 onReleased: function(value) { root.setValue(row.field.key, Number(value.toFixed(2))) }
             }
-            Text { text: Number(root.draft[row.field.key] || 0).toFixed(row.field.step === 1 ? 0 : 2); color: Color.accent; font.family: Style.font.family; font.pixelSize: 13 }
+            Text { text: Number(root.draft[row.field.key] || 0).toFixed(row.field.step === 1 ? 0 : 2); color: Commons.Color.accent; font.family: Style.font.family; font.pixelSize: 13 }
         }
         Row {
             visible: row.field.type === "color"
@@ -327,7 +329,7 @@ Ui.Panel {
             Rectangle {
                 width: 34; height: 34
                 color: /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(String(root.draft[row.field.key])) ? root.draft[row.field.key] : "#4fd06a"
-                border.color: Color.foreground
+                border.color: Commons.Color.foreground
                 MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: row.colorExpanded = !row.colorExpanded }
             }
             Controls.Button { text: "RGB picker"; onClicked: row.colorExpanded = !row.colorExpanded }
@@ -341,7 +343,7 @@ Ui.Panel {
                     required property int index
                     required property string modelData
                     width: row.width; spacing: 8
-                    Text { width: 50; text: modelData; color: Color.foreground; font.family: Style.font.family; font.pixelSize: 12 }
+                    Text { width: 50; text: modelData; color: Commons.Color.foreground; font.family: Style.font.family; font.pixelSize: 12 }
                     PanelSlider {
                         bar: root.bar; width: row.width - 80
                         minimum: 0; maximum: 255; integer: true; step: 1

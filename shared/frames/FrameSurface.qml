@@ -1,13 +1,14 @@
 import QtQuick
 import QtQuick.Shapes
 import qs.Commons
+import qs.Commons as Commons
 
 // Rectangle-compatible geometry/insets; the fill itself has a cut corner.
 Item {
     id: frame
-    property color color: Color.popups.background
+    property color color: Commons.Color.popups.background
     property color outlineColor: Border.canUseNative(borderSpec) && Border.uniformWidth(borderSpec) > 0
-                                 ? Border.color(borderSpec) : Color.accent
+                                 ? Border.color(borderSpec) : Commons.Color.accent
     property real cutSize: 30
     property bool drawOutline: true
     property bool drawFlares: true

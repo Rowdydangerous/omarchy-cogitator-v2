@@ -88,6 +88,28 @@ custom clock placement, repeated clock instances, suite rollback, active-journal
 rebasing and controller packaging. Qt 6 syntax checks match Quickshell's runtime;
 the older system Qt 5 parser is not used for this component.
 
+`tests/control-layout.py` runs the actual controller and shared popup with the
+host's `PluginBarApi` in an isolated headless Sway session. Install `sway` as a
+development-only test dependency to run it; no Sway configuration or session is
+needed for normal Cogitator use. The test uses software rendering, a separate
+Wayland socket, and a stub controller backend, so it never engages the real
+desktop or saves user settings. It covers all controller pages, both engagement
+states, 500/1000-pixel-tall outputs, four bar edges, legacy strip windows, and
+native full-screen windows reserving a 64-pixel strip with a 26-pixel facade size.
+It checks visible/reachable Engage and Apply controls and their dispatched
+actions. Without Quickshell or Sway, this integration test is explicitly skipped.
+
+For installed widgets whose bar facade lacks `barSizeFor`, the shared popup uses
+the anchor window's public `exclusiveZone` to clear the actual per-output strip,
+including a notch floor. Configured size remains the fallback for older bars
+with no explicit reserved zone. Theme colors are namespace-qualified to avoid
+collisions with toolkit types.
+
+Installer integration tests also run the real controller CLI in temporary
+config/state trees: upgrading an older receipted controller retains exact user
+configuration and recovery copies, while an edited installation is refused
+without writing files or invoking shell IPC.
+
 Live verification on 2026-10-08 confirmed the widget and Appearance panel while
 disengaged. `verify-control.py`, run detached, completed an engagement and
 disengagement through the controller backend and confirmed the widget remained

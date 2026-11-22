@@ -56,12 +56,11 @@ Window {
       onTriggered: {
         var test = root.cases[root.index];
         root.screen = {width: test.small ? 1000 : 1600, height: test.small ? 500 : 1000, name: "fixture"};
-        root.bar = test.native
-          ? {position: test.position, barSize: 26, barSizeFor: function(name) { return name === "fixture" ? 34 : 26; }}
-          : {position: test.position, barSize: 26};
+        // Installed widgets get a facade, not the host's barSizeFor method.
+        root.bar = {position: test.position, barSize: 26};
         var horizontal = test.position === "top" || test.position === "bottom";
         root.anchorWindow = test.native
-          ? {width: root.screen.width, height: root.screen.height}
+          ? {width: root.screen.width, height: root.screen.height, exclusiveZone: 64}
           : {width: horizontal ? root.screen.width : 26, height: horizontal ? 26 : root.screen.height};
         root.anchorScreenPos = horizontal ? Qt.point(root.screen.width / 2, 13) : Qt.point(13, root.screen.height / 2);
         root.pageHeight = test.pageHeight;
@@ -99,14 +98,14 @@ Window {
             self.assertEqual(len(records), len(cases))
             for record in records:
                 test = record["test"]
-                thickness = 34 if test["native"] else 26
+                thickness = 64 if test["native"] else 26
                 horizontal = test["position"] in ("top", "bottom")
                 expected_height = min(test["pageHeight"], record["screenHeight"] -
                                       (thickness + 24 if horizontal else 24))
                 self.assertEqual(record["thickness"], thickness, record)
                 self.assertEqual(record["height"], expected_height, record)
                 self.assertEqual(record["width"], 560, record)
-                self.assertGreaterEqual(record["height"], 420, record)
+                self.assertGreaterEqual(record["height"], 400, record)
                 self.assertGreaterEqual(record["x"], 12, record)
                 self.assertGreaterEqual(record["y"], 12, record)
                 self.assertLessEqual(record["x"] + record["width"], record["screenWidth"] - 12, record)

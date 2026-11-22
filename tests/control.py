@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Persistent placement/rebase, safe settings and controller packaging checks."""
 import copy
+import hashlib
 import json
+import os
 from pathlib import Path
 import runpy
 import shutil
@@ -167,6 +169,96 @@ class PackagingTests(unittest.TestCase):
                 self.assertEqual(rebased[key]["bar"]["layout"]["center"][0]["id"], "cogitator.control")
             self.assertEqual(rebased["before"]["bar"]["layout"]["center"][1]["id"], "omarchy.clock")
             self.assertEqual(json.loads(suite.config.read_text())["bar"]["layout"]["center"][0]["id"], "cogitator.control")
+
+
+class ControllerInstallIntegrationTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.home = Path(temporary.name)
+        self.config = self.home / ".config/omarchy/shell.json"
+        self.config.parent.mkdir(parents=True)
+        self.config.write_text(json.dumps({"version": 1, "plugins": [],
+                                          "bar": {"layout": {"center": [{"id": "omarchy.clock"}]}}}))
+        self.settings = self.home / ".config/cogitator-v2/cogitator.conf"
+        self.settings.parent.mkdir(parents=True)
+        self.settings.write_text('# Operator preferences\nPALETTE="red"\nOTHER="preserve"\n')
+        self.target = self.home / ".config/omarchy/plugins/cogitator.control"
+        bin_dir = self.home / "bin"
+        bin_dir.mkdir()
+        ipc = bin_dir / "omarchy-shell"
+        ipc.write_text('''#!/usr/bin/python3
+import json, os, pathlib, sys
+with pathlib.Path(os.environ["CONTROL_TEST_IPC_LOG"]).open("a") as file:
+    file.write(json.dumps(sys.argv[1:]) + "\\n")
+if sys.argv[1:] == ["shell", "listPlugins"]:
+    print(json.dumps([{"id": "omarchy.clock", "clonedFrom": ""}]))
+elif sys.argv[1:] == ["shell", "rescanPlugins"]:
+    print("ok")
+else:
+    raise SystemExit("Unexpected IPC in isolated installer test")
+''')
+        ipc.chmod(0o755)
+        self.env = dict(os.environ, HOME=str(self.home),
+                        XDG_CONFIG_HOME=str(self.home / ".config"),
+                        XDG_STATE_HOME=str(self.home / ".local/state"),
+                        CONTROL_TEST_IPC_LOG=str(self.home / "ipc.jsonl"),
+                        PATH=str(bin_dir) + os.pathsep + os.environ["PATH"])
+
+    def install(self):
+        return subprocess.run(["/usr/bin/python3", str(ROOT / "scripts/control-backend.py"), "install"],
+                              env=self.env, capture_output=True, text=True, timeout=15)
+
+    @staticmethod
+    def tree(directory):
+        return {str(path.relative_to(directory)): (path.read_bytes(), path.stat().st_mode & 0o777)
+                for path in directory.rglob("*") if path.is_file()}
+
+    def test_upgrade_of_receipted_controller_keeps_settings_and_recovery_copy(self):
+        first = self.install()
+        self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
+        # Represent a previous valid installation using an older presentation.
+        panel = self.target / "Panel.qml"
+        previous = panel.read_text().replace("COGITATOR CONTROL SANCTUM", "PREVIOUS CONTROL SANCTUM")
+        panel.write_text(previous)
+        marker = self.target / ".cogitator-control.json"
+        receipt = json.loads(marker.read_text())
+        receipt["files"]["Panel.qml"] = hashlib.sha256(panel.read_bytes()).hexdigest()
+        marker.write_text(json.dumps(receipt))
+        # User placement and unrelated preferences must survive the upgrade.
+        config = json.loads(self.config.read_text())
+        config["bar"]["layout"]["center"].remove({"id": "cogitator.control"})
+        config["bar"]["layout"]["right"] = [{"id": "cogitator.control", "operatorNote": "keep"}]
+        self.config.write_text(json.dumps(config, indent="\t") + "\n")
+        before_config, before_settings = self.config.read_bytes(), self.settings.read_bytes()
+        second = self.install()
+        self.assertEqual(second.returncode, 0, second.stdout + second.stderr)
+        self.assertEqual(self.config.read_bytes(), before_config)
+        self.assertEqual(self.settings.read_bytes(), before_settings)
+        self.assertEqual(panel.read_bytes(), (ROOT / "control/Panel.qml").read_bytes())
+        manifest = json.loads((self.target / "manifest.json").read_text())
+        self.assertEqual(manifest["id"], "cogitator.control")
+        self.assertFalse((self.target / "manifest.json.in").exists())
+        backups = list((self.home / ".local/state/cogitator-v2/backups").glob("control-*/previous-plugin/Panel.qml"))
+        self.assertEqual([path.read_text() for path in backups], [previous])
+        # A subsequent unchanged install proves the new receipt is usable.
+        third = self.install()
+        self.assertEqual(third.returncode, 0, third.stdout + third.stderr)
+        self.assertEqual(self.config.read_bytes(), before_config)
+        self.assertEqual(self.settings.read_bytes(), before_settings)
+
+    def test_edited_install_is_refused_without_changing_files_or_configuration(self):
+        first = self.install()
+        self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
+        panel = self.target / "Panel.qml"
+        panel.write_text(panel.read_text() + "\n// Operator's local customization\n")
+        before = self.tree(self.home)
+        refused = self.install()
+        self.assertNotEqual(refused.returncode, 0)
+        result = json.loads(refused.stdout)
+        self.assertFalse(result["ok"])
+        self.assertIn("local edits; preserved", result["message"])
+        self.assertEqual(self.tree(self.home), before)
 
 
 if __name__ == "__main__":
