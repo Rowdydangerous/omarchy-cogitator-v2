@@ -816,6 +816,7 @@ Item {
 
   function applySelected(id, action) {
     if (!id) { cancel(); return }
+    if (root.redirectApps(id)) return
 
     applySerial = requestSerial
     opened = false
@@ -890,6 +891,8 @@ Item {
   function openRoute(initialMenu) {
     var id = root.resolveRoute(initialMenu)
     var entry = root.items[id]
+    // New host menus make Apps an action instead of a submenu.
+    if (root.redirectApps(id)) return "ok"
     // If the resolved id is an action (i.e. the user invoked an alias for
     // a leaf, e.g. `omarchy menu summon screenrecord-stop`), run it directly
     // instead of opening an action with no children.

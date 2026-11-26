@@ -379,6 +379,21 @@ prepare_config() {
 install_keybinding() {
   [[ -f $BINDINGS_FILE ]] || fail "no Hyprland bindings file at $BINDINGS_FILE"
   if grep -qF -- "$BIND_BEGIN" "$BINDINGS_FILE"; then
+    # Upgrade the owned block without replacing surrounding user bindings.
+    if ! grep -qF 'Cogitator applications' "$BINDINGS_FILE"; then
+      cp -a -- "$BINDINGS_FILE" "$BINDINGS_FILE.bak.$(date +%Y%m%d-%H%M%S)"
+      python3 - "$BINDINGS_FILE" "$BIND_END" "$CONFIG_DIR/cogitator-menu apps" <<'PY'
+import json
+from pathlib import Path
+import sys
+path, end, command = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
+raw = path.read_text()
+if raw.count(end) != 1:
+    raise SystemExit("Ambiguous managed keybinding block; preserved")
+binding = 'o.rebind("SUPER + ALT + SPACE", "Cogitator applications", ' + json.dumps(command) + ')\n'
+path.write_text(raw.replace(end, binding + end, 1))
+PY
+    fi
     printf 'Cogitator SUPER+SPACE route already installed.\n'
     return
   fi
@@ -391,6 +406,7 @@ $BIND_BEGIN
 -- delete this block (or run \`cogitator uninstall\`) to restore stock keys.
 hl.unbind("SUPER + SPACE")
 o.bind("SUPER + SPACE", "Cogitator menu", "$CONFIG_DIR/cogitator-menu")
+o.rebind("SUPER + ALT + SPACE", "Cogitator applications", "$CONFIG_DIR/cogitator-menu apps")
 $BIND_END
 EOF
   printf 'SUPER+SPACE now routes via cogitator-menu (backup of bindings saved).\n'

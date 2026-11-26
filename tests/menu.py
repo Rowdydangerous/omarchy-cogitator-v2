@@ -15,6 +15,36 @@ HOST = Path("/usr/share/omarchy/shell")
 
 
 class MenuTests(unittest.TestCase):
+    def test_apps_action_and_alias_handoff_precede_stock_dock_action(self):
+        source = (ROOT / "overlays/rowdy.menu/Menu.qml").read_text()
+        parser = runpy.run_path(str(ROOT / "scripts/voice-style.py"))
+        functions = []
+        for name in ("applySelected", "openRoute"):
+            start = source.index("  function " + name + "(")
+            end = parser["expression_end"](source, source.index("{", start))
+            functions.append(source[start:end])
+        script = '''
+const assert = require("assert");
+let redirects = [], actions = [];
+let requestSerial = 1, applySerial = 0, opened = true, filterText = "";
+const root = {
+  resolveRoute: value => value === "applications" ? "apps" : value,
+  items: {apps: {kind: "action", action: "omarchy-shell omarchy.dock apps"}},
+  redirectApps: id => { if (id !== "apps") return false; redirects.push(id); return true; },
+  cancel: () => {},
+  runAction: value => actions.push(value),
+  requestSerial: 1
+};
+''' + "\n".join(functions) + '''
+applySelected("apps", "omarchy-shell omarchy.dock apps");
+assert.equal(openRoute("applications"), "ok");
+assert.deepEqual(redirects, ["apps", "apps"]);
+assert.deepEqual(actions, []);
+applySelected("other", "ordinary-command");
+assert.deepEqual(actions, ["ordinary-command"]);
+'''
+        subprocess.run(["node", "-e", script], check=True)
+
     @unittest.skipUnless(shutil.which("quickshell"), "requires Quickshell")
     def test_app_result_activation_launches_selected_id_without_launcher_handoff(self):
         source = (ROOT / "overlays/rowdy.menu/Menu.qml").read_text()
