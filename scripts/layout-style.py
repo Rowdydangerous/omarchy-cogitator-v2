@@ -3,6 +3,36 @@
 from pathlib import Path
 
 
+def power_layout(file):
+    file = Path(file)
+    raw = file.read_text()
+    start = raw.index("  component InfoPair: Row {")
+    end = raw.index("\n  component InfoLabel:", start)
+    raw = raw[:start] + '''  component InfoPair: Item {
+    property string label: ""
+    property string value: ""
+    width: parent.width
+    implicitHeight: Math.max(pairLabel.implicitHeight, pairValue.implicitHeight)
+
+    InfoLabel {
+      id: pairLabel
+      text: parent.label
+      width: Math.max(0, parent.width - pairValue.width - Style.space(8))
+      wrapMode: Text.Wrap
+    }
+    InfoValue {
+      id: pairValue
+      text: parent.value
+      anchors.right: parent.right
+      width: Math.min(implicitWidth, parent.width * 0.35)
+      horizontalAlignment: Text.AlignRight
+      wrapMode: Text.WrapAnywhere
+    }
+  }
+''' + raw[end:]
+    file.write_text(raw)
+
+
 def agents_layout(file):
     file = Path(file)
     raw = file.read_text()

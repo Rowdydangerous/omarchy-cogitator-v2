@@ -270,6 +270,8 @@ class Suite:
                     runpy.run_path(str(ROOT / "scripts/layout-style.py"))["weather_layout"](stage / "Panel.qml")
                 if plugin["sourceId"] == "omarchy.network":
                     runpy.run_path(str(ROOT / "scripts/layout-style.py"))["network_layout"](stage / "Panel.qml")
+                if plugin["sourceId"] == "omarchy.power":
+                    runpy.run_path(str(ROOT / "scripts/layout-style.py"))["power_layout"](stage / "Panel.qml")
                 if plugin["sourceId"] == "omarchy.agents":
                     runpy.run_path(str(ROOT / "scripts/layout-style.py"))["agents_layout"](stage / "Panel.qml")
                 runpy.run_path(str(ROOT / "scripts/voice-style.py"))["apply_voice"](stage, self.root)

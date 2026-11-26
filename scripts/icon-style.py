@@ -64,7 +64,28 @@ def apply_icons(stage, root=ROOT):
       font.pixelSize: button.fontSize
     }
     slotSize: root.showPercentage && !vertical ? Style.bar.iconSlot + reserveMetrics.width + Style.space(4) : Style.bar.iconSlot
-    iconComponent: Component {
+    // New native bars optically normalize iconComponent as one icon. Keep
+    // the percentage in their separate label slot, not in the measured art.
+    readonly property bool nativeReserveLabel: "labelText" in button
+    Binding {
+      target: button.nativeReserveLabel ? button : null
+      property: "labelText"
+      value: root.showPercentage && !button.vertical ? Math.round(root.batteryFraction * 100) + "%" : ""
+    }
+    iconComponent: button.nativeReserveLabel ? reserveIcon : reserveLegacyIcon
+    Component {
+      id: reserveIcon
+      CogitatorIcons.PowerCellIcon {
+        width: button.opticalSize; height: button.opticalSize
+        color: root.discharging && root.batteryFraction <= 0.10 ? Color.urgent : button.foreground
+        backdrop: root.bar ? root.bar.background : Color.background
+        fraction: root.batteryFraction
+        charging: root.charging
+        present: root.batteryPresent
+      }
+    }
+    Component {
+      id: reserveLegacyIcon
       Item {
         Row {
           anchors.centerIn: parent
@@ -77,13 +98,9 @@ def apply_icons(stage, root=ROOT):
             font.pixelSize: button.fontSize
             anchors.verticalCenter: parent.verticalCenter
           }
-          CogitatorIcons.PowerCellIcon {
+          Loader {
             width: button.opticalSize; height: button.opticalSize
-            color: root.discharging && root.batteryFraction <= 0.10 ? Color.urgent : button.foreground
-            backdrop: root.bar ? root.bar.background : Color.background
-            fraction: root.batteryFraction
-            charging: root.charging
-            present: root.batteryPresent
+            sourceComponent: reserveIcon
           }
         }
       }
